@@ -1,0 +1,22 @@
+services:
+  postgres:
+    build: .
+    container_name: postgres-pepega
+    environment:
+      POSTGRES_PASSWORD: pepega
+      POSTGRES_USER: pepega
+      POSTGRES_DB: pepega
+    command: -c max_connections=1000
+    restart: unless-stopped
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: [ 'CMD-SHELL', 'pg_isready -U pepega' ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
