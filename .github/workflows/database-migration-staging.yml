@@ -1,0 +1,31 @@
+name: Database migration (staging)
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'migrations/**'
+
+jobs:
+  migration:
+    runs-on: ubuntu-24.04
+    environment: staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.12.0'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm ci
+      - name: Run database migration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:migrate
+      - name: Seed database
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: npm run db:seed

@@ -12,7 +12,8 @@
 		"db:start": "docker compose up -d",
 		"db:push": "drizzle-kit push",
 		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+		"db:studio": "drizzle-kit studio",
+		"db:seed": "exit 0"
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-cloudflare": "4.8.0",
@@ -20,14 +21,12 @@
 		"@sveltejs/vite-plugin-svelte": "5.0.1",
 		"@types/node": "22.10.1",
 		"drizzle-kit": "0.29.1",
-		"svelte": "5.9.0",
+		"drizzle-orm": "0.37.0",
+		"pg": "8.13.1",
 		"svelte-check": "4.1.1",
+		"svelte": "5.9.0",
 		"typescript": "5.7.2",
 		"vite": "6.0.3",
 		"wrangler": "3.93.0"
-	},
-	"dependencies": {
-		"drizzle-orm": "0.37.0",
-		"postgres": "3.4.5"
 	}
 }
