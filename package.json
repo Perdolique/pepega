@@ -19,18 +19,18 @@
 	"devDependencies": {
 		"@neondatabase/serverless": "0.10.4",
 		"@sveltejs/adapter-cloudflare": "4.8.0",
-		"@sveltejs/kit": "2.9.0",
+		"@sveltejs/kit": "2.10.1",
 		"@sveltejs/vite-plugin-svelte": "5.0.1",
-		"@types/node": "22.10.1",
+		"@types/node": "22.10.2",
 		"@types/ws": "8.5.13",
-		"drizzle-kit": "0.29.1",
-		"drizzle-orm": "0.37.0",
-		"svelte": "5.9.0",
+		"drizzle-kit": "0.30.0",
+		"drizzle-orm": "0.38.0",
+		"svelte": "5.11.0",
 		"svelte-check": "4.1.1",
 		"tsx": "4.19.2",
 		"typescript": "5.7.2",
 		"vite": "6.0.3",
-		"wrangler": "3.93.0",
+		"wrangler": "3.95.0",
 		"ws": "8.18.0"
 	}
 }
