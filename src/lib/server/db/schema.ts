@@ -1,5 +1,5 @@
+import { sql } from 'drizzle-orm';
 import { pgTable, uuid } from 'drizzle-orm/pg-core';
-
 
 /**
  * Users table
@@ -8,6 +8,6 @@ import { pgTable, uuid } from 'drizzle-orm/pg-core';
 export const users = pgTable('users', {
 	id: 
 		uuid()
-		.default('uuid_generate_v7()')
+		.default(sql`uuid_generate_v7()`)
 		.primaryKey(),
 });
