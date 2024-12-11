@@ -1,7 +1,9 @@
+name: neon
+
 services:
   postgres:
     build: .
-    container_name: postgres-pepega
+    container_name: postgres
     environment:
       POSTGRES_PASSWORD: pepega
       POSTGRES_USER: pepega
@@ -17,6 +19,34 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # https://github.com/neondatabase/neon/issues/4989
+  # https://github.com/neondatabase/serverless/issues/33#issuecomment-1634853042
+  # https://github.com/TimoWilhelm/local-neon-http-proxy/tree/main
+  # https://readme.localtest.me/
+  neon-proxy:
+    image: ghcr.io/timowilhelm/local-neon-http-proxy:main
+    environment:
+      - PG_CONNECTION_STRING=postgres://pepega:pepega@postgres:5432/pepega
+    restart: unless-stopped
+    ports:
+      - '4444:4444'
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  neon-wsproxy:
+    image: ghcr.io/neondatabase/wsproxy:latest
+    environment:
+      APPEND_PORT: postgres:5432
+      ALLOW_ADDR_REGEX: .*
+      LOG_TRAFFIC: true
+    restart: unless-stopped
+    ports:
+      - "5433:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:

@@ -11,23 +11,26 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"db:start": "docker compose up -d",
 		"db:push": "drizzle-kit push",
-		"db:migrate": "drizzle-kit migrate",
-		"db:studio": "drizzle-kit studio"
+		"db:generate": "drizzle-kit generate",
+		"db:migrate": "tsx ./tools/migrate.ts",
+		"db:migrate:local": "tsx --env-file=.env ./tools/migrate.ts",
+		"db:seed": "exit 0"
 	},
 	"devDependencies": {
+		"@neondatabase/serverless": "0.10.4",
 		"@sveltejs/adapter-cloudflare": "4.8.0",
 		"@sveltejs/kit": "2.9.0",
 		"@sveltejs/vite-plugin-svelte": "5.0.1",
 		"@types/node": "22.10.1",
+		"@types/ws": "8.5.13",
 		"drizzle-kit": "0.29.1",
+		"drizzle-orm": "0.37.0",
 		"svelte": "5.9.0",
 		"svelte-check": "4.1.1",
+		"tsx": "4.19.2",
 		"typescript": "5.7.2",
 		"vite": "6.0.3",
-		"wrangler": "3.93.0"
-	},
-	"dependencies": {
-		"drizzle-orm": "0.37.0",
-		"postgres": "3.4.5"
+		"wrangler": "3.93.0",
+		"ws": "8.18.0"
 	}
 }
