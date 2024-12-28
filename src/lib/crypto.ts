@@ -1,17 +1,13 @@
 import { subtle } from 'uncrypto'
 import { env } from '$env/dynamic/private'
-
-// Requires nodejs_compat
-// https://developers.cloudflare.com/workers/runtime-apis/nodejs/#built-in-nodejs-runtime-apis
-import { Buffer } from 'node:buffer'
+import { base64Encode, base64Decode, textEncoder, textDecoder } from './base64'
 
 /**
  * Creates an HMAC key from SESSION_SECRET for signing data
  */
 async function getKey() {
   try {
-    const encoder = new TextEncoder()
-    const keyMaterial = encoder.encode(env.SESSION_SECRET)
+    const keyMaterial = textEncoder.encode(env.SESSION_SECRET)
 
     return await subtle.importKey(
       'raw',
@@ -35,10 +31,9 @@ async function getKey() {
  */
 function generateNonce(): string {
   const array = new Uint8Array(8)
-
   crypto.getRandomValues(array)
 
-  return Buffer.from(array).toString('base64')
+  return base64Encode(array)
 }
 
 /**
@@ -47,7 +42,6 @@ function generateNonce(): string {
 export async function sign<S>(sessionData: S): Promise<string> {
   const timestamp = Date.now()
   const nonce = generateNonce()
-  const encoder = new TextEncoder()
 
   // Prepare payload with timestamp and nonce
   const payload = {
@@ -56,9 +50,10 @@ export async function sign<S>(sessionData: S): Promise<string> {
     nonce
   }
 
-  // Convert to base64
-  const payloadBytes = encoder.encode(JSON.stringify(payload))
-  const payloadBase64 = Buffer.from(payloadBytes).toString('base64')
+  // Prepare strings for signing
+  const payloadString = JSON.stringify(payload)
+  const payloadBase64 = base64Encode(payloadString)
+  const signPayload = textEncoder.encode(payloadString)
 
   // Sign payload
   const key = await getKey()
@@ -70,12 +65,11 @@ export async function sign<S>(sessionData: S): Promise<string> {
   const signatureBytes = await subtle.sign(
     'HMAC',
     key,
-    payloadBytes
+    signPayload
   )
 
-  const signatureBase64 = Buffer.from(signatureBytes).toString('base64')
+  const signatureBase64 = base64Encode(signatureBytes)
 
-  // Return in JWT-like format
   return `${payloadBase64}.${signatureBase64}`
 }
 
@@ -91,8 +85,10 @@ export async function verify<S>(token: string): Promise<S | null> {
     }
 
     // Decode payload
-    const payloadBytes = Buffer.from(payloadBase64, 'base64')
-    const signatureBytes = Buffer.from(signatureBase64, 'base64')
+    const payloadBytes = base64Decode(payloadBase64)
+    const payloadString = textDecoder.decode(payloadBytes)
+    const signPayload = textEncoder.encode(payloadString)
+    const signatureBytes = base64Decode(signatureBase64)
 
     // Verify signature
     const key = await getKey()
@@ -105,7 +101,7 @@ export async function verify<S>(token: string): Promise<S | null> {
       'HMAC',
       key,
       signatureBytes,
-      payloadBytes
+      signPayload
     )
 
     if (isValid === false) {
@@ -113,7 +109,6 @@ export async function verify<S>(token: string): Promise<S | null> {
     }
 
     // Parse payload
-    const payloadString = new TextDecoder().decode(payloadBytes)
     const { sessionData } = JSON.parse(payloadString)
 
     return sessionData
