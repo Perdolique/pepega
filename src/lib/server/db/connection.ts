@@ -1,21 +1,32 @@
 import ws from 'ws'
 import { neon, neonConfig, Pool } from '@neondatabase/serverless'
-import { drizzle as drizzleNeon } from 'drizzle-orm/neon-http'
+import { drizzle as drizzleNeon, type NeonHttpDatabase } from 'drizzle-orm/neon-http'
 import { drizzle as drizzleServerless } from 'drizzle-orm/neon-serverless'
 import * as schema from './schema'
-// import { env } from '$env/dynamic/private'
 
-export function createDrizzle() {
-  if (process.env.DATABASE_URL === undefined) {
-    throw new Error('DATABASE_URL is not defined')
+export const tables = schema
+export type DatabaseHttpConnection = NeonHttpDatabase<typeof tables>;
+
+interface  CreateDrizzleParams {
+  databaseUrl: string | undefined;
+  neonFetchProxy: string | undefined;
+}
+
+interface CreateDrizzleWebsocketParams {
+  databaseUrl: string | undefined;
+  isLocalDatabase: boolean;
+}
+
+export function createDrizzle({ databaseUrl, neonFetchProxy } : CreateDrizzleParams) {
+  if (databaseUrl === undefined) {
+    throw new Error('databaseUrl is not defined')
   }
 
-  if (process.env.WRANGLER_DEV || process.env.LOCAL_DATABASE) {
-    // Check docker-compose.yml for the details
-    neonConfig.fetchEndpoint = 'http://db.localtest.me:4444/sql'
+  if (neonFetchProxy !== undefined) {
+    neonConfig.fetchEndpoint = neonFetchProxy
   }
 
-  const db = neon(process.env.DATABASE_URL)
+  const db = neon(databaseUrl)
 
   const drizzleDb = drizzleNeon({
     client: db,
@@ -33,14 +44,14 @@ export function createDrizzle() {
  * @see {@link https://orm.drizzle.team/docs/get-started-postgresql#neon-postgres}
  * @see {@link https://github.com/neondatabase/serverless?tab=readme-ov-file#sessions-transactions-and-node-postgres-compatibility}
  */
-export function createDrizzleWebsocket() {
-  if (process.env.DATABASE_URL === undefined) {
+export function createDrizzleWebsocket({ databaseUrl, isLocalDatabase } : CreateDrizzleWebsocketParams) {
+  if (databaseUrl === undefined) {
     throw new Error('DATABASE_URL is not defined')
   }
-  
+
   neonConfig.webSocketConstructor = ws
 
-  if (process.env.LOCAL_DATABASE) {
+  if (isLocalDatabase) {
     neonConfig.wsProxy = (host) => `${host}:5433/v1`
     neonConfig.useSecureWebSocket = false;
     neonConfig.pipelineTLS = false;
@@ -48,7 +59,7 @@ export function createDrizzleWebsocket() {
   }
 
   const pool = new Pool({
-    connectionString: process.env.DATABASE_URL
+    connectionString: databaseUrl
   })
 
   const drizzleDb = drizzleServerless({

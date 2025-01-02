@@ -1,3 +1,6 @@
+import type { DatabaseHttpConnection } from '$lib/server/db/connection'
+import 'unplugin-icons/types/svelte'
+
 interface SessionData {
   userId: string;
 }
@@ -14,6 +17,7 @@ declare global {
 
     interface Locals {
       userId?: string;
+      db: DatabaseHttpConnection;
     }
   }
 }
