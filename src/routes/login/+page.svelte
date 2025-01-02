@@ -4,7 +4,7 @@
 
 <h1>Заходи, бро! 👋</h1>
 
-<form 
+<form
   method="POST"
   action="?/login"
   use:enhance

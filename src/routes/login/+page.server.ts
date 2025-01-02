@@ -1,28 +1,19 @@
-import { fail, redirect } from '@sveltejs/kit'
-import { createSession } from '$lib/session'
+import { redirect } from '@sveltejs/kit'
+import { getTwitchAuthUrl } from '$lib/server/oauth/twitch'
+import { redirectUrlParam } from '$lib/constants'
 
 export function load({ url, locals }) {
   if (locals.userId !== undefined) {
-    const redirectUrl = url.searchParams.get('redirectUrl') ?? '/dashboard'
+    const redirectUrl = url.searchParams.get(redirectUrlParam) ?? '/dashboard'
 
-    return redirect(307, redirectUrl)
+    redirect(307, redirectUrl)
   }
 }
 
 export const actions = {
   login: async (event) => {
-    const sessionData = await createSession(event, {
-      userId: 'USER_ID'
-    })
+    const twitchAuthUrl = getTwitchAuthUrl(event)
 
-    if (sessionData === null) {
-      return fail(401, {
-        error: 'Не получилось залогиниться, братишка 😢'
-      })
-    }
-
-    const redirectUrl = event.url.searchParams.get('redirectUrl') ?? '/dashboard'
-
-    return redirect(307, redirectUrl)
+    redirect(307, twitchAuthUrl)
   }
 }

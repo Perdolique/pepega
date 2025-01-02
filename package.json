@@ -17,20 +17,25 @@
 		"db:seed": "exit 0"
 	},
 	"devDependencies": {
+		"@fontsource-variable/inter": "5.1.1",
+		"@iconify-json/tabler": "1.2.13",
 		"@neondatabase/serverless": "0.10.4",
 		"@sveltejs/adapter-cloudflare": "5.0.0",
 		"@sveltejs/kit": "2.15.1",
 		"@sveltejs/vite-plugin-svelte": "5.0.3",
-		"@types/node": "22.10.2",
+		"@types/node": "22.10.4",
 		"@types/ws": "8.5.13",
 		"drizzle-kit": "0.30.1",
 		"drizzle-orm": "0.38.3",
-		"svelte": "5.16.0",
+		"modern-normalize": "3.0.1",
+		"svelte": "5.16.1",
 		"svelte-check": "4.1.1",
 		"tsx": "4.19.2",
 		"typescript": "5.7.2",
-		"vite": "6.0.6",
 		"uncrypto": "0.1.3",
+		"unplugin-icons": "0.22.0",
+		"valibot": "1.0.0-beta.9",
+		"vite": "6.0.7",
 		"wrangler": "3.99.0",
 		"ws": "8.18.0"
 	}
