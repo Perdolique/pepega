@@ -3,18 +3,20 @@
     <div class="progress">
       {#if isFailed}
         <div class="icon">💀</div>
-
-        <div>
-          Failed to connect <strong>Twitch</strong>
-        </div>
       {:else}
         <FidgetSpinner size="32px" />
-
-        <div>
-          Connecting <strong>Twitch</strong>...
-        </div>
       {/if}
     </div>
+
+    {#if isFailed}
+      <div>
+        Failed to connect <strong>Twitch</strong>
+      </div>
+    {:else}
+      <div>
+        Connecting <strong>Twitch</strong>...
+      </div>
+    {/if}
   </div>
 </div>
 
