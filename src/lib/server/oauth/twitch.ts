@@ -1,6 +1,8 @@
 import { type RequestEvent, error } from '@sveltejs/kit'
 import { env } from '$env/dynamic/private'
 import { redirectUrlParam } from '$lib/constants'
+import { users } from '$lib/server/db/schema'
+import { eq } from 'drizzle-orm'
 
 import type {
   TwitchOAuthTokenResponse,
@@ -114,4 +116,10 @@ export async function getTwitchUserInfo(accessToken: string) : Promise<TwitchUse
   }
 
   return users.data[0]
+}
+
+export async function storeTwitchNickname(db, userId: string, nickname: string) {
+  await db.update(users)
+    .set({ nickname })
+    .where(eq(users.id, userId))
 }

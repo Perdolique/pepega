@@ -17,7 +17,10 @@ export const users = pgTable('users', {
       withTimezone: true
     })
     .notNull()
-    .defaultNow()
+    .defaultNow(),
+
+  nickname:
+    varchar()
 });
 
 /**
