@@ -1,10 +1,10 @@
-<script lang="ts">  
-  let { data } = $props()
+<script lang="ts">
+  import { userState } from '$lib/state/user.svelte'
 </script>
 
 <h1>Это место для ровных пацанов 😎</h1>
 
-{#if data.isAuthorized}
+{#if userState.isAuthenticated}
   <p>
     Красава, ты уже с нами! 🤝
   </p>

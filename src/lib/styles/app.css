@@ -3,10 +3,37 @@
 
 :root {
   color-scheme: light dark;
-  font-family: "Inter Variable", sans-serif;
 
+  /* Typography */
+  font-family: "Inter Variable", sans-serif;
+  --font-size-16: 1rem;
+  --font-size-20: 1.25rem;
+  --font-size-24: 1.5rem;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+
+  /* Spacing */
+  --spacing-4: 0.25rem;
+  --spacing-8: 0.5rem;
   --spacing-16: 1rem;
   --spacing-24: 1.5rem;
+
+  /* Colors */
+  --color-background: light-dark(oklch(97% 0 0), oklch(15% 0 0));
+  --color-primary: light-dark(oklch(85% 0 0), oklch(40% 0 0));
+  /* --color-secondary: light-dark(oklch(90% 0 0), oklch(45% 0 0)); */
+  /* --color-accent: light-dark(oklch(80% 0 0), oklch(50% 0 0)); */
+  --color-text: light-dark(oklch(10% 0 0), oklch(95% 0 0));
+  --color-border: light-dark(oklch(92% 0 0), oklch(25% 0 0));
+
+  /* Transitions */
+  --transition-fast: 0.15s;
+  --theme-easing: ease-out;
+
+  /* Breakpoints */
+  --breakpoint-tablet: 768px;
 }
 
 @layer {
@@ -16,6 +43,11 @@
 
   body {
     height: 100%;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    transition:
+      background-color var(--transition-fast) var(--theme-easing),
+      color var(--transition-fast) var(--theme-easing);
   }
 
   /* Disable tap highlight color */

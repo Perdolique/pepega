@@ -23,6 +23,7 @@
 <script lang="ts">
   import { goto,  } from '$app/navigation';
   import FidgetSpinner from '$lib/components/FidgetSpinner.svelte'
+  import { userState } from '$lib/state/user.svelte.js';
   import { onMount } from 'svelte';
 
   const { data } = $props()
@@ -52,6 +53,14 @@
 
       if (response.ok) {
         // TODO: Save redirect path to local storage and redirect to it
+
+        const reposeData = await response.json()
+
+        if (typeof reposeData.userId === 'string') {
+          console.log('Authenticated', reposeData.userId)
+          userState.authenticate(reposeData.userId)
+        }
+
         goto('/dashboard', {
           replaceState: true
         })

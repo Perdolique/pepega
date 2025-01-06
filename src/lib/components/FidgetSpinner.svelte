@@ -6,10 +6,13 @@
     size?: string;
   }
 
-  let { size = '1em' } = $props()
+  let { size = '1em' } : Props = $props()
 </script>
 
 <FidgetSpinnerIcon
-  class="component"
-  style="animation: spin 1s linear infinite; width: {size}; height: {size};"
+  style="
+    animation: spin 1s linear infinite;
+    width: {size};
+    height: {size};
+  "
 />
