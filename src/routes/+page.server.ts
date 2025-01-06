@@ -1,16 +1,6 @@
 import { fail } from '@sveltejs/kit'
-import type { PageServerLoad, Actions } from './$types'
+import type { Actions } from './$types'
 import { createSession } from '$lib/session'
-
-export const load : PageServerLoad = function (event) {
-  const { userId } = event.locals
-  const isAuthorized = userId !== undefined
-
-  return {
-    isAuthorized,
-    userId
-  }
-}
 
 export const actions = {
   login: async (event) => {

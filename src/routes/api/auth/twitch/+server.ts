@@ -122,15 +122,19 @@ export async function POST(event) {
       await createSession(event, {
         userId: newUser.userId
       })
+
+      return json({
+        userId: newUser.userId
+      })
     } else {
       await createSession(event, {
         userId: foundUser.userId
       })
-    }
 
-    return new Response(null, {
-      status: 204
-    })
+      return json({
+        userId: foundUser.userId
+      })
+    }
   } catch (error) {
     console.error(error)
 

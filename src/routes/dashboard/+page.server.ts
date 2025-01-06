@@ -14,9 +14,7 @@ export function load({ locals, url }) {
 }
 
 export const actions = {
-  logout: async (event) => {
+  async logout(event) {
     deleteSession(event)
-
-    return redirect(307, '/login')
   }
 } satisfies Actions
