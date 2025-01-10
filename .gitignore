@@ -1,23 +1,20 @@
+# Node dependencies
 node_modules
 
-# Output
-.output
-.vercel
-.netlify
-.wrangler
-/.svelte-kit
-/build
+# Logs
+logs
+*.log
 
-# OS
-.DS_Store
-Thumbs.db
-
-# Env
+# Local env files
 .env
 .env.*
 !.env.example
-!.env.test
 
-# Vite
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+# Local dev vars (wrangler)
+.dev.vars
+!.dev.vars.example
+
+# Build files
+.nuxt/
+.output/
+dist/

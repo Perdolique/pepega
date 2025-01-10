@@ -1,3 +1,5 @@
+# Mostly the same as .env, but for local wrangler
+
 DATABASE_URL="postgres://pepega:pepega@db.localtest.me:5432/pepega"
 
 # SESSION_SECRET must be a secure random string used to sign session cookies
@@ -14,3 +16,6 @@ OAUTH_TWITCH_CLIENT_SECRET="..."
 # Required for the Neon WebSocket proxy.
 # It should be enabled for local development using local database.
 NEON_WEBSOCKET_PROXY_ENABLED=1
+
+# Requred for `wrangler pages dev` to use local database
+LOCAL_DATABASE=1

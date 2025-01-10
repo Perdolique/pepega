@@ -1,15 +1,16 @@
+import { createDrizzleWebsocket } from '~~/server/utils/database'
 import { migrate } from 'drizzle-orm/neon-serverless/migrator'
-import { createDrizzleWebsocket } from '../src/lib/server/db/connection'
-import drizzleConfig from '../drizzle.config'
+import drizzleConfig from '~~/drizzle.config'
+
+if (process.env.DATABASE_URL === undefined) {
+  throw new Error('DATABASE_URL is not defined')
+}
 
 if (drizzleConfig.out === undefined) {
   throw new Error('drizzleConfig.out is not defined')
 }
 
-const db = createDrizzleWebsocket({
-  databaseUrl: process.env.DATABASE_URL,
-  isLocalDatabase: process.env.NEON_WEBSOCKET_PROXY_ENABLED === '1'
-})
+const db = createDrizzleWebsocket()
 
 await migrate(db, {
   migrationsFolder: drizzleConfig.out
