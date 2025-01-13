@@ -1,21 +1,20 @@
 <template>
-  <NuxtLink
-    to="/dashboard"
-    v-if="userStore.isAuthenticated"
-  >
-    Dashboard
-  </NuxtLink>
-
-  <NuxtLink
-    to="/login"
-    v-else
-  >
-    Login
-  </NuxtLink>
+  <div :class="$style.component">
+    <img src="/pepega.webp" />
+  </div>
 </template>
 
 <script lang="ts" setup>
-  import { useUserStore } from '~/stores/user';
-
-  const userStore = useUserStore();
+  definePageMeta({
+    title: 'Pepega',
+    skipAuth: true
+  });
 </script>
+
+<style module>
+  .component {
+    display: grid;
+    place-items: center;
+    height: 100%;
+  }
+</style>

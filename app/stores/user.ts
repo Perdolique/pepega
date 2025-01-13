@@ -13,7 +13,11 @@ export const useUserStore = defineStore('user', () =>{
     hasData.value = true
   }
 
-  function logout() {
+  async function logout() {
+    await $fetch('/api/user/logout', {
+      method: 'POST'
+    })
+
     userId.value = null
   }
 

@@ -31,7 +31,18 @@ export default defineNuxtConfig({
   },
 
   experimental: {
-    viewTransition: true
+    viewTransition: true,
+
+    defaults: {
+      nuxtLink: {
+        prefetch: true,
+
+        prefetchOn: {
+          interaction: true,
+          visibility: false
+        }
+      }
+    }
   },
 
   // Disable all autoimports (except components)
