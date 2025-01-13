@@ -23,6 +23,7 @@
         Connecting <strong>Twitch</strong>...
       </div>
 
+      <!-- TODO: style this link -->
       <NuxtLink
         v-if="isFailed"
         to="/"
@@ -65,9 +66,17 @@
       userStore.hasData = true
 
       const { state } = route.query
-      const { redirectTo } = decodeStateData(state)
+      const decodedState = decodeStateData(state)
 
-      await navigateTo(redirectTo, {
+      if (decodedState === null) {
+        await navigateTo('/dashboard', {
+          replace: true
+        })
+
+        return
+      }
+
+      await navigateTo(decodedState.redirectTo, {
         replace: true
       })
     } catch (error) {
@@ -82,19 +91,16 @@
 
 <style module>
   .component {
-    width: 100%;
-    height: 100%;
+    height: 100vh;
     display: flex;
-    overflow: hidden;
     padding: var(--spacing-24);
   }
 
   .content {
+    margin: auto;
     display: grid;
     row-gap: var(--spacing-16);
-    margin: auto;
     justify-items: center;
-    text-align: center;
     text-wrap: balance;
   }
 

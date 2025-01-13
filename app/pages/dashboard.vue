@@ -1,7 +1,3 @@
 <template>
-  Dashboard
-
-  <a href="/api/user/logout">
-    Logout
-  </a>
+  Dashboard page
 </template>

@@ -22,23 +22,16 @@ export function encodeStateData(data: Record<string, string>) : string {
 export function decodeStateData(state: unknown) {
   try {
     if (typeof state !== 'string') {
-      throw new Error('State is not a string')
+      return null
     }
 
     const stateString = Buffer.from(state, 'base64').toString('utf-8')
     const data = JSON.parse(stateString)
     const stateData = v.parse(stateDataSchema, data)
 
-
     return stateData
   } catch (error) {
-    // TODO: Log error
-
-    console.error(error)
-
-    return {
-      redirectTo: '/dashboard'
-    }
+    return null
   }
 }
 
