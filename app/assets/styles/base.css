@@ -29,6 +29,13 @@
   --color-hover: light-dark(oklch(90% 0 0), oklch(30% 0 0));
   --color-active: light-dark(oklch(85% 0 0), oklch(40% 0 0));
 
+  /* Buttons */
+  --button-color-text: light-dark(oklch(98% 0 0), oklch(100% 0 0));
+  --button-color-background: light-dark(oklch(30% 0.02 250), oklch(50% 0.02 250));
+  --button-color-hover: light-dark(oklch(40% 0.02 250), oklch(55% 0.02 250));
+  --button-height: 48px;
+  /* TODO: add active state */
+
   /* Borders */
   --border-radius-8: 0.5rem;
   --border-radius-12: 0.75rem;

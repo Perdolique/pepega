@@ -16,29 +16,38 @@
         Home
       </AppMenuItem>
 
-      <AppMenuItem
-        v-if="userStore.isAuthenticated"
-        icon="tabler:grid"
-        to="/dashboard"
-      >
-        Dashboard
-      </AppMenuItem>
+      <template v-if="userStore.isAuthenticated">
+        <AppMenuItem
+          icon="tabler:grid"
+          to="/dashboard"
+        >
+          Dashboard
+        </AppMenuItem>
 
-      <AppMenuItem
-        v-if="!userStore.isAuthenticated"
-        icon="tabler:login"
-        to="/login"
-      >
-        Login
-      </AppMenuItem>
+        <AppMenuItem
+          icon="tabler:bell"
+          to="/notifications"
+        >
+          Notifications
+        </AppMenuItem>
 
-      <AppMenuItem
-        v-if="userStore.isAuthenticated"
-        icon="tabler:logout"
-        @click="logout"
-      >
-        Logout
-      </AppMenuItem>
+        <AppMenuItem
+          icon="tabler:logout"
+          @click="logout"
+        >
+          Logout
+        </AppMenuItem>
+
+      </template>
+
+      <template v-else>
+        <AppMenuItem
+          icon="tabler:login"
+          to="/login"
+        >
+          Login
+        </AppMenuItem>
+      </template>
     </div>
   </div>
 </template>

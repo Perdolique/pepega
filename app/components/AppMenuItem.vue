@@ -46,6 +46,7 @@
     padding: 0 var(--spacing-16);
     border-radius: var(--border-radius-8);
     color: var(--color-text);
+    transition: background-color var(--transition-fast);
 
     @media (hover: hover) {
       &:hover {

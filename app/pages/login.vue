@@ -1,20 +1,18 @@
 <template>
   <div :class="$style.component">
-    <button
+    <SimpleButton
       :class="$style.button"
+      icon-name="tabler:brand-twitch"
       @click="redirectToTwitch"
     >
-      <Icon
-        :class="$style.icon"
-        name="tabler:brand-twitch"
-      />
-
       Login with Twitch
-    </button>
+    </SimpleButton>
   </div>
 </template>
 
 <script setup lang="ts">
+  import SimpleButton from '~/components/SimpleButton.vue';
+
   const route = useRoute()
 
   function redirectToTwitch() {
@@ -34,22 +32,11 @@
   .button {
     background-color: oklch(59% 0.25 296.09);
     color: white;
-    height: 48px;
-    padding: 0 var(--spacing-24);
-    border-radius: var(--border-radius-12);
-    display: flex;
-    align-items: center;
-    column-gap: var(--spacing-8);
-    transition: background-color var(--transition-fast);
 
     @media (hover: hover) {
       &:hover {
         background-color: oklch(50% 0.25 296.09);
       }
     }
-  }
-
-  .icon {
-    font-size: 20px;
   }
 </style>
