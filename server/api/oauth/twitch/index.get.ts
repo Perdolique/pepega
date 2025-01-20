@@ -1,4 +1,4 @@
-import { getTwitchAuthUrl } from "~~/server/utils/provider-twitch"
+import { getTwitchAuthUrl } from '~~/server/utils/provider-twitch'
 
 export default defineEventHandler(async (event) => {
   // TODO: Check if the user is already logged in and linked their account
