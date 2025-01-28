@@ -5,7 +5,7 @@ on:
     branches:
       - master
     paths:
-      - 'migrations/**'
+      - 'server/database/migrations/**'
 
 jobs:
   migration:
