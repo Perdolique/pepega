@@ -25,6 +25,12 @@ interface TwitchOAuthToken {
   readonly scope?: string[];
 }
 
+export interface TwitchAppTokenResponse {
+  readonly access_token: string;
+  readonly expires_in: number;
+  readonly token_type: string;
+}
+
 export type TwitchOAuthTokenResponse = TwitchOAuthToken | TwitchOAuthTokenError;
 
 interface TwitchUsersError {
@@ -38,3 +44,6 @@ interface TwitchUsers {
 }
 
 export type TwitchUsersResponse = TwitchUsers | TwitchUsersError;
+
+// EventSub subscription types
+export type EventSubSubscriptionType = 'stream.online'

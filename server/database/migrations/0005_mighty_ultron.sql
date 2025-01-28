@@ -1,0 +1,1 @@
+ALTER TABLE "webhooks" ADD CONSTRAINT "webhooks_streamerId_subscriptionType_unique" UNIQUE("streamerId","subscriptionType");

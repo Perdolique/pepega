@@ -29,6 +29,34 @@
       "when": 1735673914406,
       "tag": "0003_seed-oauth-providers",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1737487783155,
+      "tag": "0004_large_blue_marvel",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1737580092987,
+      "tag": "0005_mighty_ultron",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1737665049762,
+      "tag": "0006_low_red_skull",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1737665766322,
+      "tag": "0007_clean_gravity",
+      "breakpoints": true
     }
   ]
 }

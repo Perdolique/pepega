@@ -30,13 +30,8 @@
   }
 
   .button {
-    background-color: oklch(59% 0.25 296.09);
-    color: white;
-
-    @media (hover: hover) {
-      &:hover {
-        background-color: oklch(50% 0.25 296.09);
-      }
-    }
+    --button-color-background: oklch(59% 0.25 296.09);
+    --button-color-hover: oklch(50% 0.25 296.09);
+    --button-color-text: white;
   }
 </style>

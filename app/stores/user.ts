@@ -1,4 +1,4 @@
-export const useUserStore = defineStore('user', () =>{
+export const useUserStore = defineStore('user', () => {
   const hasData = ref(false)
   const userId = ref<string | null>(null)
   const isAuthenticated = computed(() => userId.value !== null)

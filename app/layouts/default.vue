@@ -20,7 +20,11 @@
   }
 
   .content {
-    padding: var(--spacing-24);
+    padding: var(--spacing-16);
     overflow: auto;
+
+    @media (min-width: 768px) {
+      padding: var(--spacing-24);
+    }
   }
 </style>

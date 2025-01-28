@@ -1,6 +1,12 @@
 import { isSamePath } from 'ufo'
 import { publicApiPaths } from '~~/constants'
 
+declare module 'h3' {
+  interface H3EventContext {
+    userId: string
+  }
+}
+
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
   const isApiPath = url.pathname.startsWith('/api')
@@ -22,5 +28,7 @@ export default defineEventHandler(async (event) => {
         statusCode: 401
       })
     }
+
+    event.context.userId = userId
   }
 })

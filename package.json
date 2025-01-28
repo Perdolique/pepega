@@ -6,6 +6,8 @@
 	"scripts": {
 		"dev": "nuxt dev",
 		"build": "nuxt build",
+    "deploy": "wrangler pages deploy",
+    "deploy:production": "wrangler pages deploy",
 		"preview": "wrangler pages dev",
 		"postinstall": "nuxt prepare",
 		"typecheck": "nuxi typecheck",

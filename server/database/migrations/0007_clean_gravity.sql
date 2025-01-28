@@ -1,0 +1,1 @@
+ALTER TABLE "webhooks" ALTER COLUMN "status" SET DEFAULT 'not_active';

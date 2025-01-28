@@ -1,0 +1,24 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "pepega",
+  "compatibility_date": "2025-01-28",
+  "pages_build_output_dir": "./dist",
+
+  "dev": {
+    "port": 5000
+  },
+
+  "kv_namespaces": [{
+    "binding": "KV",
+    "id": "f891dd5cc6414ad2a480b05014b371cc"
+  }],
+
+  "env": {
+    "preview": {
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "b331c1aeb9134b578548914dbf9adacc"
+      }]
+    }
+  }
+}

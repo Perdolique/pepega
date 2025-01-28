@@ -1,7 +1,7 @@
 import type { H3Event } from 'h3'
 import { and, eq } from 'drizzle-orm'
-import type { OAuthProvider } from '~~/shared/models/oauth';
-import { useAppSession } from '~~/server/utils/session';
+import type { OAuthProvider } from '~~/shared/models/oauth'
+import { useAppSession } from '~~/server/utils/session'
 
 interface ReturnUser {
   readonly userId: string | null;

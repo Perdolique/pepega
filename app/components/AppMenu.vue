@@ -32,6 +32,13 @@
         </AppMenuItem>
 
         <AppMenuItem
+          icon="tabler:user"
+          to="/account"
+        >
+          Account
+        </AppMenuItem>
+
+        <AppMenuItem
           icon="tabler:logout"
           @click="logout"
         >

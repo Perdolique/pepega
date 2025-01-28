@@ -1,5 +1,8 @@
 <template>
-  <button :class="$style.component">
+  <button
+    :class="$style.component"
+    :disabled="disabled"
+  >
     <Icon
       v-if="iconName"
       :class="$style.icon"
@@ -13,6 +16,7 @@
 <script lang="ts" setup>
   interface Props {
     iconName?: string;
+    disabled?: boolean;
   }
 
   defineProps<Props>()
@@ -28,11 +32,18 @@
     display: flex;
     align-items: center;
     column-gap: var(--spacing-8);
-    transition: background-color var(--transition-fast);
     outline-offset: 3px;
+    transition:
+      background-color var(--transition-fast),
+      opacity var(--transition-fast);
+
+    &:disabled {
+      opacity: var(--button-disabled-opacity);
+      cursor: not-allowed;
+    }
 
     @media (hover: hover) {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: var(--button-color-hover);
       }
     }

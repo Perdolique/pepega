@@ -27,9 +27,13 @@
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     place-items: center;
-    padding: var(--spacing-12) var(--spacing-24);
+    padding: var(--spacing-8) var(--spacing-16);
     border-bottom: 1px solid var(--color-border);
     box-shadow: 0 2px 4px oklch(0 0 0 / 0.1);
+
+    @media (min-width: 768px) {
+      padding: var(--spacing-8) var(--spacing-24);
+    }
   }
 
   .menu {
