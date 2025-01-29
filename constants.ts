@@ -14,3 +14,9 @@ export const webhooksWorkerBaseUrls = {
   staging: 'https://pooque-staging.pepega.app',
   production: 'https://pooque.pepega.app'
 } as const
+
+export const kvStorageName = 'kv'
+
+export const kvStorageKeys = {
+  twitchAppAccessToken: 'twitchAppAccessToken',
+}

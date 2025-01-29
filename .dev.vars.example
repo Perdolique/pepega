@@ -19,3 +19,6 @@ NEON_WEBSOCKET_PROXY_ENABLED=1
 
 # Requred for `wrangler pages dev` to use local database
 LOCAL_DATABASE=1
+
+# Secret key used to encrypt sensitive data in the KV store
+KV_ENCRYPTION_KEY="..."

@@ -1,5 +1,6 @@
 import { and, eq, sql } from 'drizzle-orm'
 import * as v from 'valibot'
+import { kvStorageKeys, kvStorageName } from '~~/constants'
 import { getAppAccessToken } from '~~/server/utils/provider-twitch'
 import { webhookIdSchema } from '~~/server/utils/validation'
 import { type WebhookStatus } from '~~/shared/models/webhooks'
@@ -55,19 +56,15 @@ function validateWebhookStatus(webhook?: WebhookSelectType) : WebhookSelectType 
 export default defineEventHandler(async (event) => {
   const { userId, db } = event.context
   const { id: webhookId } = await getValidatedRouterParams(event, idValidator)
+  const { KV_ENCRYPTION_KEY } = process.env
 
-  {
-    const storage = useStorage('kv')
+  if (KV_ENCRYPTION_KEY === undefined) {
+    console.log('KV_ENCRYPTION_KEY is not set')
 
-    await storage.setItem('test', 'POOQUE')
-
-    const testResult = await storage.getItem('test')
-
-    console.log('KV TEST:', testResult);
-
-    await storage.removeItem('test')
+    throw createError({
+      statusCode: 500
+    })
   }
-
 
   const streamerQuery = db
     .$with('streamers')
@@ -106,9 +103,32 @@ export default defineEventHandler(async (event) => {
 
   // 2. Register webhook on Twitch
   // TODO: store this token for future use (it usually expires in a few hours)
-  const tokenResponse = await getAppAccessToken()
+  let appAccessToken
+  const storage = useStorage(kvStorageName)
+  const encryptedStoredToken = await storage.getItem<string>(kvStorageKeys.twitchAppAccessToken)
 
-  console.log('token will expire in', tokenResponse.expires_in)
+  if (encryptedStoredToken === null) {
+    console.log('No stored token found, fetching a new one')
+
+    const tokenResponse = await getAppAccessToken()
+    const encryptedToken = await encrypt(tokenResponse.access_token, KV_ENCRYPTION_KEY)
+
+    await storage.setItem(kvStorageKeys.twitchAppAccessToken, encryptedToken, {
+      expirationTtl: tokenResponse.expires_in
+    })
+
+    console.log('Stored new token: ', tokenResponse.access_token.slice(0, 3), '...', tokenResponse.access_token.slice(-3))
+
+    appAccessToken = tokenResponse.access_token
+  } else {
+    console.log('Found stored token, decrypting')
+
+    const storedToken = await decrypt(encryptedStoredToken, KV_ENCRYPTION_KEY)
+
+    console.log('Decrypted token: ', storedToken.slice(0, 3), '...', storedToken.slice(-3))
+
+    appAccessToken = storedToken
+  }
 
   return sendNoContent(event)
 })

@@ -1,5 +1,6 @@
 import { createHash, type BinaryLike } from 'crypto'
 import { basename } from 'path'
+import { kvStorageName } from './constants';
 
 type ComponentType = 'page' | 'layout' | 'component';
 
@@ -65,9 +66,16 @@ export default defineNuxtConfig({
     preset: 'cloudflare-pages',
 
     storage: {
-      kv: {
+      [kvStorageName]: {
         driver: 'cloudflare-kv-binding',
         binding: 'KV'
+      }
+    },
+
+    devStorage: {
+      [kvStorageName]: {
+        driver: 'fs',
+        base: './.nuxt/dev-storage/kv'
       }
     }
   },
