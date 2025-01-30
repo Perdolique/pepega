@@ -1,46 +1,54 @@
-import { Buffer } from 'node:buffer'
-import { createCipheriv, createDecipheriv, randomBytes } from 'node:crypto'
+import { Buffer } from 'buffer'
 
-const ALGORITHM = 'aes-256-gcm'
-const IV_LENGTH = 12 // GCM recommends 12 bytes for IV
-const AUTH_TAG_LENGTH = 16 // GCM always uses 16 bytes for auth tag
+const ALGORITHM = 'AES-GCM'
+const IV_LENGTH = 12
+const KEY_LENGTH = 32
 
-function createKey(key: string) : Buffer {
-  return Buffer.from(key.padEnd(32).slice(0, 32))
+async function getKey(password: string) : Promise<CryptoKey> {
+  const key = password.padEnd(KEY_LENGTH).slice(0, KEY_LENGTH)
+  const keyData = Buffer.from(key)
+
+  return crypto.subtle.importKey(
+    'raw',
+    keyData,
+    { name: ALGORITHM },
+    false,
+    ['encrypt', 'decrypt']
+  )
 }
 
-export async function encrypt(data: string, key: string) : Promise<string> {
-  const keyBuffer = createKey(key)
-  const iv = randomBytes(IV_LENGTH)
-  const cipher = createCipheriv(ALGORITHM, keyBuffer, iv)
+export async function encrypt(data: string, password: string) : Promise<string> {
+  const key = await getKey(password)
+  const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH))
 
-  const encrypted = Buffer.concat([
-    cipher.update(data, 'utf8'),
-    cipher.final()
-  ])
+  const encrypted = await crypto.subtle.encrypt(
+    { name: ALGORITHM, iv },
+    key,
+    Buffer.from(data)
+  )
 
-  const authTag = cipher.getAuthTag()
-
-  return Buffer.concat([iv, authTag, encrypted]).toString('base64')
+  return Buffer.concat([
+    Buffer.from(iv),
+    Buffer.from(encrypted)
+  ]).toString('base64')
 }
 
-export async function decrypt(encryptedData: string, key: string) : Promise<string> {
-  const keyBuffer = createKey(key)
+export async function decrypt(encryptedData: string, password: string) : Promise<string> {
+  const key = await getKey(password)
   const buffer = Buffer.from(encryptedData, 'base64')
 
-  if (buffer.length < IV_LENGTH + AUTH_TAG_LENGTH) {
+  if (buffer.length < IV_LENGTH) {
     throw new Error('Invalid encrypted data length')
   }
 
   const iv = buffer.subarray(0, IV_LENGTH)
-  const authTag = buffer.subarray(IV_LENGTH, IV_LENGTH + AUTH_TAG_LENGTH)
-  const encrypted = buffer.subarray(IV_LENGTH + AUTH_TAG_LENGTH)
+  const encrypted = buffer.subarray(IV_LENGTH)
 
-  const decipher = createDecipheriv(ALGORITHM, keyBuffer, iv)
-  decipher.setAuthTag(authTag)
+  const decrypted = await crypto.subtle.decrypt(
+    { name: ALGORITHM, iv },
+    key,
+    encrypted
+  )
 
-  return Buffer.concat([
-    decipher.update(encrypted),
-    decipher.final()
-  ]).toString('utf8')
+  return Buffer.from(decrypted).toString()
 }
