@@ -58,11 +58,17 @@ async function getNewAppAccessToken(encryptionKey: string) {
   const tokenResponse = await getAppAccessToken()
   const encryptedToken = await encrypt(tokenResponse.access_token, encryptionKey)
 
+  // Calculate safe expiration time - either 1 hour less or 10% less
+  const safeExpirationTime = tokenResponse.expires_in > 3600
+    ? tokenResponse.expires_in - 3600  // Subtract 1 hour for longer-lived tokens
+    : Math.floor(tokenResponse.expires_in * 0.9)  // Subtract 10% for shorter-lived tokens
+
   await storage.setItem(kvStorageKeys.twitchAppAccessToken, encryptedToken, {
-    expirationTtl: tokenResponse.expires_in
+    expirationTtl: safeExpirationTime
   })
 
   console.log('Stored new token: ', tokenResponse.access_token.slice(0, 3), '...', tokenResponse.access_token.slice(-3))
+  console.log('Token will expire in:', safeExpirationTime, 'seconds')
 
   return tokenResponse.access_token
 }
