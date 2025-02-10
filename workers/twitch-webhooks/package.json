@@ -1,0 +1,27 @@
+{
+  "name": "@pepega/twitch-webhooks",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "deploy:staging": "wrangler deploy --env staging",
+    "dev": "wrangler dev",
+    "start": "wrangler dev",
+    "test": "vitest",
+    "cf-typegen": "wrangler types"
+  },
+  "dependencies": {
+    "@cloudflare/vitest-pool-workers": "0.6.12",
+    "@cloudflare/workers-types": "4.20250204.0",
+    "@pepega/database": "*",
+    "@pepega/twitch": "*",
+    "@pepega/utils": "*",
+    "destr": "2.0.3",
+    "drizzle-orm": "0.39.2",
+    "h3": "1.15.0",
+    "typescript": "5.7.3",
+    "valibot": "1.0.0-beta.15",
+    "vitest": "2.1.9",
+    "wrangler": "3.107.3"
+  }
+}

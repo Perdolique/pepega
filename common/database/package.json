@@ -1,0 +1,26 @@
+{
+  "name": "@pepega/database",
+  "version": "0.0.1",
+  "description": "Database",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "exports": {
+    "./connection": "./connection.ts"
+  },
+  "scripts": {
+    "db:start": "docker compose up -d",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate:local": "tsx --env-file=.env migrate.ts",
+    "db:migrate": "tsx ./migrate.ts",
+    "db:seed": "exit 0"
+  },
+  "dependencies": {
+    "@neondatabase/serverless": "0.10.4",
+    "@types/ws": "8.5.14",
+    "drizzle-kit": "0.30.4",
+    "drizzle-orm": "0.39.2",
+    "tsx": "4.19.2",
+    "ws": "8.18.0"
+  }
+}

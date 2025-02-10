@@ -1,0 +1,29 @@
+name: Deploy Twitch webhooks (staging)
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - workers/twitch-webhooks/**
+      - .github/workflows/deploy-twitch-webhooks.yml
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: Staging
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.1'
+          cache: 'npm'
+      - name: Install dependencies
+        run: npm --workspace @pepega/twitch-webhooks ci
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: npm --workspace @pepega/twitch-webhooks run deploy:staging
+
