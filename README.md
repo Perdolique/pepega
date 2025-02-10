@@ -2,6 +2,8 @@
 
 A fun service for Twitch streamers and viewers with interactive stuff like polls, rewards, and auctions. Spice up your streams and keep everyone hyped 🎉.
 
-## Ideas
+Check our [Wiki](https://github.com/Perdolique/pepega/wiki) for details.
 
-List of current ideas can be found [here](https://github.com/users/Perdolique/projects/3/views/1).
+## Workers
+
+* Online/offline notifications

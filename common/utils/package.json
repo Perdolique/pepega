@@ -1,0 +1,17 @@
+{
+  "name": "@pepega/utils",
+  "version": "0.0.1",
+  "description": "Pepega utils",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "exports": {
+    "./crypto": "./crypto.ts"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "@types/node": "22.13.1"
+  }
+}

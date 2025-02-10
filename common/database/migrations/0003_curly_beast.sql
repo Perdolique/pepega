@@ -1,0 +1,1 @@
+CREATE INDEX "webhooks_subscriptionId_index" ON "webhooks" USING btree ("subscriptionId");
