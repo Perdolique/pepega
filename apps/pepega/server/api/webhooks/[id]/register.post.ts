@@ -127,25 +127,26 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
 
   // 5. Register webhook on Twitch
   try {
-    const appAccessToken = await obtainAccessToken(encryptionKey)
+    throw new Error('Temporary disabled')
+    // const appAccessToken = await obtainAccessToken(encryptionKey)
 
-    const response = await subscribeWebhook({
-      appAccessToken,
-      clientId: twitchClientId,
-      broadcasterUserId: `${webhook.broadcasterId}`,
-      callbackUrl: `${webhookBaseUrl}/online`,
-      secret: webhookSecret
-    })
+    // const response = await subscribeWebhook({
+    //   appAccessToken,
+    //   clientId: twitchClientId,
+    //   broadcasterUserId: `${webhook.broadcasterId}`,
+    //   callbackUrl: `${webhookBaseUrl}/online`,
+    //   secret: webhookSecret
+    // })
 
-    await db.update(tables.webhooks)
-      .set({ subscriptionId: response.data[0]?.id })
-      .where(
-        eq(tables.webhooks.id, webhook.webhookId)
-      )
+    // await db.update(tables.webhooks)
+    //   .set({ subscriptionId: response.data[0]?.id })
+    //   .where(
+    //     eq(tables.webhooks.id, webhook.webhookId)
+    //   )
 
-    if (import.meta.dev) {
-      console.info(`Webhook ${response.data[0]?.type} registered (secret: ${webhookSecret})`)
-    }
+    // if (import.meta.dev) {
+    //   console.info(`Webhook ${response.data[0]?.type} registered (secret: ${webhookSecret})`)
+    // }
   } catch (error) {
     console.error('Failed to register webhook', error)
 
