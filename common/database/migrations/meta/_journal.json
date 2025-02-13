@@ -1,0 +1,34 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1738789358456,
+      "tag": "0000_create_extension_uuidv7",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1738789374829,
+      "tag": "0001_naive_mathemanic",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1738790933842,
+      "tag": "0002_seed_oauth_provider_twitch",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1738875292029,
+      "tag": "0003_curly_beast",
+      "breakpoints": true
+    }
+  ]
+}

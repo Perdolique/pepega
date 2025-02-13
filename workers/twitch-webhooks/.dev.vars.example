@@ -1,0 +1,7 @@
+# Mostly the same as .env, but for local wrangler
+
+TWITCH_APP_SECRET = "puksrenque"
+TWITCH_CLIENT_ID = "woofBark"
+DATABASE_URL = "postgres://pepega:pepega@db.localtest.me:5432/pepega"
+LOCAL_DATABASE = "1"
+ENCRYPTION_KEY = "..."

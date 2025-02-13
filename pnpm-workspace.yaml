@@ -1,0 +1,10 @@
+packages:
+  - apps/pepega
+  - common/database
+  - common/twitch
+  - common/utils
+  - workers/*
+
+catalog:
+  drizzle-orm: 0.39.2
+  wrangler: 3.108.1

@@ -1,37 +1,33 @@
 {
-	"name": "pepega",
-	"version": "0.0.1",
-	"type": "module",
-	"private": true,
-	"scripts": {
-		"dev": "nuxt dev",
-		"build": "nuxt build",
-		"preview": "wrangler pages dev",
-		"postinstall": "nuxt prepare",
-		"typecheck": "nuxi typecheck",
-		"db:start": "docker compose up -d",
-		"db:generate": "drizzle-kit generate",
-		"db:migrate:local": "tsx --env-file=.env ./tools/migrate.ts",
-		"db:migrate": "tsx ./tools/migrate.ts",
-		"db:seed": "exit 0"
-	},
-	"devDependencies": {
-		"@iconify-json/tabler": "1.2.15",
-		"@neondatabase/serverless": "0.10.4",
-		"@nuxt/fonts": "0.10.3",
-		"@nuxt/icon": "1.10.3",
-		"@pinia/nuxt": "0.9.0",
-		"@types/ws": "8.5.14",
-		"drizzle-kit": "0.30.4",
-		"drizzle-orm": "0.39.2",
-		"modern-normalize": "3.0.1",
-		"nuxt": "3.15.4",
-		"pinia": "2.3.1",
-		"tsx": "4.19.2",
-		"ufo": "1.5.4",
-		"valibot": "1.0.0-beta.15",
-		"vue-tsc": "2.2.0",
-		"wrangler": "3.107.3",
-		"ws": "8.18.0"
-	}
+  "$schema": "https://json.schemastore.org/package.json",
+  "name": "pepega-workers",
+  "version": "0.0.1",
+  "description": "Workers for Pepega",
+  "keywords": [
+    "pepega"
+  ],
+  "homepage": "https://github.com/Perdolique/pepega-workers#readme",
+  "bugs": {
+    "url": "https://github.com/Perdolique/pepega-workers/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Perdolique/pepega-workers.git"
+  },
+  "license": "ISC",
+  "author": "Pier Dolique (Perdoloque)",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "packageManager": "pnpm@10.3.0",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "@parcel/watcher",
+      "esbuild",
+      "sharp",
+      "workerd"
+    ]
+  }
 }

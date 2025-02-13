@@ -1,0 +1,46 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "../../node_modules/wrangler/config-schema.json",
+  "name": "twitch-webhooks",
+  "main": "src/app.ts",
+  "compatibility_date": "2025-01-09",
+
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+
+  "observability": {
+    "enabled": true
+  },
+
+  "routes": [{
+    "pattern": "pooque.pepega.app",
+    "custom_domain": true
+  }],
+
+  "kv_namespaces": [{
+    "binding": "KV",
+    "id": "f891dd5cc6414ad2a480b05014b371cc"
+  }],
+
+  "placement": {
+    "mode": "smart"
+  },
+
+  "env": {
+    "staging": {
+      "routes": [{
+        "pattern": "pooque-staging.pepega.app",
+        "custom_domain": true
+      }],
+
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "b331c1aeb9134b578548914dbf9adacc"
+      }]
+    }
+  }
+}
