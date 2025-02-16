@@ -62,7 +62,8 @@
         throw new Error('Failed to connect Twitch')
       }
 
-      userStore.userId = result.userId
+      userStore.updateUser(result)
+
       userStore.hasData = true
 
       const { state } = route.query

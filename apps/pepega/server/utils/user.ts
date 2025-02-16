@@ -2,16 +2,14 @@ import type { H3Event } from 'h3'
 import { and, eq } from 'drizzle-orm'
 import type { OAuthProvider } from '~~/shared/models/oauth'
 import { useAppSession } from '~~/server/utils/session'
+import type { UserModel } from '~~/shared/models/user';
 
-interface ReturnUser {
-  readonly userId: string | null;
+const defaultUser : UserModel = {
+  id: null,
+  isAdmin: false
 }
 
-const defaultUser : ReturnUser = {
-  userId: null
-}
-
-export async function getSessionUser(event: H3Event) : Promise<ReturnUser> {
+export async function getSessionUser(event: H3Event) : Promise<UserModel> {
   const session = await useAppSession(event)
   const { userId } = session.data
 
@@ -23,7 +21,8 @@ export async function getSessionUser(event: H3Event) : Promise<ReturnUser> {
   const users = await event.context.db.query.users
     .findFirst({
       columns: {
-        id: true
+        id: true,
+        isAdmin: true
       },
 
       where: eq(tables.users.id, userId)
@@ -34,7 +33,8 @@ export async function getSessionUser(event: H3Event) : Promise<ReturnUser> {
   }
 
   return {
-    userId: users.id
+    id: users.id,
+    isAdmin: users.isAdmin
   }
 }
 
@@ -42,12 +42,13 @@ export async function getUserByOAuthAccount(
   event: H3Event,
   provider: OAuthProvider,
   accountId: string
-) : Promise<ReturnUser> {
+) : Promise<UserModel> {
   const { db } = event.context
 
   const [foundUser] = await db
     .select({
-      userId: tables.oauthAccounts.userId
+      id: tables.oauthAccounts.userId,
+      isAdmin: tables.users.isAdmin
     })
     .from(tables.oauthAccounts)
     .innerJoin(
@@ -70,7 +71,7 @@ export async function getUserByOAuthAccount(
 export async function createOAuthUser(
   provider: OAuthProvider,
   accountId: string
-) {
+) : Promise<UserModel> {
   const db = createDatabaseWebsocket()
 
   const newUser = await db.transaction(async (transaction) => {
@@ -94,10 +95,11 @@ export async function createOAuthUser(
       .insert(tables.users)
       .values({})
       .returning({
-        userId: tables.users.id
+        id: tables.users.id,
+        isAdmin: tables.users.isAdmin
       })
 
-    if (foundUser?.userId === undefined) {
+    if (foundUser?.id === undefined) {
       throw createError({
         message: 'Failed to create user',
         statusCode: 500
@@ -108,17 +110,19 @@ export async function createOAuthUser(
     await transaction
       .insert(tables.oauthAccounts)
       .values({
-        userId: foundUser.userId,
+        userId: foundUser.id,
         accountId,
         providerId: providerData.id
       })
 
     return {
-      userId: foundUser.userId
+      id: foundUser.id,
+      isAdmin: foundUser.isAdmin
     }
   })
 
   return {
-    userId: newUser.userId
+    id: newUser.id,
+    isAdmin: newUser.isAdmin
   }
 }
