@@ -16,16 +16,15 @@
 
     <div :class="$style.buttons">
       <SimpleButton
-        v-if="webhook"
+        v-if="hasRemoveButton"
         :class="$style.button"
-        :disabled="isRemoving"
         @click="onRemoveClick"
       >
         {{ removeButtonLabel }}
       </SimpleButton>
 
       <SimpleButton
-        v-else
+        v-if="hasCreateButton"
         :class="$style.button"
         :disabled="isCreating"
         @click="onCreateClick"
@@ -34,6 +33,7 @@
       </SimpleButton>
 
       <SimpleButton
+        v-if="webhook"
         :class="$style.button"
         :disabled="isRegisterDisabled"
         @click="onRegisterClick"
@@ -47,12 +47,14 @@
 <script setup lang="ts">
   import type { WebhookStatus } from '~~/shared/models/webhooks'
   import { useWebhooksStore } from '~/stores/webhooks';
+  import { useUserStore } from '~/stores/user';
   import SimpleButton from '~/components/SimpleButton.vue'
 
   const isCreating = ref(false)
   const isRemoving = ref(false)
   const isRegistering = ref(false)
   const webhooksStore = useWebhooksStore()
+  const userStore = useUserStore()
 
   const webhook = computed(() => {
     for (const webhook of webhooksStore.webhooks.values()) {
@@ -64,6 +66,8 @@
 
   // TODO: Add polling to update the status in case it's in pending state
   const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active')
+  const hasRemoveButton = computed(() => webhook.value !== undefined && userStore.isAdmin)
+  const hasCreateButton = computed(() => webhook.value === undefined)
 
   const isRegisterDisabled = computed(() => {
     // isRegistering.value || webhook.value === undefined

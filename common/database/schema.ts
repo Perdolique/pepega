@@ -1,6 +1,6 @@
 import { limits } from './constants'
 import { relations, sql } from 'drizzle-orm'
-import { index, integer, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, index, integer, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
 
 /**
  * Users table
@@ -11,6 +11,11 @@ export const users = pgTable('users', {
     uuid()
     .default(sql`uuid_generate_v7()`)
     .primaryKey(),
+
+  isAdmin:
+    boolean()
+    .notNull()
+    .default(false),
 
   createdAt:
     timestamp({

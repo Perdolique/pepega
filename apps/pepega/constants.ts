@@ -1,5 +1,8 @@
 export const sessionCookieName = 'pepeger'
 
+// Admin check interval in milliseconds
+export const adminCheckInterval = 60 * 60 * 1000
+
 export const publicApiPaths = [
   '/api/oauth/twitch'
 ] as const

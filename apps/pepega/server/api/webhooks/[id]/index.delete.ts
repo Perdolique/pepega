@@ -1,4 +1,4 @@
-import { and, eq, sql } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { webhookIdSchema } from '~~/server/utils/validation'
 
@@ -11,29 +11,15 @@ function idValidator(params: unknown) {
 }
 
 export default defineEventHandler(async (event) => {
-  const { userId, db } = event.context
+  const { db } = event.context
   const { id: webhookId } = await getValidatedRouterParams(event, idValidator)
 
-  const streamerQuery = db
-    .$with('streamers')
-    .as(
-      db.select({
-        id: tables.streamers.id
-      })
-        .from(tables.streamers)
-        .where(
-          eq(tables.streamers.userId, userId)
-        )
-    )
+  await validateAdmin(event)
 
   const deleted = await db
-    .with(streamerQuery)
     .delete(tables.webhooks)
     .where(
-      and(
-        eq(tables.webhooks.streamerId, sql`(SELECT id FROM ${streamerQuery})`),
-        eq(tables.webhooks.id, webhookId)
-      )
+      eq(tables.webhooks.id, webhookId)
     )
     .returning({
       id: tables.webhooks.id

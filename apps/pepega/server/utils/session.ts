@@ -3,10 +3,13 @@ import { sessionCookieName } from '~~/constants';
 
 interface SessionData {
   userId?: string;
+  isAdmin?: boolean;
+  lastAdminCheck?: string;
 }
 
 function getSessionConfig() : SessionConfig {
   return {
+    // TODO: use env validator
     password: process.env.SESSION_SECRET ?? '',
     name: sessionCookieName,
 

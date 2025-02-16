@@ -1,4 +1,5 @@
 import * as v from 'valibot'
+import type { UserModel } from '~~/shared/models/user'
 
 const bodySchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty())
@@ -7,18 +8,18 @@ function validateBody(body: unknown) {
   return v.parse(bodySchema, body)
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event) : Promise<UserModel> => {
   const { code } = await readValidatedBody(event, validateBody)
   const token = await getTwitchOAuthToken(event, code)
   const { id: twitchAccountId } = await getTwitchUserInfo(token)
   const currentUser = await getSessionUser(event)
 
   // Not logged in
-  if (currentUser.userId === null) {
+  if (currentUser.id === null) {
     const foundUser = await getUserByOAuthAccount(event, 'twitch', twitchAccountId)
 
-    // Twith account not linked to any user
-    if (foundUser.userId === null) {
+    // Twitch account not linked to any user
+    if (foundUser.id === null) {
       // Create a new user with the OAuth account
       const newUser = await createOAuthUser('twitch', twitchAccountId)
 
@@ -29,7 +30,8 @@ export default defineEventHandler(async (event) => {
 
     // User already linked their Twitch account
     await updateAppSession(event, {
-      userId: foundUser.userId
+      userId: foundUser.id,
+      isAdmin: foundUser.isAdmin
     })
 
     return foundUser
