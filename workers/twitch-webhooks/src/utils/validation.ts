@@ -12,7 +12,10 @@ const envSchema = v.object({
   encryptionKey: v.string(),
   // LOCAL_DATABASE
   localDatabase: v.pipe(
-    v.string(),
+    v.optional(
+      v.string()
+    ),
+
     v.transform((value) => typeof value === 'string')
   )
 })
@@ -49,7 +52,22 @@ export function getValidatedEnv(env: Env) : v.InferOutput<typeof envSchema> {
   const { success, output, issues } = v.safeParse(envSchema, testData)
 
   if (success === false) {
-    console.error('Invalid environment variables:', issues)
+    const safeIssues = []
+
+    for (const issue of issues) {
+      if (issue.path !== undefined) {
+        for (const path of issue.path) {
+          safeIssues.push({
+            message: issue.message,
+            key: path.key,
+            expected: issue.expected,
+            received: issue.received
+          })
+        }
+      }
+    }
+
+    console.error('Invalid environment variables:', safeIssues)
 
     throw new Error('Invalid environment variables')
   }
