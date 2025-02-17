@@ -35,6 +35,23 @@ function validateWebhookStatus(webhookStatus: string) : void {
   }
 }
 
+async function getStoredToken(encryptionKey: string) : Promise<string | null> {
+  const storage = useStorage(kvStorageName)
+  const encryptedStoredToken = await storage.getItem<string>(kvStorageKeys.twitchAppAccessToken)
+
+  if (encryptedStoredToken === null) {
+    return null
+  }
+
+  try {
+    return await decrypt(encryptedStoredToken, encryptionKey)
+  } catch {
+    console.error('Failed to decrypt stored token')
+
+    return null
+  }
+}
+
 /**
  * Gets the app access token from KV storage or requests a new one from Twitch
  *
@@ -42,19 +59,15 @@ function validateWebhookStatus(webhookStatus: string) : void {
  * - Tokens valid > 1h: expires_in - 1h
  * - Tokens valid < 1h: expires_in * 0.9
  */
-async function obtainAccessToken(encryptionKey: string) : Promise<string> {
-  const storage = useStorage(kvStorageName)
-  const encryptedStoredToken = await storage.getItem<string>(kvStorageKeys.twitchAppAccessToken)
-
-  if (encryptedStoredToken !== null) {
-    return await decrypt(encryptedStoredToken, encryptionKey)
-  }
-
-  const ONE_HOUR = 3600
+async function obtainAndStoreToken(encryptionKey: string) {
+  // Get new app access token
   const tokenResponse = await getAppAccessToken()
+  const storage = useStorage(kvStorageName)
   const encryptedToken = await encrypt(tokenResponse.access_token, encryptionKey)
 
   // Calculate safe expiration time - either 1 hour less or 10% less
+  const ONE_HOUR = 3600
+
   const safeExpirationTime = tokenResponse.expires_in > ONE_HOUR
     ? tokenResponse.expires_in - ONE_HOUR  // Subtract 1 hour for longer-lived tokens
     : Math.floor(tokenResponse.expires_in * 0.9)  // Subtract 10% for shorter-lived tokens
@@ -127,9 +140,14 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
 
   // 5. Register webhook on Twitch
   try {
-    const appAccessToken = await obtainAccessToken(encryptionKey)
+    let appAccessToken = await getStoredToken(encryptionKey)
 
-    const response = await subscribeWebhook({
+    if (appAccessToken === null) {
+      appAccessToken = await obtainAndStoreToken(encryptionKey)
+    }
+
+    // TODO: Jeez, this is a lot of similar code. Maybe we should extract it into a function?
+    let registrationResponse = await subscribeWebhook({
       appAccessToken,
       clientId: twitchClientId,
       broadcasterUserId: `${webhook.broadcasterId}`,
@@ -137,14 +155,30 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
       secret: webhookSecret
     })
 
+    if (registrationResponse.error !== undefined && registrationResponse.error.statusCode === 401) {
+      appAccessToken = await obtainAndStoreToken(encryptionKey)
+
+      registrationResponse = await subscribeWebhook({
+        appAccessToken,
+        clientId: twitchClientId,
+        broadcasterUserId: `${webhook.broadcasterId}`,
+        callbackUrl: `${webhookBaseUrl}/online`,
+        secret: webhookSecret
+      })
+    }
+
+    if (registrationResponse.error !== undefined) {
+      throw registrationResponse.error
+    }
+
     await db.update(tables.webhooks)
-      .set({ subscriptionId: response.data[0]?.id })
+      .set({ subscriptionId: registrationResponse.data.data[0]?.id })
       .where(
         eq(tables.webhooks.id, webhook.webhookId)
       )
 
     if (import.meta.dev) {
-      console.info(`Webhook ${response.data[0]?.type} registered (secret: ${webhookSecret})`)
+      console.info(`Webhook ${registrationResponse.data.data[0]?.type} registered (secret: ${webhookSecret})`)
     }
   } catch (error) {
     console.error('Failed to register webhook', error)

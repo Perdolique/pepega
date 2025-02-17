@@ -1,3 +1,5 @@
+import { FetchError } from 'ofetch'
+
 interface SubscribeWebhookParams {
   broadcasterUserId: string;
   callbackUrl: string;
@@ -82,9 +84,13 @@ export async function subscribeWebhook(params: SubscribeWebhookParams) {
       } satisfies SubscribeWebhookRequestBody
     })
 
-    return response
+    return { data: response }
   } catch (error) {
     console.error('Failed to create EventSub subscription', error)
+
+    if (error instanceof FetchError) {
+      return { error }
+    }
 
     // TODO: Handle error
     throw new Error('Failed to create EventSub subscription')
