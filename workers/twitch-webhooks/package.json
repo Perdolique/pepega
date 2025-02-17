@@ -12,7 +12,7 @@
   },
   "dependencies": {
     "@cloudflare/vitest-pool-workers": "0.6.16",
-    "@cloudflare/workers-types": "4.20250204.0",
+    "@cloudflare/workers-types": "4.20250214.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
@@ -20,7 +20,7 @@
     "drizzle-orm": "0.39.3",
     "h3": "1.15.0",
     "typescript": "5.7.3",
-    "valibot": "1.0.0-rc.0",
+    "valibot": "1.0.0-rc.1",
     "vitest": "3.0.5",
     "wrangler": "catalog:"
   }
