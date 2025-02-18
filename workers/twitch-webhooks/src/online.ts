@@ -1,6 +1,6 @@
-import { defineEventHandler, EventHandlerRequest, H3Event, readValidatedBody, send, getHeader, createError, getHeaders, readRawBody } from 'h3'
+import { defineEventHandler, EventHandlerRequest, H3Event, send, getHeader, createError, getHeaders, readRawBody, sendNoContent } from 'h3'
 import * as v from 'valibot'
-import { and, desc, eq, isNotNull } from 'drizzle-orm'
+import { and, eq, isNotNull } from 'drizzle-orm'
 import { destr } from 'destr'
 import { verifyEventMessage } from '@pepega/twitch'
 import { createDrizzle, tables } from '@pepega/database/connection'
@@ -146,6 +146,8 @@ async function handleNotificationRequest(event: H3Event<EventHandlerRequest>) {
   // return {
   //   verified: isVerified
   // }
+
+  sendNoContent(event)
 }
 
 async function handleRevocationRequest(event: H3Event<EventHandlerRequest>) {

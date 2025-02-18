@@ -17,7 +17,7 @@
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
     "destr": "2.0.3",
-    "drizzle-orm": "0.39.3",
+    "drizzle-orm": "catalog:",
     "h3": "1.15.0",
     "typescript": "5.7.3",
     "valibot": "1.0.0-rc.0",

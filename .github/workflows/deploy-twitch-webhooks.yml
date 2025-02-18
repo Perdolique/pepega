@@ -3,6 +3,7 @@ name: Deploy Twitch webhooks (staging)
 on:
   pull_request:
     branches:
+      # TODO: deploy staging on staging branch
       - master
     paths:
       - workers/twitch-webhooks/**

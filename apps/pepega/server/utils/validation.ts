@@ -10,7 +10,11 @@ export const webhookIdSchema = v.pipe(
 
 const envSchema = v.object({
   // WEBHOOK_BASE_URL
-  webhookBaseUrl: v.string(),
+  webhookBaseUrl: v.pipe(
+    v.string(),
+    v.transform((input) => new URL(input).origin)
+  ),
+
   // OAUTH_TWITCH_CLIENT_ID
   twitchClientId: v.string(),
   // ENCRYPTION_KEY
