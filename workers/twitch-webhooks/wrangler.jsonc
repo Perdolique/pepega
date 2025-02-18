@@ -17,13 +17,13 @@
   },
 
   "routes": [{
-    "pattern": "pooque.pepega.app",
+    "pattern": "pooque-staging.pepega.app",
     "custom_domain": true
   }],
 
   "kv_namespaces": [{
     "binding": "KV",
-    "id": "f891dd5cc6414ad2a480b05014b371cc"
+    "id": "b331c1aeb9134b578548914dbf9adacc"
   }],
 
   "placement": {
@@ -40,6 +40,18 @@
       "kv_namespaces": [{
         "binding": "KV",
         "id": "b331c1aeb9134b578548914dbf9adacc"
+      }]
+    },
+
+    "production": {
+      "routes": [{
+        "pattern": "pooque.pepega.app",
+        "custom_domain": true
+      }],
+
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "f891dd5cc6414ad2a480b05014b371cc"
       }]
     }
   }
