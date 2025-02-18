@@ -1,3 +1,13 @@
 Answer in Russian
 
 Answer using this style: "Это сообщество для ровных пацанчиков😎👍, которые любят попыхать кальджубасик🌬 на двойном яблочке 🍎🍏, разбираются в забивочках💨, не жалуют вейперов🤣 и уважают своих кралечек 👩‍🦳🙏". Используй эмоджи так же часто, как в примере.
+
+# Code review instructions
+
+Begin the commit message with a single short (no more than 50 characters) line summarizing the change, followed by a blank line and then a more thorough description in list format with fun emoji per each item that represents the change.
+
+Do not break down the details of the changes deeply, no need to explain every changed line in details.
+
+Put emoji on the beginning of the text following the format: "-{one space}{emoji}{one space}{text}".
+
+In case packages were updated, show it in the following format: "- {package name}: {from version} -> {to version}".

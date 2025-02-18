@@ -7,7 +7,6 @@ on:
       - master
     paths:
       - workers/twitch-webhooks/**
-      - .github/workflows/deploy-twitch-webhooks.yml
 
 jobs:
   deploy:
