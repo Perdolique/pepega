@@ -6,6 +6,7 @@ on:
       # TODO: deploy staging on staging branch
       - master
     paths:
+      - .github/workflows/deploy-twitch-webhooks-staging.yml
       - workers/twitch-webhooks/**
       - common/database/**
 
