@@ -17,7 +17,7 @@ export function createDrizzle(databaseUrl: string, isLocalDatabase = false) {
   const drizzleDb = drizzleNeon({
     client: db,
     schema,
-    logger: true
+    logger: isLocalDatabase
   })
 
   return drizzleDb
@@ -47,7 +47,7 @@ export function createDrizzleWebsocket(databaseUrl: string, isLocalDatabase = fa
   const drizzleDb = drizzleServerless({
     client: pool,
     schema,
-    logger: true
+    logger: isLocalDatabase
   })
 
   return drizzleDb
