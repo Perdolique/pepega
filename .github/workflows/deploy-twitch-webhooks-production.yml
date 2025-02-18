@@ -1,0 +1,29 @@
+name: Deploy Twitch webhooks (production)
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - workers/twitch-webhooks/**
+
+jobs:
+  deploy:
+    runs-on: ubuntu-24.04
+    environment: production
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: pnpm
+      - name: Install dependencies
+        run: pnpm install
+      - name: Deploy to Cloudflare Workers
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: pnpm --filter @pepega/twitch-webhooks run deploy:production
+
