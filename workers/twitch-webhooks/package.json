@@ -11,8 +11,8 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@cloudflare/vitest-pool-workers": "0.6.16",
-    "@cloudflare/workers-types": "4.20250204.0",
+    "@cloudflare/vitest-pool-workers": "0.7.0",
+    "@cloudflare/workers-types": "4.20250214.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
@@ -20,8 +20,8 @@
     "drizzle-orm": "catalog:",
     "h3": "1.15.0",
     "typescript": "5.7.3",
-    "valibot": "1.0.0-rc.0",
-    "vitest": "3.0.5",
+    "valibot": "1.0.0-rc.1",
+    "vitest": "3.0.6",
     "wrangler": "catalog:"
   }
 }
