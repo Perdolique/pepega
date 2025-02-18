@@ -5,7 +5,9 @@ on:
     branches:
       - master
     paths:
+      - .github/workflows/deploy-twitch-webhooks-production.yml
       - workers/twitch-webhooks/**
+      - common/database/**
 
 jobs:
   deploy:
