@@ -11,7 +11,7 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@cloudflare/vitest-pool-workers": "0.7.0",
+    "@cloudflare/vitest-pool-workers": "0.7.1",
     "@cloudflare/workers-types": "4.20250214.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
