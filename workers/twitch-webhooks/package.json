@@ -11,17 +11,17 @@
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@cloudflare/vitest-pool-workers": "0.7.0",
-    "@cloudflare/workers-types": "4.20250214.0",
+    "@cloudflare/vitest-pool-workers": "0.7.3",
+    "@cloudflare/workers-types": "4.20250224.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
     "destr": "2.0.3",
     "drizzle-orm": "catalog:",
-    "h3": "1.15.0",
+    "h3": "1.15.1",
     "typescript": "5.7.3",
-    "valibot": "1.0.0-rc.1",
-    "vitest": "3.0.6",
+    "valibot": "1.0.0-rc.2",
+    "vitest": "3.0.7",
     "wrangler": "catalog:"
   }
 }
