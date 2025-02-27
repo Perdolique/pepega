@@ -31,7 +31,7 @@ export const useStreamerStore = defineStore('streamer', () => {
       id.value = result.id
       twitchBroadcasterId.value = result.twitchBroadcasterId
     } catch (error) {
-      console.error(error)
+      logger.error(error)
     } finally {
       isCreatingStreamer.value = false
     }
@@ -52,7 +52,7 @@ export const useStreamerStore = defineStore('streamer', () => {
       id.value = previousId
       twitchBroadcasterId.value = previousTwitchId
 
-      console.error(error)
+      logger.error(error)
     }
   }
 

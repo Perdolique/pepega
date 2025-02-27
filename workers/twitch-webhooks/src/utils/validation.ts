@@ -1,5 +1,6 @@
 import * as v from 'valibot'
 import { TwitchEventSubMessageType } from '../models/twitch'
+import logger from '../logger'
 
 const envSchema = v.object({
   // TWITCH_APP_SECRET
@@ -67,7 +68,7 @@ export function getValidatedEnv(env: Env) : v.InferOutput<typeof envSchema> {
       }
     }
 
-    console.error('Invalid environment variables:', safeIssues)
+    logger.error('Invalid environment variables:', safeIssues)
 
     throw new Error('Invalid environment variables')
   }

@@ -2,7 +2,7 @@ import { defineEventHandler, EventHandlerRequest, H3Event, send, getHeader, crea
 import * as v from 'valibot'
 import { and, eq, isNotNull } from 'drizzle-orm'
 import { destr } from 'destr'
-import { verifyEventMessage } from '@pepega/twitch'
+import { verifyEventMessage } from '@pepega/twitch/auth'
 import { createDrizzle, tables } from '@pepega/database/connection'
 import { decrypt } from '@pepega/utils/crypto'
 import { getValidatedEnv, validateTwitchEventSubMessageType, validateTwitchEventSubVerificationHeaders } from './utils/validation'

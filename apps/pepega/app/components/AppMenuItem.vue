@@ -29,8 +29,8 @@
 
 <script lang="ts" setup>
   interface Props {
-    to?: string;
     icon: string;
+    to?: string;
   }
 
   defineProps<Props>()
