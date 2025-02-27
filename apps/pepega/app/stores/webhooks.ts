@@ -1,4 +1,4 @@
-import type { EventSubSubscriptionType } from '~~/shared/models/twitch'
+import type { SubscriptionType } from '@pepega/twitch/models'
 import { type WebhookModel, type WebhookStatus } from '~~/shared/models/webhooks'
 import { isNotNull } from '~~/shared/utils/types'
 
@@ -9,10 +9,10 @@ interface Webhook {
   createdAt: string;
 }
 
-function transformWebhookType(status: string) : EventSubSubscriptionType | null {
-  switch (status) {
+function transformWebhookType(type: string) : SubscriptionType | null {
+  switch (type) {
     case 'stream.online': {
-      return status
+      return type
     }
 
     default: {
@@ -67,19 +67,27 @@ function transformWebhooks(data: Webhook[]) : WebhookModel[] {
 export const useWebhooksStore = defineStore('webhooks', () => {
   const webhooks = ref(new Map<number, WebhookModel>())
 
+  function removeWebhooks(ids: number[]) {
+    for (const id of ids) {
+      webhooks.value.delete(id)
+    }
+  }
+
   async function fetchWebhooks() {
     const { data } = await useFetch('/api/webhooks', {
       transform: transformWebhooks
     })
 
     if (data.value !== undefined) {
+      webhooks.value.clear()
+
       for (const webhook of data.value) {
         webhooks.value.set(webhook.id, webhook)
       }
     }
   }
 
-  async function createWebhook(type: EventSubSubscriptionType) {
+  async function createWebhook(type: SubscriptionType) {
     try {
       const result = await $fetch('/api/webhooks', {
         method: 'POST',
@@ -96,7 +104,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       }
     } catch (error) {
       // TODO: Handle error properly
-      console.error('Failed to create webhook', error)
+      logger.error('Failed to create webhook', error)
     }
   }
 
@@ -112,10 +120,9 @@ export const useWebhooksStore = defineStore('webhooks', () => {
         method: 'DELETE'
       })
 
-      webhooks.value.delete(webhookId)
+      removeWebhooks([webhookId])
     } catch (error) {
       // TODO: Handle error properly
-      console.error('Failed to delete webhook', error)
     }
   }
 
@@ -134,7 +141,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       }
     } catch (error) {
       // TODO: Handle error properly
-      console.error('Failed to register webhook', error)
+      logger.error('Failed to register webhook', error)
     }
   }
 
@@ -143,6 +150,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
     deleteWebhook,
     fetchWebhooks,
     registerWebhook,
+    removeWebhooks,
     webhooks
   }
 })

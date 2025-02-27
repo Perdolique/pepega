@@ -26,10 +26,10 @@
     "modern-normalize": "3.0.1",
     "nuxt": "3.15.4",
     "pinia": "3.0.1",
-    "tsx": "4.19.2",
+    "tsx": "4.19.3",
     "ufo": "1.5.4",
-    "valibot": "1.0.0-rc.1",
-    "vue-tsc": "2.2.2",
+    "valibot": "1.0.0-rc.2",
+    "vue-tsc": "2.2.4",
     "wrangler": "catalog:"
   }
 }

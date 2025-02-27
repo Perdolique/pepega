@@ -86,7 +86,7 @@ export async function subscribeWebhook(params: SubscribeWebhookParams) {
 
     return { data: response }
   } catch (error) {
-    console.error('Failed to create EventSub subscription', error)
+    logger.error('Failed to create EventSub subscription', error)
 
     if (error instanceof FetchError) {
       return { error }

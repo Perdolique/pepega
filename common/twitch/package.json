@@ -5,8 +5,16 @@
   "license": "ISC",
   "author": "",
   "type": "module",
-  "main": "index.ts",
+  "exports": {
+    "./auth": "./auth.ts",
+    "./subscriptions": "./subscriptions.ts",
+    "./models": "./models.ts"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@pepega/utils": "workspace:*",
+    "ofetch": "1.4.1"
   }
 }
