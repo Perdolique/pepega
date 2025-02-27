@@ -2,7 +2,6 @@ import { H3Event } from 'h3'
 import * as v from 'valibot'
 
 import type {
-  TwitchAppTokenResponse,
   TwitchOAuthTokenResponse,
   TwitchUser,
   TwitchUsersResponse
@@ -59,7 +58,7 @@ export function getTwitchAuthUrl(event: H3Event, stateData?: Record<string, stri
   const { OAUTH_TWITCH_CLIENT_ID } = process.env
 
   if (OAUTH_TWITCH_CLIENT_ID === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_ID is not defined')
+    logger.error('OAUTH_TWITCH_CLIENT_ID is not defined')
 
     throw createError({
       statusCode: 500,
@@ -93,7 +92,7 @@ export async function getTwitchOAuthToken(event: H3Event, code: string) : Promis
   } = process.env
 
   if (OAUTH_TWITCH_CLIENT_ID === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_ID is not defined')
+    logger.error('OAUTH_TWITCH_CLIENT_ID is not defined')
 
     throw createError({
       statusCode: 500,
@@ -102,7 +101,7 @@ export async function getTwitchOAuthToken(event: H3Event, code: string) : Promis
   }
 
   if (OAUTH_TWITCH_CLIENT_SECRET === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_SECRET is not defined')
+    logger.error('OAUTH_TWITCH_CLIENT_SECRET is not defined')
 
     throw createError({
       statusCode: 500,
@@ -142,7 +141,7 @@ export async function getTwitchUserInfo(accessToken: string) : Promise<TwitchUse
   const { OAUTH_TWITCH_CLIENT_ID } = process.env
 
   if (OAUTH_TWITCH_CLIENT_ID === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_ID is not defined')
+    logger.error('OAUTH_TWITCH_CLIENT_ID is not defined')
 
     throw createError({
       statusCode: 500,
@@ -172,54 +171,4 @@ export async function getTwitchUserInfo(accessToken: string) : Promise<TwitchUse
   }
 
   return response.data[0]
-}
-
-export async function getAppAccessToken() : Promise<TwitchAppTokenResponse> {
-  const {
-    OAUTH_TWITCH_CLIENT_ID,
-    OAUTH_TWITCH_CLIENT_SECRET
-  } = process.env
-
-  // TODO: Check only once on app startup
-  if (OAUTH_TWITCH_CLIENT_ID === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_ID is not defined')
-
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error',
-    })
-  }
-
-  if (OAUTH_TWITCH_CLIENT_SECRET === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_SECRET is not defined')
-
-    throw createError({
-      statusCode: 500,
-      message: 'Internal server error',
-    })
-  }
-
-  try {
-    const response = await $fetch<TwitchAppTokenResponse>('https://id.twitch.tv/oauth2/token', {
-      method: 'POST',
-
-      headers: {
-        'Content-Type': 'application/json'
-      },
-
-      body: {
-        client_id: OAUTH_TWITCH_CLIENT_ID,
-        client_secret: OAUTH_TWITCH_CLIENT_SECRET,
-        grant_type: 'client_credentials'
-      }
-    })
-
-    return response
-  } catch (error) {
-    console.error('Failed to get app access token', error)
-
-    throw createError({
-      statusCode: 500
-    })
-  }
 }

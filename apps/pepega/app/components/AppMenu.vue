@@ -10,7 +10,15 @@
 
     <div :class="[$style.menu, { visible: isMenuVisible }]">
       <AppMenuItem
-        icon="tabler:home"
+        v-if="userStore.isAdmin"
+        icon="streamline-emojis:wrench"
+        to="/admin"
+      >
+        Admin panel
+      </AppMenuItem>
+
+      <AppMenuItem
+        icon="streamline-emojis:frog-face"
         to="/"
       >
         Home
@@ -18,28 +26,28 @@
 
       <template v-if="userStore.isAuthenticated">
         <AppMenuItem
-          icon="tabler:grid"
+          icon="streamline-emojis:television"
           to="/dashboard"
         >
           Dashboard
         </AppMenuItem>
 
         <AppMenuItem
-          icon="tabler:bell"
+          icon="streamline-emojis:bell"
           to="/notifications"
         >
           Notifications
         </AppMenuItem>
 
         <AppMenuItem
-          icon="tabler:user"
+          icon="streamline-emojis:clown-face"
           to="/account"
         >
           Account
         </AppMenuItem>
 
         <AppMenuItem
-          icon="tabler:logout"
+          icon="streamline-emojis:dashing-away"
           @click="logout"
         >
           Logout
@@ -49,7 +57,7 @@
 
       <template v-else>
         <AppMenuItem
-          icon="tabler:login"
+          icon="streamline-emojis:electric-plug"
           to="/login"
         >
           Login

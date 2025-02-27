@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const { OAUTH_TWITCH_CLIENT_ID } = process.env
 
   if (OAUTH_TWITCH_CLIENT_ID === undefined) {
-    console.error('OAUTH_TWITCH_CLIENT_ID is not defined')
+    logger.error('OAUTH_TWITCH_CLIENT_ID is not defined')
 
     throw createError({
       statusCode: 500,
