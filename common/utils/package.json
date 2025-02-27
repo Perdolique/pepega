@@ -6,12 +6,16 @@
   "author": "",
   "type": "module",
   "exports": {
-    "./crypto": "./crypto.ts"
+    "./crypto": "./crypto.ts",
+    "./logger": "./logger.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "consola": "3.4.0"
+  },
   "devDependencies": {
-    "@types/node": "22.13.4"
+    "@types/node": "22.13.5"
   }
 }

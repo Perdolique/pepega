@@ -1,11 +1,11 @@
 import { H3Error } from 'h3'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
-import { type EventSubSubscriptionType } from '~~/shared/models/twitch'
+import type { SubscriptionType } from '@pepega/twitch/models'
 
 const bodySchema = v.object({
   type: v.union([
-    v.literal<EventSubSubscriptionType>('stream.online')
+    v.literal<SubscriptionType>('stream.online')
   ])
 })
 
@@ -50,7 +50,7 @@ export default defineEventHandler(async (event) => {
     const insertedWebhook = await transaction
 
     if (insertedWebhook === undefined) {
-      console.error('Failed to insert webhook', { type, userId })
+      logger.error('Failed to insert webhook', { type, userId })
 
       throw createError({
         statusCode: 500
@@ -63,7 +63,7 @@ export default defineEventHandler(async (event) => {
       throw error
     }
 
-    console.error('Failed to insert webhook', error)
+    logger.error('Failed to insert webhook', error)
 
     throw createError({
       statusCode: 500

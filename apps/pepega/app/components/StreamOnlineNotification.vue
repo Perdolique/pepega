@@ -1,5 +1,5 @@
 <template>
-  <div :class="$style.card">
+  <BaseCard :class="$style.card">
     <div :class="$style.header">
       <div :class="$style.title">
         Stream online
@@ -18,6 +18,7 @@
       <SimpleButton
         v-if="hasRemoveButton"
         :class="$style.button"
+        :disabled="isRemoveDisabled"
         @click="onRemoveClick"
       >
         {{ removeButtonLabel }}
@@ -41,7 +42,7 @@
         Register
       </SimpleButton>
     </div>
-  </div>
+  </BaseCard>
 </template>
 
 <script setup lang="ts">
@@ -49,6 +50,7 @@
   import { useWebhooksStore } from '~/stores/webhooks';
   import { useUserStore } from '~/stores/user';
   import SimpleButton from '~/components/SimpleButton.vue'
+  import BaseCard from '~/components/BaseCard.vue'
 
   const isCreating = ref(false)
   const isRemoving = ref(false)
@@ -81,6 +83,8 @@
 
     return false
   })
+
+  const isRemoveDisabled = computed(() => isRemoving.value || isRegistering.value)
 
   const createButtonLabel = computed(() => {
     if (isCreating.value) {
@@ -117,6 +121,7 @@
 
     isRemoving.value = true
 
+    // TODO: delete webhook from subscriptions store
     await webhooksStore.deleteWebhook(webhook.value.id)
 
     isRemoving.value = false
@@ -143,17 +148,6 @@
     --status-failed: light-dark(oklch(65% 0.2 30), oklch(70% 0.2 30));
     --status-revoked: light-dark(oklch(65% 0.1 0), oklch(70% 0.1 0));
     --status-not-active: light-dark(oklch(50% 0 0), oklch(70% 0 0));
-
-    display: grid;
-    row-gap: var(--spacing-12);
-    padding: var(--spacing-20);
-    border-radius: var(--border-radius-16);
-    background-color: color-mix(in oklch, var(--color-primary), transparent 50%);
-    container-type: inline-size;
-
-    @media (min-width: 768px) {
-      padding: var(--spacing-24);
-    }
   }
 
   .header {
