@@ -8,6 +8,7 @@ packages:
 catalog:
   drizzle-orm: 0.40.0
   wrangler: 3.111.0
+  typescript: 5.8.2
 
 onlyBuiltDependencies:
   - "@parcel/watcher"

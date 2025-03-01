@@ -73,6 +73,21 @@ export const useWebhooksStore = defineStore('webhooks', () => {
     }
   }
 
+  async function fetchWebhook(webhookId: number) {
+    try {
+      const result = await $fetch(`/api/webhooks/${webhookId}`)
+      const webhook = transformWebhook(result)
+
+      if (webhook !== null) {
+        webhooks.value.set(webhook.id, webhook)
+
+        return webhook
+      }
+    } catch (error) {
+      // TODO: Handle error properly
+    }
+  }
+
   async function fetchWebhooks() {
     const { data } = await useFetch('/api/webhooks', {
       transform: transformWebhooks
@@ -148,6 +163,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
   return {
     createWebhook,
     deleteWebhook,
+    fetchWebhook,
     fetchWebhooks,
     registerWebhook,
     removeWebhooks,
