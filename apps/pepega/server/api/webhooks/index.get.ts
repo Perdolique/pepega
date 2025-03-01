@@ -1,4 +1,4 @@
-import { and, eq } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 
 export default defineEventHandler(async (event) => {
   const { userId, db } = event.context
@@ -16,9 +16,7 @@ export default defineEventHandler(async (event) => {
       eq(tables.streamers.id, tables.webhooks.streamerId)
     )
     .where(
-      and(
-        eq(tables.streamers.userId, userId)
-      )
+      eq(tables.streamers.userId, userId)
     )
 
   return result

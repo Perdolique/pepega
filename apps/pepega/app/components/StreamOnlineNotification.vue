@@ -46,12 +46,14 @@
 </template>
 
 <script setup lang="ts">
+  import { useTimeoutPoll } from '@vueuse/core'
   import type { WebhookStatus } from '~~/shared/models/webhooks'
   import { useWebhooksStore } from '~/stores/webhooks';
   import { useUserStore } from '~/stores/user';
   import SimpleButton from '~/components/SimpleButton.vue'
   import BaseCard from '~/components/BaseCard.vue'
 
+  const statusPollingInterval = 5000
   const isCreating = ref(false)
   const isRemoving = ref(false)
   const isRegistering = ref(false)
@@ -66,13 +68,19 @@
     }
   })
 
-  // TODO: Add polling to update the status in case it's in pending state
   const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active')
   const hasRemoveButton = computed(() => webhook.value !== undefined && userStore.isAdmin)
   const hasCreateButton = computed(() => webhook.value === undefined)
 
+  const { pause: stopStatusPolling, resume: startStatusPolling } = useTimeoutPoll(async () => {
+    if (webhook.value?.status === 'pending') {
+      await webhooksStore.fetchWebhook(webhook.value.id)
+    }
+  }, statusPollingInterval, {
+    immediate: false
+  })
+
   const isRegisterDisabled = computed(() => {
-    // isRegistering.value || webhook.value === undefined
     if (isRegistering.value || webhook.value === undefined) {
       return true
     }
@@ -138,6 +146,21 @@
 
     isRegistering.value = false
   }
+
+  watch(status, (newStatus) => {
+    // Do not start polling on the server
+    if (import.meta.server) {
+      return
+    }
+
+    if (newStatus === 'pending') {
+      startStatusPolling()
+    } else {
+      stopStatusPolling()
+    }
+  }, {
+    immediate: true
+  })
 </script>
 
 <style module>
