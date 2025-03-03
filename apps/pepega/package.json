@@ -28,8 +28,8 @@
     "pinia": "3.0.1",
     "tsx": "4.19.3",
     "ufo": "1.5.4",
-    "valibot": "1.0.0-rc.2",
-    "vue-tsc": "2.2.6",
+    "valibot": "1.0.0-rc.3",
+    "vue-tsc": "2.2.8",
     "wrangler": "catalog:"
   }
 }

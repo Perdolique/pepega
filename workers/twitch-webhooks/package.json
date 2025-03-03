@@ -20,7 +20,7 @@
     "drizzle-orm": "catalog:",
     "h3": "1.15.1",
     "typescript": "catalog:",
-    "valibot": "1.0.0-rc.2",
+    "valibot": "1.0.0-rc.3",
     "vitest": "3.0.7",
     "wrangler": "catalog:"
   }
