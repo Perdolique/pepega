@@ -22,6 +22,9 @@ importers:
 
   apps/pepega:
     devDependencies:
+      '@iconify-json/streamline-emojis':
+        specifier: 1.2.1
+        version: 1.2.1
       '@iconify-json/tabler':
         specifier: 1.2.16
         version: 1.2.16
@@ -1094,6 +1097,9 @@ packages:
   '@fastify/busboy@2.1.1':
     resolution: {integrity: sha512-vBZP4NlzfOlerQTnba4aqZoMhE/a9HY7HRqoOPaETQcSQuWEIyZMHGfVu6w9wGtGK5fED5qRs2DteVCjOH60sA==}
     engines: {node: '>=14'}
+
+  '@iconify-json/streamline-emojis@1.2.1':
+    resolution: {integrity: sha512-s782C9Imd9LlY/UyBqOSppaLmMU5ywnyUJZp1/hN4p0nEaWCp9F3D8bjUfna8KV1Qw0sbNQaoWtcxMvOZcwNiw==}
 
   '@iconify-json/tabler@1.2.16':
     resolution: {integrity: sha512-gjvKz38+aOxfZtRvycYrASYipCsHRbCZ/Df49T0tfPntT0ur+qsgJ7PxCM4JF/Xs6+n3JkaFdiUz/N4ZZxDKdQ==}
@@ -5219,6 +5225,10 @@ snapshots:
     optional: true
 
   '@fastify/busboy@2.1.1': {}
+
+  '@iconify-json/streamline-emojis@1.2.1':
+    dependencies:
+      '@iconify/types': 2.0.0
 
   '@iconify-json/tabler@1.2.16':
     dependencies:

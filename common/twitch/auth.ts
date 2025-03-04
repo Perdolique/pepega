@@ -1,5 +1,5 @@
 import { ofetch } from 'ofetch'
-import type { AppTokenResponse } from './models'
+import type { AppTokenResponse, OAuthTokenResponse, User, UsersResponse } from './models'
 import logger from './logger'
 
 interface VerifyEventMessageParams {
@@ -13,6 +13,26 @@ interface VerifyEventMessageParams {
 interface AppAccessTokenParams {
   clientId: string;
   clientSecret: string;
+}
+
+interface UserInfoParams {
+  clientId: string;
+  /** App access token or user access token */
+  accessToken: string;
+}
+
+interface OAuthTokenParams {
+  code: string;
+  clientId: string;
+  clientSecret: string;
+  redirectUri: string;
+}
+
+interface AuthUrlParams {
+  clientId: string;
+  redirectUri: string;
+  /** Optional state data to maintain user state across redirects. It will not be modified. */
+  stateData?: Record<string, string>;
 }
 
 /**
@@ -89,9 +109,103 @@ export async function getAppAccessToken({ clientId, clientSecret }: AppAccessTok
 
     return response
   } catch (error) {
-    // TODO: check tags feature
     logger.error('Failed to get app access token', error)
 
     return null
   }
+}
+
+/**
+ * Fetches Twitch user info using the provided access token
+ *
+ * @see https://dev.twitch.tv/docs/api/reference/#get-users
+ */
+export async function getUserInfo({ clientId, accessToken } : UserInfoParams) : Promise<User[] | null> {
+  try {
+    const response = await ofetch<UsersResponse>('https://api.twitch.tv/helix/users', {
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+        'Client-ID': clientId
+      }
+    })
+
+    if ('error' in response) {
+      return null
+    }
+
+    return response.data
+  } catch (error) {
+    logger.error('Failed to get Twitch user info', error)
+
+    // TODO: handle errors properly
+
+    return null
+  }
+}
+
+/**
+ * Fetches OAuth token using the provided code
+ *
+ * @see https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-authorization-code-flow
+ */
+export async function getOAuthToken(params: OAuthTokenParams) : Promise<string | null> {
+  const {
+    code,
+    clientId,
+    clientSecret,
+    redirectUri
+  } = params
+
+  try {
+    const response = await ofetch<OAuthTokenResponse>('https://id.twitch.tv/oauth2/token', {
+      method: 'POST',
+
+      headers: {
+        'Content-Type': 'application/json'
+      },
+
+      body: {
+        code,
+        client_id: clientId,
+        client_secret: clientSecret,
+        grant_type: 'authorization_code',
+        redirect_uri: redirectUri
+      }
+    })
+
+    if ('status' in response) {
+      throw new Error(response.message)
+    }
+
+    return response.access_token
+  } catch (error) {
+    logger.error('Failed to get OAuth token', error)
+
+    return null
+  }
+}
+
+/**
+ * Get the URL to redirect the user to for Twitch authentication
+ *
+ * @param stateData - Data to be passed to the state parameter. This data will be sent back to the redirect URI after authentication as is.
+ * @returns The URL to redirect the user to
+ */
+export function getAuthUrl({ stateData, clientId, redirectUri } : AuthUrlParams) : string {
+  const authUrl = new URL('https://id.twitch.tv/oauth2/authorize')
+
+  // TODO: Add `state` to prevent CSRF attacks
+  // https://github.com/Perdolique/pepega/issues/28
+
+  authUrl.searchParams.set('client_id', clientId)
+  authUrl.searchParams.set('redirect_uri', redirectUri)
+  authUrl.searchParams.set('response_type', 'code')
+
+  if (stateData !== undefined) {
+    const state = encodeStateData(stateData)
+
+    authUrl.searchParams.set('state', state)
+  }
+
+  return authUrl.toString()
 }
