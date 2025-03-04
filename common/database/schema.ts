@@ -121,7 +121,8 @@ export const streamers = pgTable('streamers', {
     varchar()
     .notNull(),
 
-  nickname: varchar(),
+  login: varchar(),
+  displayName: varchar(),
 
   userId:
     uuid()

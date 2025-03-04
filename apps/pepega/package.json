@@ -13,6 +13,7 @@
     "typecheck": "nuxi typecheck"
   },
   "devDependencies": {
+    "@iconify-json/streamline-emojis": "1.2.1",
     "@iconify-json/tabler": "1.2.16",
     "@nuxt/fonts": "0.10.3",
     "@nuxt/icon": "1.10.3",

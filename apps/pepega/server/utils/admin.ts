@@ -50,7 +50,7 @@ async function checkAdmin(
   const session = await useAppSession(event)
   const { userId, isAdmin = false, lastAdminCheck } = session.data
 
-  if (userId === undefined) {
+  if (userId === null) {
     return false
   }
 

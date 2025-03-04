@@ -60,9 +60,15 @@ export default defineEventHandler(async (event) : Promise<UserModel> => {
   // Twitch account not linked to any user
   if (foundUser.id === null) {
     // Create a new user with the OAuth account
-    const newUser = await createOAuthUser('twitch', userInfo.id)
+    const newUser = await createOAuthUser({
+      provider: 'twitch',
+      user: userInfo
+    })
 
-    await updateAppSession(event, newUser)
+    await updateAppSession(event, {
+      userId: newUser.id,
+      isAdmin: newUser.isAdmin
+    })
 
     return newUser
   }

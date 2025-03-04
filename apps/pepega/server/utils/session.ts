@@ -2,8 +2,8 @@ import type { H3Event, EventHandlerRequest, SessionConfig } from 'h3'
 import { sessionCookieName } from '~~/constants';
 
 interface SessionData {
-  userId?: string;
-  isAdmin?: boolean;
+  userId: string | null;
+  isAdmin: boolean;
   lastAdminCheck?: string;
 }
 
@@ -31,7 +31,7 @@ export async function useAppSession(event: H3Event<EventHandlerRequest>) {
 export async function getAppSession(event: H3Event<EventHandlerRequest>) {
   const config = getSessionConfig()
 
-  return getSession<SessionData>(event, config)
+  return await getSession<SessionData>(event, config)
 }
 
 export async function updateAppSession(event: H3Event<EventHandlerRequest>, data: SessionData) {
