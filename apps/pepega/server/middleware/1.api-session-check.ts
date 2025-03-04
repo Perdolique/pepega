@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     const session = await getAppSession(event)
     const { userId } = session.data
 
-    if (userId === undefined) {
+    if (userId === null) {
       throw createError({
         statusCode: 401
       })

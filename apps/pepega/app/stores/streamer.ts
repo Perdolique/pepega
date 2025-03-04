@@ -1,6 +1,6 @@
 export const useStreamerStore = defineStore('streamer', () => {
   const id = ref<number | null>(null)
-  const twitchBroadcasterId = ref<string | null>(null)
+  const broadcasterId = ref<string | null>(null)
   const isStreamer = computed(() => id.value !== null)
   const isCreatingStreamer = ref(false)
 
@@ -9,10 +9,10 @@ export const useStreamerStore = defineStore('streamer', () => {
 
     if (data.value !== undefined) {
       id.value = data.value.id
-      twitchBroadcasterId.value = data.value.twitchBroadcasterId
+      broadcasterId.value = data.value.broadcasterId
     } else {
       id.value = null
-      twitchBroadcasterId.value = null
+      broadcasterId.value = null
     }
   }
 
@@ -29,7 +29,7 @@ export const useStreamerStore = defineStore('streamer', () => {
       })
 
       id.value = result.id
-      twitchBroadcasterId.value = result.twitchBroadcasterId
+      broadcasterId.value = result.broadcasterId
     } catch (error) {
       logger.error(error)
     } finally {
@@ -39,10 +39,10 @@ export const useStreamerStore = defineStore('streamer', () => {
 
   async function deleteStreamer() {
     const previousId = id.value
-    const previousTwitchId = twitchBroadcasterId.value
+    const previousTwitchId = broadcasterId.value
 
     id.value = null
-    twitchBroadcasterId.value = null
+    broadcasterId.value = null
 
     try {
       await $fetch('/api/streamer', {
@@ -50,7 +50,7 @@ export const useStreamerStore = defineStore('streamer', () => {
       })
     } catch (error) {
       id.value = previousId
-      twitchBroadcasterId.value = previousTwitchId
+      broadcasterId.value = previousTwitchId
 
       logger.error(error)
     }
@@ -63,7 +63,7 @@ export const useStreamerStore = defineStore('streamer', () => {
     id,
     isCreatingStreamer,
     isStreamer,
-    twitchBroadcasterId
+    broadcasterId
   }
 })
 

@@ -1,4 +1,4 @@
-import type { UserModel } from "~~/shared/models/user"
+import type { UserModel } from '~~/shared/models/user'
 
 export const useUserStore = defineStore('user', () => {
   const hasData = ref(false)
