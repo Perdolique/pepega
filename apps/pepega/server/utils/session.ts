@@ -16,7 +16,8 @@ function getSessionConfig() : SessionConfig {
     cookie: {
       sameSite: 'strict',
       httpOnly: true,
-      secure: true
+      secure: true,
+      maxAge: 60 * 60 * 24 * 7 // 1 week
     }
   }
 }
