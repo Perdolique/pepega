@@ -20,7 +20,7 @@
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
     "@pinia/nuxt": "0.10.1",
-    "@vueuse/core": "12.7.0",
+    "@vueuse/core": "12.8.1",
     "date-fns": "4.1.0",
     "drizzle-orm": "catalog:",
     "modern-normalize": "3.0.1",
