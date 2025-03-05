@@ -22,9 +22,11 @@
     subscriptionId: string;
     subscriptionType: string;
     broadcasterId: string;
+    streamerName: string | null;
+    streamerLogin: string | null;
   }
 
-  const { subscriptionId, subscriptionType } = defineProps<Props>()
+  const { subscriptionId, subscriptionType, streamerName, streamerLogin } = defineProps<Props>()
   const twitchSubscriptionsStore = useTwitchSubscriptionsStore()
   const isDeleting = ref(false)
   const deleteButtonLabel = computed(() => isDeleting.value ? 'Deleting...' : 'Delete')
