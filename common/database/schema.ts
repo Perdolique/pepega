@@ -117,17 +117,19 @@ export const streamers = pgTable('streamers', {
       startWith: 1
     }),
 
-  userId:
-    uuid()
-    .notNull()
-    .references(() => users.id, {
-      onDelete: 'cascade',
-      onUpdate: 'cascade'
-    }),
-
-  twitchBroadcasterId:
+  broadcasterId:
     varchar()
     .notNull(),
+
+  login: varchar(),
+  displayName: varchar(),
+
+  userId:
+    uuid()
+    .references(() => users.id, {
+      onDelete: 'set null',
+      onUpdate: 'cascade'
+    }),
 
   createdAt:
     timestamp({
@@ -136,7 +138,7 @@ export const streamers = pgTable('streamers', {
     .notNull()
     .defaultNow()
 }, (table) => [
-  unique().on(table.userId, table.twitchBroadcasterId)
+  unique().on(table.userId, table.broadcasterId)
 ])
 
 /**

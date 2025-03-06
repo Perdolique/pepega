@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   const streamer = await db.query.streamers.findFirst({
     columns: {
       id: true,
-      twitchBroadcasterId: true
+      broadcasterId: true
     },
 
     where: eq(tables.streamers.userId, userId)

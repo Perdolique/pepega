@@ -24,6 +24,10 @@
   --spacing-20: 1.25rem;
   --spacing-24: 1.5rem;
 
+  /* Twitch brand colors */
+  --color-twitch-purple: rgb(145, 70, 255);
+  --color-twitch-purple-hover: color-mix(in oklch, var(--color-twitch-purple), black 10%);
+
   /* Colors */
   --color-background: light-dark(oklch(97% 0 0), oklch(15% 0 0));
   --color-primary: light-dark(oklch(85% 0 0), oklch(40% 0 0));
@@ -76,6 +80,12 @@
     border: none;
     background: none;
     cursor: pointer;
+  }
+
+  /* Reset "a" default styles */
+  a {
+    text-decoration: none;
+    color: inherit;
   }
 
   /* Reset headings */

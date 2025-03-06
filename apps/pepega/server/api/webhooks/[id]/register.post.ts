@@ -52,7 +52,7 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
   const [webhook] = await db
     .select({
       webhookId: tables.webhooks.id,
-      broadcasterId: tables.streamers.twitchBroadcasterId,
+      broadcasterId: tables.streamers.broadcasterId,
       status: tables.webhooks.status
     })
     .from(tables.webhooks)
