@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const streamer = await db.query.streamers.findFirst({
     columns: {
       id: true,
-      twitchBroadcasterId: true
+      broadcasterId: true
     },
 
     where: eq(tables.streamers.userId, userId)
@@ -24,7 +24,7 @@ export default defineEventHandler(async (event) => {
 
   // Streamer does not exist, get the Twitch broadcaster ID
   const [foundAccount] = await db.select({
-    twitchBroadcasterId: tables.oauthAccounts.accountId
+    broadcasterId: tables.oauthAccounts.accountId
   })
     .from(tables.oauthAccounts)
     .innerJoin(
@@ -49,11 +49,11 @@ export default defineEventHandler(async (event) => {
   const [insertedStreamer] = await db.insert(tables.streamers)
     .values({
       userId,
-      twitchBroadcasterId: foundAccount.twitchBroadcasterId
+      broadcasterId: foundAccount.broadcasterId
     })
     .returning({
       id: tables.streamers.id,
-      twitchBroadcasterId: tables.streamers.twitchBroadcasterId
+      broadcasterId: tables.streamers.broadcasterId
     })
 
   if (insertedStreamer === undefined) {

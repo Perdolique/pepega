@@ -4,6 +4,8 @@ interface SubscriptionModel {
   id: string;
   type: SubscriptionType;
   broadcasterId: string;
+  streamerName: string | null;
+  streamerLogin: string | null;
 }
 
 export const useTwitchSubscriptionsStore = defineStore('twitch-subscriptions', () => {

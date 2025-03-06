@@ -17,6 +17,8 @@
       :subscription-id="subscription.id"
       :subscription-type="subscription.type"
       :broadcaster-id="subscription.broadcasterId"
+      :streamer-name="subscription.streamerName"
+      :streamer-login="subscription.streamerLogin"
     />
   </div>
 </template>

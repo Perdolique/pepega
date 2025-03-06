@@ -1,6 +1,6 @@
 import type { H3Event } from 'h3'
 import { and, eq } from 'drizzle-orm'
-import type { OAuthProvider } from '~~/shared/models/oauth'
+import type { OAuthProvider, OAuthUser } from '~~/shared/models/oauth'
 import { useAppSession } from '~~/server/utils/session'
 import type { UserModel } from '~~/shared/models/user';
 
@@ -13,7 +13,7 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
   const session = await useAppSession(event)
   const { userId } = session.data
 
-  if (userId === undefined) {
+  if (userId === null) {
     return defaultUser
   }
 
@@ -68,10 +68,7 @@ export async function getUserByOAuthAccount(
   return foundUser ?? defaultUser
 }
 
-export async function createOAuthUser(
-  provider: OAuthProvider,
-  accountId: string
-) : Promise<UserModel> {
+export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<UserModel> {
   const db = createDatabaseWebsocket()
 
   const newUser = await db.transaction(async (transaction) => {
@@ -111,9 +108,43 @@ export async function createOAuthUser(
       .insert(tables.oauthAccounts)
       .values({
         userId: foundUser.id,
-        accountId,
+        accountId: user.id,
         providerId: providerData.id
       })
+
+    // TODO: Move this to a separate function
+    if (provider === 'twitch') {
+      // Check if the user is a streamer
+      const foundStreamer = await transaction.query.streamers.findFirst({
+        columns: {
+          id: true
+        },
+
+        where: eq(tables.streamers.broadcasterId, user.id)
+      })
+
+      if (foundStreamer === undefined) {
+        await transaction
+          .insert(tables.streamers)
+          .values({
+            userId: foundUser.id,
+            broadcasterId: user.id,
+            displayName: user.display_name,
+            login: user.login
+          })
+      } else {
+        await transaction
+          .update(tables.streamers)
+          .set({
+            userId: foundUser.id,
+            displayName: user.display_name,
+            login: user.login
+          })
+          .where(
+            eq(tables.streamers.broadcasterId, user.id)
+          )
+      }
+    }
 
     return {
       id: foundUser.id,
