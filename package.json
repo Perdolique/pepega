@@ -19,11 +19,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "exit 0",
-    "prepare": "husky"
+    "test": "exit 0"
   },
-  "packageManager": "pnpm@10.6.1",
-  "devDependencies": {
-    "husky": "9.1.7"
-  }
+  "packageManager": "pnpm@10.5.2"
 }

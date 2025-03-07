@@ -35,9 +35,9 @@
 </template>
 
 <script lang="ts" setup>
-  import { decodeStateData } from '@pepega/twitch/auth'
   import { useUserStore } from '~/stores/user'
   import FidgetSpinner from '~/components/FidgetSpinner.vue'
+  import { decodeStateData } from '~~/server/utils/provider-twitch'
 
   definePageMeta({
     layout: false,

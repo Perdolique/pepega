@@ -15,7 +15,3 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - workerd
-
-# .npmrc
-# Something wrong with pnpm and Nuxt build without this
-nodeLinker: hoisted

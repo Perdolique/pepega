@@ -1,4 +1,3 @@
-import * as v from 'valibot'
 import { ofetch } from 'ofetch'
 import type { AppTokenResponse, OAuthTokenResponse, User, UsersResponse } from './models'
 import logger from './logger'
@@ -35,10 +34,6 @@ interface AuthUrlParams {
   /** Optional state data to maintain user state across redirects. It will not be modified. */
   stateData?: Record<string, string>;
 }
-
-const stateDataSchema = v.object({
-  redirectTo: v.string()
-})
 
 /**
  * Performs a cryptographically secure comparison of two Uint8Array buffers
@@ -186,35 +181,6 @@ export async function getOAuthToken(params: OAuthTokenParams) : Promise<string |
   } catch (error) {
     logger.error('Failed to get OAuth token', error)
 
-    return null
-  }
-}
-
-/**
- * Encode state data to be passed to the Twitch authentication URL
- *
- * @param data - Data to be passed to the state parameter. This data will be sent back to the redirect URI after authentication as is.
- * @returns Base64 encoded string of the state data
- */
-export function encodeStateData(data: Record<string, string>) : string {
-  const stateString = JSON.stringify(data)
-
-  return btoa(stateString)
-}
-
-
-export function decodeStateData(state: unknown) {
-  try {
-    if (typeof state !== 'string') {
-      return null
-    }
-
-    const stateString = atob(state)
-    const data = JSON.parse(stateString)
-    const stateData = v.parse(stateDataSchema, data)
-
-    return stateData
-  } catch (error) {
     return null
   }
 }

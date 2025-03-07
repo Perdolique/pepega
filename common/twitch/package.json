@@ -15,7 +15,6 @@
   },
   "dependencies": {
     "@pepega/utils": "workspace:*",
-    "ofetch": "1.4.1",
-    "valibot": "1.0.0-rc.3"
+    "ofetch": "1.4.1"
   }
 }
