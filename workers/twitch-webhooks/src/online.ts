@@ -84,7 +84,7 @@ async function handleChallengeRequest(event: H3Event<EventHandlerRequest>) {
         eq(tables.webhooks.type, 'stream.online' as EventSubSubscriptionType),
         eq(tables.webhooks.status, 'pending' as WebhookStatus),
         isNotNull(tables.webhooks.secret),
-        eq(tables.streamers.twitchBroadcasterId, broadcasterId)
+        eq(tables.streamers.broadcasterId, broadcasterId)
       )
     )
 
