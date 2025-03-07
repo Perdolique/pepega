@@ -8,6 +8,7 @@
       <Icon name="tabler:menu-2" />
     </button>
 
+
     <div :class="[$style.menu, { visible: isMenuVisible }]">
       <AppMenuItem
         v-if="userStore.isAdmin"
