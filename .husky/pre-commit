@@ -1,1 +1,0 @@
-pnpm --filter @pepega/twitch-webhooks --filter @pepega/pepega run typecheck
