@@ -20,7 +20,8 @@
   "main": "index.js",
   "scripts": {
     "test": "exit 0",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typecheck": "pnpm --recursive --parallel run typecheck"
   },
   "packageManager": "pnpm@10.6.1",
   "devDependencies": {
