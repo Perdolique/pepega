@@ -50,6 +50,13 @@
       "when": 1741121485448,
       "tag": "0006_military_butterfly",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1741465841967,
+      "tag": "0007_puzzling_firestar",
+      "breakpoints": true
     }
   ]
 }

@@ -88,17 +88,32 @@ export const useWebhooksStore = defineStore('webhooks', () => {
     }
   }
 
+  function replaceWebhooks(newWebhooks: WebhookModel[]) {
+    webhooks.value.clear()
+
+    for (const webhook of newWebhooks) {
+      webhooks.value.set(webhook.id, webhook)
+    }
+  }
+
   async function fetchWebhooks() {
+    try {
+      const response = await $fetch('/api/webhooks')
+      const data = transformWebhooks(response)
+
+      replaceWebhooks(data)
+    } catch {
+      // TODO: Handle error properly
+    }
+  }
+
+  async function fetchInitialWebhooks() {
     const { data } = await useFetch('/api/webhooks', {
       transform: transformWebhooks
     })
 
     if (data.value !== undefined) {
-      webhooks.value.clear()
-
-      for (const webhook of data.value) {
-        webhooks.value.set(webhook.id, webhook)
-      }
+      replaceWebhooks(data.value)
     }
   }
 
@@ -163,6 +178,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
   return {
     createWebhook,
     deleteWebhook,
+    fetchInitialWebhooks,
     fetchWebhook,
     fetchWebhooks,
     registerWebhook,

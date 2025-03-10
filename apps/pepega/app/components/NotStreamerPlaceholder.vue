@@ -18,8 +18,8 @@
     </div>
 
     <SimpleButton
-      :disabled="streamerStore.isCreatingStreamer"
-      @click="streamerStore.createStreamer"
+      :disabled="isCreating"
+      @click="onStreamerClick"
     >
       Become a Streamer 🎯
     </SimpleButton>
@@ -27,10 +27,19 @@
 </template>
 
 <script lang="ts" setup>
-  import { useStreamerStore } from '~/stores/streamer'
+  import { useUserStore } from '~/stores/user'
   import SimpleButton from '~/components/SimpleButton.vue'
 
-  const streamerStore = useStreamerStore()
+  const isCreating = ref(false)
+  const userStore = useUserStore()
+
+  async function onStreamerClick() {
+    isCreating.value = true
+
+    await userStore.setStreamer(true)
+
+    isCreating.value = false
+  }
 </script>
 
 <style module>
