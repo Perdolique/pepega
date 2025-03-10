@@ -2,16 +2,17 @@
   <h2>Account page</h2>
 
   <SimpleButton
-    v-if="streamerStore.isStreamer"
-    @click="streamerStore.deleteStreamer"
+    v-if="userStore.isStreamer"
+    :disabled="isPending"
+    @click="onSetViewerClick"
   >
     I am viewer!
   </SimpleButton>
 
   <SimpleButton
     v-else
-    :disabled="isCreatingStreamer"
-    @click="onMakeStreamerClick"
+    :disabled="isPending"
+    @click="onSetStreamerClick"
   >
     I am streamer!
   </SimpleButton>
@@ -19,18 +20,24 @@
 
 <script setup lang="ts">
   import SimpleButton from '~/components/SimpleButton.vue'
-  import { useStreamerStore } from '~/stores/streamer'
+  import { useUserStore } from '~/stores/user'
 
-  const isCreatingStreamer = ref(false)
-  const streamerStore = useStreamerStore()
+  const isPending = ref(false)
+  const userStore = useUserStore()
 
-  await streamerStore.fetchStreamer()
+  async function onSetStreamerClick() {
+    isPending.value = true
 
-  async function onMakeStreamerClick() {
-    isCreatingStreamer.value = true
+    await userStore.setStreamer(true)
 
-    await streamerStore.createStreamer()
+    isPending.value = false
+  }
 
-    isCreatingStreamer.value = false
+  async function onSetViewerClick() {
+    isPending.value = true
+
+    await userStore.setStreamer(false)
+
+    isPending.value = false
   }
 </script>

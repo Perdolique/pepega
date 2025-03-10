@@ -17,6 +17,11 @@ export const users = pgTable('users', {
     .notNull()
     .default(false),
 
+  isStreamer:
+    boolean()
+    .notNull()
+    .default(false),
+
   createdAt:
     timestamp({
       withTimezone: true
@@ -197,7 +202,8 @@ export const webhooks = pgTable('webhooks', {
  */
 
 export const usersRelations = relations(users, ({ many }) => ({
-  oauthAccounts: many(oauthAccounts)
+  oauthAccounts: many(oauthAccounts),
+  streamers: many(streamers)
 }))
 
 export const oauthProvidersRelations = relations(oauthProviders, ({ many }) => ({
@@ -213,5 +219,21 @@ export const oauthAccountsRelations = relations(oauthAccounts, ({ one }) => ({
   provider: one(oauthProviders, {
     fields: [oauthAccounts.providerId],
     references: [oauthProviders.id]
+  })
+}))
+
+export const streamersRelations = relations(streamers, ({ one, many }) => ({
+  user: one(users, {
+    fields: [streamers.userId],
+    references: [users.id]
+  }),
+
+  webhooks: many(webhooks)
+}))
+
+export const webhooksRelations = relations(webhooks, ({ one }) => ({
+  streamer: one(streamers, {
+    fields: [webhooks.streamerId],
+    references: [streamers.id]
   })
 }))

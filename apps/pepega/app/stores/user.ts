@@ -4,11 +4,13 @@ export const useUserStore = defineStore('user', () => {
   const hasData = ref(false)
   const userId = ref<string | null>(null)
   const isAdmin = ref(false)
+  const isStreamer = ref(false)
   const isAuthenticated = computed(() => userId.value !== null)
 
   function updateUser(user: UserModel) {
     userId.value = user.id
     isAdmin.value = user.isAdmin
+    isStreamer.value = user.isStreamer
   }
 
   async function fetchUser() {
@@ -28,8 +30,25 @@ export const useUserStore = defineStore('user', () => {
 
     updateUser({
       id: null,
-      isAdmin: false
+      isAdmin: false,
+      isStreamer: false
     })
+  }
+
+  async function setStreamer(newValue: boolean) {
+    try {
+      const response = await $fetch(`/api/user/${userId.value}/streamer`, {
+        method: 'PATCH',
+
+        body: {
+          isStreamer: newValue
+        }
+      })
+
+      updateUser(response)
+    } catch (error) {
+      // TODO: Handle error
+    }
   }
 
   return {
@@ -37,7 +56,9 @@ export const useUserStore = defineStore('user', () => {
     hasData,
     isAdmin,
     isAuthenticated,
+    isStreamer,
     logout,
+    setStreamer,
     updateUser,
     userId
   }

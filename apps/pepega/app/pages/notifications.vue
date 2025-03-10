@@ -1,6 +1,6 @@
 <template>
   <div
-    v-if="streamerStore.isStreamer"
+    v-if="userStore.isStreamer"
     :class="$style.component"
   >
     <h1>Notifications Settings</h1>
@@ -14,21 +14,26 @@
 </template>
 
 <script setup lang="ts">
-  import { useStreamerStore } from '~/stores/streamer'
-  import { useWebhooksStore } from '~/stores/webhooks';
-  import NotStreamerPlaceholder from '~/components/NotStreamerPlaceholder.vue';
+  import { useWebhooksStore } from '~/stores/webhooks'
+  import { useUserStore } from '~/stores/user'
+  import NotStreamerPlaceholder from '~/components/NotStreamerPlaceholder.vue'
   import StreamOnlineNotification from '~/components/StreamOnlineNotification.vue'
 
-  const streamerStore = useStreamerStore()
   const webhooksStore = useWebhooksStore()
+  const userStore = useUserStore()
 
   await useAsyncData(async () => {
-    await Promise.allSettled([
-      streamerStore.fetchStreamer(),
-      webhooksStore.fetchWebhooks()
-    ])
+    if (userStore.isStreamer) {
+      await webhooksStore.fetchInitialWebhooks()
+    }
 
-    return true
+    return webhooksStore.webhooks
+  })
+
+  watch(() => userStore.isStreamer, (isStreamer) => {
+    if (isStreamer) {
+      webhooksStore.fetchWebhooks()
+    }
   })
 </script>
 

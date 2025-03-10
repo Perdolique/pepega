@@ -6,7 +6,8 @@ import type { UserModel } from '~~/shared/models/user';
 
 const defaultUser : UserModel = {
   id: null,
-  isAdmin: false
+  isAdmin: false,
+  isStreamer: false
 }
 
 export async function getSessionUser(event: H3Event) : Promise<UserModel> {
@@ -22,7 +23,8 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
     .findFirst({
       columns: {
         id: true,
-        isAdmin: true
+        isAdmin: true,
+        isStreamer: true
       },
 
       where: eq(tables.users.id, userId)
@@ -34,7 +36,8 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
 
   return {
     id: users.id,
-    isAdmin: users.isAdmin
+    isAdmin: users.isAdmin,
+    isStreamer: users.isStreamer
   }
 }
 
@@ -48,7 +51,8 @@ export async function getUserByOAuthAccount(
   const [foundUser] = await db
     .select({
       id: tables.oauthAccounts.userId,
-      isAdmin: tables.users.isAdmin
+      isAdmin: tables.users.isAdmin,
+      isStreamer: tables.users.isStreamer
     })
     .from(tables.oauthAccounts)
     .innerJoin(
@@ -71,7 +75,7 @@ export async function getUserByOAuthAccount(
 export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<UserModel> {
   const db = createDatabaseWebsocket()
 
-  const newUser = await db.transaction(async (transaction) => {
+  const newUser = await db.transaction(async (transaction) : Promise<UserModel> => {
     const providerData = await transaction.query.oauthProviders.findFirst({
       columns: {
         id: true
@@ -93,7 +97,8 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
       .values({})
       .returning({
         id: tables.users.id,
-        isAdmin: tables.users.isAdmin
+        isAdmin: tables.users.isAdmin,
+        isStreamer: tables.users.isStreamer
       })
 
     if (foundUser?.id === undefined) {
@@ -148,12 +153,14 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
 
     return {
       id: foundUser.id,
-      isAdmin: foundUser.isAdmin
+      isAdmin: foundUser.isAdmin,
+      isStreamer: foundUser.isStreamer
     }
   })
 
   return {
     id: newUser.id,
-    isAdmin: newUser.isAdmin
+    isAdmin: newUser.isAdmin,
+    isStreamer: newUser.isStreamer
   }
 }

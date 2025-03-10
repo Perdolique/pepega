@@ -1,0 +1,1 @@
+ALTER TABLE "users" ADD COLUMN "isStreamer" boolean DEFAULT false NOT NULL;
