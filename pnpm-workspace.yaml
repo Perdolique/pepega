@@ -10,12 +10,6 @@ catalog:
   wrangler: 3.114.1
   typescript: 5.8.2
 
-onlyBuiltDependencies:
-  - "@parcel/watcher"
-  - esbuild
-  - sharp
-  - workerd
-
 # .npmrc
 # Something wrong with pnpm and Nuxt build without this
 nodeLinker: hoisted
