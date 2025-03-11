@@ -7,7 +7,7 @@ packages:
 
 catalog:
   drizzle-orm: 0.40.0
-  wrangler: 3.114.0
+  wrangler: 3.114.1
   typescript: 5.8.2
 
 onlyBuiltDependencies:
