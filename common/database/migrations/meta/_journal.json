@@ -57,6 +57,13 @@
       "when": 1741465841967,
       "tag": "0007_puzzling_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1741897169867,
+      "tag": "0008_young_rictor",
+      "breakpoints": true
     }
   ]
 }

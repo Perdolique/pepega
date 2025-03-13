@@ -1,6 +1,13 @@
 import { limits } from './constants'
 import { relations, sql } from 'drizzle-orm'
-import { boolean, index, integer, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
+import { boolean, check, index, integer, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
+
+// TODO: move this to a separate file?
+export const notificationProviderTypes = {
+  telegram: 'telegram'
+} as const
+
+export type NotificationProviderType = typeof notificationProviderTypes[keyof typeof notificationProviderTypes]
 
 /**
  * Users table
@@ -198,6 +205,146 @@ export const webhooks = pgTable('webhooks', {
 ])
 
 /**
+ * Notification providers
+ *
+ * This table is used to store notification providers
+ */
+export const notificationProviders = pgTable('notificationProviders', {
+  id:
+    integer()
+    .primaryKey()
+    .generatedAlwaysAsIdentity({
+      startWith: 1
+    }),
+
+  // 'telegram', 'discord', etc.
+  type:
+    varchar()
+    .notNull()
+    .unique(),
+
+  // Human readable name of the provider: 'Telegram', 'Discord', etc.
+  name:
+    varchar()
+    .notNull(),
+
+  createdAt:
+    timestamp({
+      withTimezone: true
+    })
+    .notNull()
+    .defaultNow()
+})
+
+/**
+ * Notifications
+ *
+ * This table is used to store notifications for specific streamers and notification types
+ */
+export const notifications = pgTable('notifications', {
+  id:
+    integer()
+    .primaryKey()
+    .generatedAlwaysAsIdentity({
+      startWith: 1
+    }),
+
+  streamerId:
+    integer()
+    .notNull()
+    .references(() => streamers.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    }),
+
+  eventType:
+    varchar()
+    .notNull(),
+
+  isActive:
+    boolean()
+    .notNull()
+    .default(true),
+
+  createdAt:
+    timestamp({
+      withTimezone: true
+    })
+    .notNull()
+    .defaultNow()
+}, (table) => [
+  unique().on(table.streamerId, table.eventType)
+])
+
+/**
+ * Notification destinations
+ *
+ * This table is used to store notification destinations
+ */
+export const notificationDestinations = pgTable('notificationDestinations', {
+  id:
+    integer()
+    .primaryKey()
+    .generatedAlwaysAsIdentity({
+      startWith: 1
+    }),
+
+  notificationId:
+    integer()
+    .notNull()
+    .references(() => notifications.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    }),
+
+  providerId:
+    integer()
+    .notNull()
+    .references(() => notificationProviders.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    }),
+
+  isActive:
+    boolean()
+    .notNull()
+    .default(true),
+
+  createdAt:
+    timestamp({
+      withTimezone: true
+    })
+    .notNull()
+    .defaultNow()
+})
+
+/**
+ * Notification destination configs for Telegram
+ *
+ * This table is used to store notification destination configs for Telegram
+ */
+export const telegramDestinationConfigs = pgTable('telegramDestinationConfigs', {
+  destinationId:
+    integer()
+    .primaryKey()
+    .references(() => notificationDestinations.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    }),
+
+  chatId:
+    varchar()
+    .notNull(),
+
+  createdAt:
+    timestamp({
+      withTimezone: true
+    })
+    .notNull()
+    .defaultNow()
+})
+
+/**
  * Relations
  */
 
@@ -228,12 +375,50 @@ export const streamersRelations = relations(streamers, ({ one, many }) => ({
     references: [users.id]
   }),
 
-  webhooks: many(webhooks)
+  webhooks: many(webhooks),
+  notifications: many(notifications)
 }))
 
 export const webhooksRelations = relations(webhooks, ({ one }) => ({
   streamer: one(streamers, {
     fields: [webhooks.streamerId],
     references: [streamers.id]
+  })
+}))
+
+export const notificationProvidersRelations = relations(notificationProviders, ({ many }) => ({
+  notificationDestinations: many(notificationDestinations)
+}))
+
+export const notificationsRelations = relations(notifications, ({ one, many }) => ({
+  streamer: one(streamers, {
+    fields: [notifications.streamerId],
+    references: [streamers.id]
+  }),
+
+  notificationDestinations: many(notificationDestinations)
+}))
+
+export const notificationDestinationsRelations = relations(notificationDestinations, ({ one }) => ({
+  notification: one(notifications, {
+    fields: [notificationDestinations.notificationId],
+    references: [notifications.id]
+  }),
+
+  provider: one(notificationProviders, {
+    fields: [notificationDestinations.providerId],
+    references: [notificationProviders.id]
+  }),
+
+  telegramDestinationConfigs: one(telegramDestinationConfigs, {
+    fields: [notificationDestinations.id],
+    references: [telegramDestinationConfigs.destinationId]
+  })
+}))
+
+export const telegramDestinationConfigsRelations = relations(telegramDestinationConfigs, ({ one }) => ({
+  notificationDestination: one(notificationDestinations, {
+    fields: [telegramDestinationConfigs.destinationId],
+    references: [notificationDestinations.id]
   })
 }))
