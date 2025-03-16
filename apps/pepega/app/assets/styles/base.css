@@ -23,6 +23,8 @@
   --spacing-16: 1rem;
   --spacing-20: 1.25rem;
   --spacing-24: 1.5rem;
+  --spacing-32: 2rem;
+  --spacing-48: 3rem;
 
   /* Twitch brand colors */
   --color-twitch-purple: rgb(145, 70, 255);
@@ -46,18 +48,45 @@
   --button-disabled-opacity: 0.5;
   /* TODO: add active state */
 
+  /* Inputs (Text, Textarea, etc.) */
+  --input-height: var(--spacing-48);
+  --input-padding-horizontal: var(--spacing-16);
+  --input-font-size: var(--font-size-16);
+  --input-color-text: var(--color-text);
+  --input-color-background: light-dark(oklch(97% 0 0), oklch(20% 0 0));
+  --input-border-radius: var(--border-radius-16);
+  --input-color-border: var(--color-border);
+  --input-color-placeholder: light-dark(oklch(60% 0 0), oklch(60% 0 0));
+  --input-color-focus: var(--color-primary);
+
   /* Borders */
   --border-radius-8: 0.5rem;
   --border-radius-12: 0.75rem;
   --border-radius-16: 1rem;
+  --border-radius-24: 1.5rem;
+
+  /* Dialog styles */
+  --dialog-color-background: light-dark(oklch(93% 0 0), oklch(15% 0 0));
+  --dialog-padding: var(--spacing-24);
+  --dialog-color-border: var(--color-border);
+  --dialog-border-radius: var(--border-radius-24);
 
   /* Transitions */
+  /* TODO: add "duration" context to the name */
   --transition-fast: 0.15s;
+  --transition-normal: 0.3s;
   --theme-easing: ease-out;
   --easing-fast-out-slow-in: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Breakpoints */
   --breakpoint-tablet: 768px;
+
+  /* Overlays */
+  --overlay-color-background: oklch(0 0 0 / 50%);
+  --overlay-backdrop-filter: blur(4px);
+
+  /* Outline */
+  --outline: 2px solid var(--color-text);
 }
 
 @layer {
@@ -80,6 +109,18 @@
     border: none;
     background: none;
     cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  /* Reset dialog default styles */
+  dialog {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text);
   }
 
   /* Reset "a" default styles */
@@ -109,6 +150,15 @@
 
     @media (min-width: 768px) {
       font-size: var(--font-size-24);
+    }
+  }
+
+  h3 {
+    font-size: var(--font-size-16);
+    font-weight: var(--font-weight-medium);
+
+    @media (min-width: 768px) {
+      font-size: var(--font-size-20);
     }
   }
 }

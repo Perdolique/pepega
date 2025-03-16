@@ -31,6 +31,7 @@
     border-radius: var(--border-radius-12);
     display: flex;
     align-items: center;
+    justify-content: center;
     column-gap: var(--spacing-8);
     outline-offset: 3px;
     transition:
