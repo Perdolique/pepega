@@ -25,11 +25,11 @@
     "date-fns": "4.1.0",
     "drizzle-orm": "catalog:",
     "modern-normalize": "3.0.1",
-    "nuxt": "3.16.0",
+    "nuxt": "3.16.1",
     "pinia": "3.0.1",
     "tsx": "4.19.3",
     "ufo": "1.5.4",
-    "valibot": "1.0.0-rc.3",
+    "valibot": "1.0.0",
     "vue-tsc": "2.2.8",
     "wrangler": "catalog:"
   }
