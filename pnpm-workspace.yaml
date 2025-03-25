@@ -6,8 +6,8 @@ packages:
   - workers/*
 
 catalog:
-  drizzle-orm: 0.40.0
-  wrangler: 3.114.1
+  drizzle-orm: 0.41.0
+  wrangler: 4.4.0
   typescript: 5.8.2
 
 # .npmrc
