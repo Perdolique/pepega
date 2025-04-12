@@ -40,7 +40,7 @@ interface ResponseData {
 }
 
 export default defineEventHandler(async (event) : Promise<ResponseData> => {
-  const { userId, twitch } = event.context
+  const { userId } = event.context
   const { id: webhookId } = await getValidatedRouterParams(event, idValidator)
   const db = createDatabaseWebsocket()
   const webhookBaseUrl = getValidatedWebhookBaseUrl()

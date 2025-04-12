@@ -1,0 +1,1 @@
+ALTER TABLE "telegramChannels" DROP CONSTRAINT "telegramChannels_chatId_unique";

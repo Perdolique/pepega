@@ -6,19 +6,21 @@
   "author": "",
   "type": "module",
   "exports": {
-    "./connection": "./connection.ts"
+    "./connection": "./connection.ts",
+    "./constants": "./constants.ts"
   },
   "scripts": {
     "db:start": "docker compose up -d",
     "db:generate": "drizzle-kit generate",
     "db:migrate:local": "tsx --env-file=.env migrate.ts",
     "db:migrate": "tsx ./migrate.ts",
-    "db:seed": "exit 0"
+    "db:seed": "exit 0",
+    "db:kit": "drizzle-kit"
   },
   "dependencies": {
-    "@neondatabase/serverless": "0.10.4",
-    "@types/ws": "8.18.0",
-    "drizzle-kit": "0.30.5",
+    "@neondatabase/serverless": "1.0.0",
+    "@types/ws": "8.18.1",
+    "drizzle-kit": "0.31.0",
     "drizzle-orm": "catalog:",
     "tsx": "4.19.3",
     "ws": "8.18.1"

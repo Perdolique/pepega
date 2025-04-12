@@ -12,17 +12,17 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/vitest-pool-workers": "0.8.2",
-    "@cloudflare/workers-types": "4.20250319.0",
+    "@cloudflare/vitest-pool-workers": "0.8.16",
+    "@cloudflare/workers-types": "4.20250415.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
-    "destr": "2.0.3",
+    "destr": "2.0.5",
     "drizzle-orm": "catalog:",
     "h3": "1.15.1",
     "typescript": "catalog:",
     "valibot": "1.0.0",
-    "vitest": "3.0.9",
+    "vitest": "3.1.1",
     "wrangler": "catalog:"
   }
 }

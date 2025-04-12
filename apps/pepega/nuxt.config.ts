@@ -87,7 +87,8 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/fonts',
     '@nuxt/icon',
-    '@pinia/nuxt'
+    '@pinia/nuxt',
+    '@pinia/colada-nuxt'
   ],
 
   icon: {

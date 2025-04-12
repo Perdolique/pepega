@@ -4,12 +4,13 @@ packages:
   - common/twitch
   - common/utils
   - workers/*
-
 catalog:
-  drizzle-orm: 0.40.1
-  wrangler: 4.2.0
-  typescript: 5.8.2
+  drizzle-orm: 0.42.0
+  wrangler: 4.11.0
+  typescript: 5.8.3
 
-# .npmrc
-# Something wrong with pnpm and Nuxt build without this
 nodeLinker: hoisted
+saveExact: true
+
+onlyBuiltDependencies:
+  - esbuild

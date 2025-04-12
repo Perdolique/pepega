@@ -1,6 +1,6 @@
 <template>
   <button
-    :class="$style.component"
+    :class="[$style.component, variant]"
     :disabled="disabled"
   >
     <Icon
@@ -17,25 +17,31 @@
   interface Props {
     iconName?: string;
     disabled?: boolean;
+    variant?: 'primary' | 'secondary';
   }
 
-  defineProps<Props>()
+  const {
+    variant = 'primary'
+  } = defineProps<Props>()
 </script>
 
 <style module>
   .component {
-    background-color: var(--button-color-background);
-    color: var(--button-color-text);
     height: var(--button-height);
-    padding: 0 var(--spacing-24);
-    border-radius: var(--border-radius-12);
+    padding: 0 var(--button-padding-x);
+    border-radius: var(--button-border-radius);
     display: flex;
     align-items: center;
-    column-gap: var(--spacing-8);
+    justify-content: center;
+    column-gap: var(--button-gap);
     outline-offset: 3px;
     transition:
-      background-color var(--transition-fast),
-      opacity var(--transition-fast);
+      background-color var(--button-transition),
+      opacity var(--button-transition);
+
+    /* Use primary button style as default */
+    background-color: var(--button-primary-color-bg);
+    color: var(--button-primary-color-text);
 
     &:disabled {
       opacity: var(--button-disabled-opacity);
@@ -44,7 +50,26 @@
 
     @media (hover: hover) {
       &:hover:not(:disabled) {
-        background-color: var(--button-color-hover);
+        background-color: var(--button-primary-color-hover);
+      }
+    }
+
+    &:active:not(:disabled) {
+      background-color: var(--button-primary-color-active);
+    }
+
+    &:global(.secondary) {
+      background-color: var(--button-secondary-color-bg);
+      color: var(--button-secondary-color-text);
+
+      @media (hover: hover) {
+        &:hover:not(:disabled) {
+          background-color: var(--button-secondary-color-hover);
+        }
+      }
+
+      &:active:not(:disabled) {
+        background-color: var(--button-secondary-color-active);
       }
     }
   }
