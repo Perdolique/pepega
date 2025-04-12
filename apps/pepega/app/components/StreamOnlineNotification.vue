@@ -171,6 +171,9 @@
     --status-failed: light-dark(oklch(65% 0.2 30), oklch(70% 0.2 30));
     --status-revoked: light-dark(oklch(65% 0.1 0), oklch(70% 0.1 0));
     --status-not-active: light-dark(oklch(50% 0 0), oklch(70% 0 0));
+
+    display: grid;
+    row-gap: var(--spacing-12);
   }
 
   .header {

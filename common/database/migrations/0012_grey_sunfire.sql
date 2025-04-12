@@ -1,0 +1,1 @@
+ALTER TABLE "telegramChannels" ADD CONSTRAINT "telegramChannels_userId_chatId_unique" UNIQUE("userId","chatId");
