@@ -41,7 +41,6 @@
       header-text="Add Telegram channel"
       placeholder="perdTV"
       add-button-text="Add channel"
-      initial-value="woof"
       :minlength="5"
       :maxlength="32"
       v-model="isOpened"
