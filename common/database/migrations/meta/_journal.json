@@ -57,6 +57,55 @@
       "when": 1741465841967,
       "tag": "0007_puzzling_firestar",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1741897169867,
+      "tag": "0008_young_rictor",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1742326761007,
+      "tag": "0009_round_clint_barton",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1742327358537,
+      "tag": "0010_chubby_shriek",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1742410056787,
+      "tag": "0011_nappy_namorita",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1742410215418,
+      "tag": "0012_grey_sunfire",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1744393321187,
+      "tag": "0013_cute_leader",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1744393758729,
+      "tag": "0014_seed_config_max_telegram_channels",
+      "breakpoints": true
     }
   ]
 }

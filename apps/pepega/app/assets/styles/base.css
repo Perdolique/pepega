@@ -23,6 +23,9 @@
   --spacing-16: 1rem;
   --spacing-20: 1.25rem;
   --spacing-24: 1.5rem;
+  --spacing-32: 2rem;
+  --spacing-36: 2.25rem;
+  --spacing-48: 3rem;
 
   /* Twitch brand colors */
   --color-twitch-purple: rgb(145, 70, 255);
@@ -37,27 +40,79 @@
   --color-green: light-dark(oklch(57% 0.12 135.74), oklch(57% 0.12 135.74));
   --color-hover: light-dark(oklch(90% 0 0), oklch(30% 0 0));
   --color-active: light-dark(oklch(85% 0 0), oklch(40% 0 0));
+  --color-alert: light-dark(oklch(50% 0.25 30), oklch(80% 0.25 30));
 
   /* Buttons */
-  --button-color-text: light-dark(oklch(98% 0 0), oklch(100% 0 0));
-  --button-color-background: light-dark(oklch(30% 0.02 250), oklch(50% 0.02 250));
-  --button-color-hover: light-dark(oklch(40% 0.02 250), oklch(55% 0.02 250));
+  /* Common button styles */
   --button-height: 48px;
+  --button-border-radius: var(--border-radius-12);
+  --button-padding-x: var(--spacing-24);
+  --button-gap: var(--spacing-8);
   --button-disabled-opacity: 0.5;
-  /* TODO: add active state */
+  --button-transition: var(--transition-fast);
+
+  /* Primary button */
+  --button-primary-color-bg: light-dark(oklch(30% 0.02 250), oklch(40% 0 0));
+  --button-primary-color-text: light-dark(oklch(98% 0 0), oklch(100% 0 0));
+  --button-primary-color-hover: light-dark(oklch(40% 0.02 250), oklch(45% 0 0));
+  --button-primary-color-active: light-dark(oklch(20% 0.04 250), oklch(50% 0 0));
+
+  /* Secondary button */
+  --button-secondary-color-bg: light-dark(oklch(90% 0.01 230), oklch(32% 0.01 230));
+  --button-secondary-color-text: light-dark(oklch(10% 0 0), oklch(95% 0 0));
+  --button-secondary-color-hover: light-dark(oklch(85% 0.02 230), oklch(38% 0.01 230));
+  --button-secondary-color-active: light-dark(oklch(80% 0.03 230), oklch(45% 0.01 230));
+
+  /* Inputs (Text, Textarea, etc.) */
+  --input-height: var(--spacing-48);
+  --input-padding-horizontal: var(--spacing-16);
+  --input-font-size: var(--font-size-16);
+  --input-color-text: var(--color-text);
+  --input-color-background: light-dark(oklch(97% 0 0), oklch(20% 0 0));
+  --input-border-radius: var(--border-radius-16);
+  --input-color-border: var(--color-border);
+  --input-color-placeholder: light-dark(oklch(60% 0 0), oklch(60% 0 0));
+  --input-color-focus: var(--color-primary);
+
+  /* Chip */
+  --chip-height: var(--spacing-36);
+  --chip-border-radius: var(--chip-height);
+  --chip-color-border: light-dark(oklch(75% 0.14 236.45), oklch(50% 0.14 236.45));
+  --chip-color-bg: light-dark(oklch(100% 0 0), oklch(40% 0 0));
+  --chip-color-bg-active: light-dark(
+    color-mix(in oklch, var(--chip-color-border), white 80%),
+    color-mix(in oklch, var(--chip-color-border), black 20%)
+  );
+
 
   /* Borders */
   --border-radius-8: 0.5rem;
   --border-radius-12: 0.75rem;
   --border-radius-16: 1rem;
+  --border-radius-24: 1.5rem;
+
+  /* Dialog styles */
+  --dialog-color-background: light-dark(oklch(93% 0 0), oklch(15% 0 0));
+  --dialog-padding: var(--spacing-24);
+  --dialog-color-border: var(--color-border);
+  --dialog-border-radius: var(--border-radius-24);
 
   /* Transitions */
+  /* TODO: add "duration" context to the name */
   --transition-fast: 0.15s;
+  --transition-normal: 0.3s;
   --theme-easing: ease-out;
   --easing-fast-out-slow-in: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Breakpoints */
   --breakpoint-tablet: 768px;
+
+  /* Overlays */
+  --overlay-color-background: oklch(0 0 0 / 50%);
+  --overlay-backdrop-filter: blur(4px);
+
+  /* Outline */
+  --outline: 2px solid var(--color-text);
 }
 
 @layer {
@@ -80,6 +135,18 @@
     border: none;
     background: none;
     cursor: pointer;
+
+    &:disabled {
+      cursor: not-allowed;
+    }
+  }
+
+  /* Reset dialog default styles */
+  dialog {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--text);
   }
 
   /* Reset "a" default styles */
@@ -109,6 +176,15 @@
 
     @media (min-width: 768px) {
       font-size: var(--font-size-24);
+    }
+  }
+
+  h3 {
+    font-size: var(--font-size-16);
+    font-weight: var(--font-weight-medium);
+
+    @media (min-width: 768px) {
+      font-size: var(--font-size-20);
     }
   }
 }

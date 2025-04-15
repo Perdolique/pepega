@@ -9,21 +9,21 @@
         v-if="displayStreamerName"
         :class="$style.streamer"
       >
-        <NuxtLink
-          :class="[$style.linkButton, 'streamer']"
+        <ChipLink
+          :class="$style.streamerLink"
           to="#"
         >
           <Icon name="tabler:user" />
 
           {{ displayStreamerName }}
-        </NuxtLink>
+        </ChipLink>
 
         <a
           v-if="twitchUrl"
           target="_blank"
           rel="noopener noreferrer"
           :href="twitchUrl"
-          :class="[$style.linkButton, 'twitch']"
+          :class="$style.twitchLink"
         >
           <Icon name="tabler:brand-twitch" />
         </a>
@@ -43,6 +43,7 @@
   import { useTwitchSubscriptionsStore } from '~/stores/twitch-subscriptions'
   import BaseCard from '~/components/BaseCard.vue'
   import SimpleButton from '~/components/SimpleButton.vue'
+  import ChipLink from '~/components/ChipLink.vue'
 
   interface Props {
     subscriptionId: string;
@@ -114,38 +115,25 @@
     column-gap: var(--spacing-4);
   }
 
-  .linkButton {
-    --button-height: 36px;
+  .streamerLink {
+    column-gap: var(--spacing-4);
+  }
 
+  .twitchLink {
+    height: var(--chip-height);
+    aspect-ratio: 1;
     display: inline flex;
     align-items: center;
     justify-content: center;
-    height: var(--button-height);
-    transition: background-color var(--transition-fast);
+    border-radius: 50%;
+    font-size: var(--font-size-20);
     user-select: none;
+    color: white;
+    background-color: var(--color-twitch-purple);
+    transition: background-color var(--transition-fast);
 
-    &:global(.streamer) {
-      column-gap: var(--spacing-4);
-      border-radius: var(--button-height);
-      padding: 0 var(--spacing-16);
-      font-size: var(--font-size-14);
-      background-color: light-dark(oklch(85% 0 0), oklch(40% 0 0));
-
-      &:hover {
-        background-color: light-dark(oklch(80% 0 0), oklch(35% 0 0));
-      }
-    }
-
-    &:global(.twitch) {
-      border-radius: 50%;
-      width: var(--button-height);
-      background-color: var(--color-twitch-purple);
-      color: white;
-      font-size: var(--font-size-20);
-
-      &:hover {
-        background-color: var(--color-twitch-purple-hover);
-      }
+    &:hover {
+      background-color: var(--color-twitch-purple-hover);
     }
   }
 </style>

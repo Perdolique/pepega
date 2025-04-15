@@ -30,8 +30,7 @@
   }
 
   .button {
-    --button-color-background: oklch(59% 0.25 296.09);
-    --button-color-hover: oklch(50% 0.25 296.09);
-    --button-color-text: white;
+    --button-primary-color-bg: oklch(59% 0.25 296.09);
+    --button-primary-color-hover: oklch(50% 0.25 296.09);
   }
 </style>

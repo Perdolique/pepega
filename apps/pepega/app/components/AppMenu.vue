@@ -2,17 +2,22 @@
   <div :class="$style.component">
     <button
       ref="buttonRef"
+      aria-label="Toggle menu"
       :class="$style.button"
       @click="toggleMenu"
     >
       <Icon name="tabler:menu-2" />
     </button>
 
-    <div :class="[$style.menu, { visible: isMenuVisible }]">
+    <div
+      :class="[$style.menu, { visible: isMenuVisible }]"
+      role="menu"
+    >
       <AppMenuItem
         v-if="userStore.isAdmin"
         icon="streamline-emojis:wrench"
         to="/admin"
+        role="menuitem"
       >
         Admin panel
       </AppMenuItem>
@@ -20,6 +25,7 @@
       <AppMenuItem
         icon="streamline-emojis:frog-face"
         to="/"
+        role="menuitem"
       >
         Home
       </AppMenuItem>
@@ -28,6 +34,7 @@
         <AppMenuItem
           icon="streamline-emojis:television"
           to="/dashboard"
+          role="menuitem"
         >
           Dashboard
         </AppMenuItem>
@@ -35,6 +42,7 @@
         <AppMenuItem
           icon="streamline-emojis:bell"
           to="/notifications"
+          role="menuitem"
         >
           Notifications
         </AppMenuItem>
@@ -42,6 +50,7 @@
         <AppMenuItem
           icon="streamline-emojis:clown-face"
           to="/account"
+          role="menuitem"
         >
           Account
         </AppMenuItem>
@@ -49,6 +58,7 @@
         <AppMenuItem
           icon="streamline-emojis:dashing-away"
           @click="logout"
+          role="menuitem"
         >
           Logout
         </AppMenuItem>
@@ -59,6 +69,7 @@
         <AppMenuItem
           icon="streamline-emojis:electric-plug"
           to="/login"
+          role="menuitem"
         >
           Login
         </AppMenuItem>
