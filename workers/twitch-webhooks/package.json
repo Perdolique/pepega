@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@cloudflare/vitest-pool-workers": "0.8.18",
-    "@cloudflare/workers-types": "4.20250417.0",
+    "@cloudflare/workers-types": "4.20250418.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
