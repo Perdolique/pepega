@@ -20,8 +20,8 @@
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
-    "@pinia/colada": "0.14.2",
-    "@pinia/colada-nuxt": "0.1.1",
+    "@pinia/colada": "0.15.0",
+    "@pinia/colada-nuxt": "0.1.2",
     "@pinia/nuxt": "0.11.0",
     "@vueuse/core": "13.1.0",
     "date-fns": "4.1.0",
@@ -33,7 +33,7 @@
     "tsx": "4.19.3",
     "ufo": "1.6.1",
     "valibot": "1.0.0",
-    "vue-tsc": "2.2.8",
+    "vue-tsc": "2.2.10",
     "wrangler": "catalog:"
   }
 }
