@@ -12,8 +12,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/vitest-pool-workers": "0.8.18",
-    "@cloudflare/workers-types": "4.20250417.0",
+    "@cloudflare/vitest-pool-workers": "0.8.22",
+    "@cloudflare/workers-types": "4.20250425.0",
     "@pepega/database": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
@@ -22,7 +22,7 @@
     "h3": "1.15.1",
     "typescript": "catalog:",
     "valibot": "1.0.0",
-    "vitest": "3.1.1",
+    "vitest": "3.1.2",
     "wrangler": "catalog:"
   }
 }
