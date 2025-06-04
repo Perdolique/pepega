@@ -5,8 +5,8 @@ packages:
   - common/utils
   - workers/*
 catalog:
-  drizzle-orm: 0.42.0
-  wrangler: 4.11.0
+  drizzle-orm: 0.44.2
+  wrangler: 4.19.1
   typescript: 5.8.3
 
 nodeLinker: hoisted
