@@ -13,6 +13,10 @@
 <script setup lang="ts">
   import SimpleButton from '~/components/SimpleButton.vue';
 
+  useHead({
+    title: 'Twitch login',
+  })
+
   const route = useRoute()
 
   function redirectToTwitch() {

@@ -1,6 +1,6 @@
 import * as v from 'valibot'
 import { ofetch } from 'ofetch'
-import type { AppTokenResponse, OAuthTokenResponse, User, UsersResponse } from './models'
+import type { AppTokenResponse, OAuthTokenResponse, User, UsersResponse } from './models/general'
 import logger from './logger'
 
 interface VerifyEventMessageParams {
@@ -179,6 +179,8 @@ export async function getOAuthToken(params: OAuthTokenParams) : Promise<string |
     })
 
     if ('status' in response) {
+      logger.error('Failed to get OAuth token:', response)
+
       throw new Error(response.message)
     }
 

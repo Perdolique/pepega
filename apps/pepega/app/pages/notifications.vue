@@ -1,16 +1,16 @@
 <template>
-  <div
-    v-if="userStore.isStreamer"
-    :class="$style.component"
-  >
-    <h1>Notifications Settings</h1>
+  <PageBase title="Notifications">
+    <div>
+      <div
+        v-if="userStore.isStreamer"
+        :class="$style.cards"
+      >
+        <StreamOnlineNotification />
+      </div>
 
-    <div :class="$style.cards">
-      <StreamOnlineNotification />
+      <NotStreamerPlaceholder v-else />
     </div>
-  </div>
-
-  <NotStreamerPlaceholder v-else />
+  </PageBase>
 </template>
 
 <script setup lang="ts">
@@ -18,6 +18,7 @@
   import { useUserStore } from '~/stores/user'
   import NotStreamerPlaceholder from '~/components/NotStreamerPlaceholder.vue'
   import StreamOnlineNotification from '~/components/StreamOnlineNotification.vue'
+  import PageBase from '~/components/PageBase.vue'
 
   const webhooksStore = useWebhooksStore()
   const userStore = useUserStore()

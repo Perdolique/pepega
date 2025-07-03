@@ -1,11 +1,11 @@
 import { H3Error } from 'h3'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
-import type { SubscriptionType } from '@pepega/twitch/models'
+import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
 
 const bodySchema = v.object({
   type: v.union([
-    v.literal<SubscriptionType>('stream.online')
+    v.literal<EventSubscriptionType>('stream.online')
   ])
 })
 

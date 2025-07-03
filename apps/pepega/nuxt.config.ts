@@ -1,25 +1,26 @@
 import { createHash, type BinaryLike } from 'crypto'
 import { basename } from 'path'
-import { kvStorageName } from './constants';
+import nitroCloudflareBindings from 'nitro-cloudflare-dev'
+import { kvStorageName } from './constants'
 
-type ComponentType = 'page' | 'layout' | 'component';
+type ComponentType = 'page' | 'layout' | 'component'
 
 function getComponentType(filePath: string) : ComponentType {
   if (filePath.includes('/app/pages/')) {
-    return 'page';
+    return 'page'
   } else if (filePath.includes('/app/layouts/')) {
-    return 'layout';
+    return 'layout'
   } else {
-    return 'component';
+    return 'component'
   }
 }
 
 function getComponentName(componentName: string, componentType: ComponentType) : string {
   if (componentType === 'component') {
-    return componentName;
+    return componentName
   }
 
-  return `${componentType}-${componentName}`;
+  return `${componentType}-${componentName}`
 }
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
@@ -43,6 +44,12 @@ export default defineNuxtConfig({
           visibility: false
         }
       }
+    }
+  },
+
+  runtimeConfig: {
+    public: {
+      telegramBotName: '@pepega_app_test_bot'
     }
   },
 
@@ -70,13 +77,6 @@ export default defineNuxtConfig({
         driver: 'cloudflare-kv-binding',
         binding: 'KV'
       }
-    },
-
-    devStorage: {
-      [kvStorageName]: {
-        driver: 'fs',
-        base: './.nuxt/dev-storage/kv'
-      }
     }
   },
 
@@ -88,7 +88,8 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxt/icon',
     '@pinia/nuxt',
-    '@pinia/colada-nuxt'
+    '@pinia/colada-nuxt',
+    nitroCloudflareBindings
   ],
 
   icon: {

@@ -1,10 +1,10 @@
-import type { SubscriptionType } from '@pepega/twitch/models'
+import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
 
 export type WebhookStatus = 'not_active' | 'active' | 'pending' | 'failed' | 'revoked'
 
 export interface WebhookModel {
   id: number;
   status: WebhookStatus;
-  type: SubscriptionType;
+  type: EventSubscriptionType;
   createdAt: string;
 }

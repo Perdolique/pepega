@@ -1,0 +1,2 @@
+ALTER TABLE "telegramChannels" DROP CONSTRAINT "telegramChannels_userId_chatId_unique";--> statement-breakpoint
+ALTER TABLE "telegramChannels" ADD CONSTRAINT "telegramChannels_chatId_unique" UNIQUE("chatId");

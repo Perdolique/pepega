@@ -1,13 +1,7 @@
 import { limits } from './constants'
 import { relations, sql } from 'drizzle-orm'
-import { boolean, check, index, integer, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
-
-// TODO: move this to a separate file?
-export const notificationProviderTypes = {
-  telegram: 'telegram'
-} as const
-
-export type NotificationProviderType = typeof notificationProviderTypes[keyof typeof notificationProviderTypes]
+import { boolean, index, integer, jsonb, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
+import type { NotificationDestinationConfig, NotificationProviderType } from './types'
 
 /**
  * Users table
@@ -31,7 +25,8 @@ export const users = pgTable('users', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
@@ -67,7 +62,8 @@ export const oauthProviders = pgTable('oauthProviders', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
@@ -108,7 +104,8 @@ export const oauthAccounts = pgTable('oauthAccounts', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
@@ -145,12 +142,14 @@ export const streamers = pgTable('streamers', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
 }, (table) => [
-  unique().on(table.userId, table.broadcasterId)
+  unique().on(table.userId, table.broadcasterId),
+  index().on(table.broadcasterId)
 ])
 
 /**
@@ -185,8 +184,8 @@ export const webhooks = pgTable('webhooks', {
     .notNull()
     .default('not_active'),
 
-  // Secret used to sign the webhook
-  secret: varchar(),
+  // Hashed secret used to sign the webhook on the Twitch side
+  secretHash: varchar(),
 
   // The subscription ID from Twitch registration
   // TODO: createdAt should be used to get only the latest subscription
@@ -201,7 +200,7 @@ export const webhooks = pgTable('webhooks', {
     .defaultNow()
 }, (table) => [
   unique().on(table.streamerId, table.type),
-  index().on(table.subscriptionId)
+  index().on(table.subscriptionId, table.type)
 ])
 
 /**
@@ -228,28 +227,27 @@ export const telegramChannels = pgTable('telegramChannels', {
   /** Example: @perdTV */
   chatId:
     varchar()
-    .notNull(),
-
-  /** not_verified, pending, verified, failed */
-  status:
-    varchar()
     .notNull()
-    .default('not_verified'),
+    .unique(),
+
+  isVerified:
+    boolean()
+    .notNull()
+    .default(false),
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
-}, (table) => [
-  unique().on(table.userId, table.chatId)
-])
+})
 
 /**
  * Notification providers
  *
- * This table is used to store notification providers
+ * This table is used to store preconfigured providers (Telegram, Discord, etc.)
  */
 export const notificationProviders = pgTable('notificationProviders', {
   id:
@@ -263,7 +261,8 @@ export const notificationProviders = pgTable('notificationProviders', {
   type:
     varchar()
     .notNull()
-    .unique(),
+    .unique()
+    .$type<NotificationProviderType>(),
 
   // Human readable name of the provider: 'Telegram', 'Discord', etc.
   name:
@@ -272,7 +271,8 @@ export const notificationProviders = pgTable('notificationProviders', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
@@ -282,6 +282,7 @@ export const notificationProviders = pgTable('notificationProviders', {
  * Notifications
  *
  * This table is used to store notifications for specific streamers and notification types
+ * Example: 'stream.online' for Perdolique
  */
 export const notifications = pgTable('notifications', {
   id:
@@ -299,6 +300,7 @@ export const notifications = pgTable('notifications', {
       onUpdate: 'cascade'
     }),
 
+  // TODO: add $type<EventSubscriptionType>() if it makes sense
   eventType:
     varchar()
     .notNull(),
@@ -310,7 +312,8 @@ export const notifications = pgTable('notifications', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
@@ -321,7 +324,7 @@ export const notifications = pgTable('notifications', {
 /**
  * Notification destinations
  *
- * This table is used to store notification destinations
+ * Specific settings for each notification and destination
  */
 export const notificationDestinations = pgTable('notificationDestinations', {
   id:
@@ -347,6 +350,24 @@ export const notificationDestinations = pgTable('notificationDestinations', {
       onUpdate: 'cascade'
     }),
 
+  message:
+    varchar()
+    .notNull(),
+
+  // Polymorphic provider configuration 🚀
+  config:
+    jsonb()
+    .$type<NotificationDestinationConfig>()
+    .notNull(),
+
+  /** This field ensures database-level data integrity constraints */
+  telegramChannelId:
+    integer()
+    .references(() => telegramChannels.id, {
+      onDelete: 'cascade',
+      onUpdate: 'cascade'
+    }),
+
   isActive:
     boolean()
     .notNull()
@@ -354,41 +375,14 @@ export const notificationDestinations = pgTable('notificationDestinations', {
 
   createdAt:
     timestamp({
-      withTimezone: true
+      withTimezone: true,
+      mode: 'string'
     })
     .notNull()
     .defaultNow()
-})
-
-/**
- * Notification destination configs for Telegram
- *
- * This table is used to store notification destination configs for Telegram
- */
-export const telegramDestinationConfigs = pgTable('telegramDestinationConfigs', {
-  destinationId:
-    integer()
-    .primaryKey()
-    .references(() => notificationDestinations.id, {
-      onDelete: 'cascade',
-      onUpdate: 'cascade'
-    }),
-
-  channelId:
-    integer()
-    .notNull()
-    .references(() => telegramChannels.id, {
-      onDelete: 'restrict',
-      onUpdate: 'cascade'
-    }),
-
-  createdAt:
-    timestamp({
-      withTimezone: true
-    })
-    .notNull()
-    .defaultNow()
-})
+}, (table) => [
+  unique().on(table.notificationId, table.providerId)
+])
 
 /**
  * Configs
@@ -453,7 +447,7 @@ export const telegramChannelsRelations = relations(telegramChannels, ({ one, man
     references: [users.id]
   }),
 
-  telegramDestinationConfigs: many(telegramDestinationConfigs)
+  notificationDestinations: many(notificationDestinations)
 }))
 
 export const notificationProvidersRelations = relations(notificationProviders, ({ many }) => ({
@@ -469,7 +463,7 @@ export const notificationsRelations = relations(notifications, ({ one, many }) =
   notificationDestinations: many(notificationDestinations)
 }))
 
-export const notificationDestinationsRelations = relations(notificationDestinations, ({ one, many }) => ({
+export const notificationDestinationsRelations = relations(notificationDestinations, ({ one }) => ({
   notification: one(notifications, {
     fields: [notificationDestinations.notificationId],
     references: [notifications.id]
@@ -480,17 +474,8 @@ export const notificationDestinationsRelations = relations(notificationDestinati
     references: [notificationProviders.id]
   }),
 
-  telegramDestinationConfigs: many(telegramDestinationConfigs)
-}))
-
-export const telegramDestinationConfigsRelations = relations(telegramDestinationConfigs, ({ one }) => ({
-  notificationDestination: one(notificationDestinations, {
-    fields: [telegramDestinationConfigs.destinationId],
-    references: [notificationDestinations.id]
-  }),
-
   telegramChannel: one(telegramChannels, {
-    fields: [telegramDestinationConfigs.channelId],
+    fields: [notificationDestinations.telegramChannelId],
     references: [telegramChannels.id]
   })
 }))

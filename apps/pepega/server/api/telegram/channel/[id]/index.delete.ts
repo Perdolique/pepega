@@ -1,13 +1,9 @@
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
+import { idStringAsNumberSchema } from '~~/server/utils/validation'
 
 const paramsSchema = v.object({
-  id: v.pipe(
-    v.string(),
-    v.nonEmpty(),
-    v.transform(value => Number(value)),
-    v.integer()
-  )
+  id: idStringAsNumberSchema
 })
 
 function idValidator(params: unknown) {

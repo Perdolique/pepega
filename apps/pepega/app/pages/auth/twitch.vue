@@ -44,6 +44,10 @@
     skipAuth: true
   })
 
+  useHead({
+    title: 'Connecting Twitch...'
+  })
+
   const isFailed = ref(false)
   const route = useRoute()
   const userStore = useUserStore()

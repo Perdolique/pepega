@@ -9,6 +9,10 @@
     title: 'Pepega',
     skipAuth: true
   });
+
+  useHead({
+    title: 'Pepega'
+  });
 </script>
 
 <style module>

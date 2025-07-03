@@ -2,12 +2,12 @@ import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { encrypt } from '@pepega/utils/crypto'
 import { subscribeWebhook } from '~~/server/utils/twitch/event-sub/stream-online'
-import { webhookIdSchema } from '~~/server/utils/validation'
+import { stringToIntegerSchema } from '~~/server/utils/validation'
 import { type WebhookStatus } from '~~/shared/models/webhooks'
 import { getStoredToken, obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
 
 const paramsSchema = v.object({
-  id: webhookIdSchema
+  id: stringToIntegerSchema
 })
 
 const webhookStatusSchema = v.union([
@@ -46,6 +46,7 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
   const webhookBaseUrl = getValidatedWebhookBaseUrl()
   const twitchClientId = getValidatedTwitchClientId()
   const encryptionKey = getValidatedEncryptionKey()
+  const debugMode = getValidatedDebug()
   let finalStatus: WebhookStatus = 'pending'
 
   // 1. Find webhook by id
@@ -87,7 +88,7 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
     .update(tables.webhooks)
     .set({
       status: 'pending',
-      secret: encryptedWebhookSecret
+      secretHash: encryptedWebhookSecret
     })
     .where(
       eq(tables.webhooks.id, webhook.webhookId)
@@ -121,8 +122,8 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
         eq(tables.webhooks.id, webhook.webhookId)
       )
 
-    if (import.meta.dev) {
-      logger.info(`Webhook ${registrationResponse.data.data[0]?.type} registered (secret: ${webhookSecret})`)
+    if (debugMode) {
+      logger.info(`Webhook ${registrationResponse.data.data[0]?.type} registered successfully`)
     }
   } catch (error) {
     logger.error('Failed to register webhook', error)

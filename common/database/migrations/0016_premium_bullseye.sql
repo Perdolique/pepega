@@ -1,0 +1,1 @@
+ALTER TABLE "telegramChannels" RENAME COLUMN "status" TO "verificationStatus";

@@ -1,4 +1,4 @@
-import type { User as TwitchUser } from '@pepega/twitch/models'
+import type { User as TwitchUser } from '@pepega/twitch/models/general'
 
 export type OAuthProvider = 'twitch'
 

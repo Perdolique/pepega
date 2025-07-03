@@ -1,22 +1,11 @@
-export interface AppTokenResponse {
-  readonly access_token: string;
-  readonly expires_in: number;
-  readonly token_type: string;
-}
+export type EventMessageType = 'notification' | 'webhook_callback_verification' | 'revocation'
+export type StreamType = 'live' | 'playlist' | 'watch_party' | 'premiere' | 'rerun'
+export type TransportMethod = 'webhook' | 'websocket'
 
-interface Pagination {
-  cursor: string;
-}
-
-export interface PaginatedResponse<T> {
-  data: T[];
-  pagination: Pagination;
-  total: number;
-  total_cost: number;
-  max_total_cost: number;
-}
-
-export type SubscriptionStatus =
+/**
+ * {@link https://dev.twitch.tv/docs/eventsub/manage-subscriptions/#filtering-the-list-by-status}
+ */
+export type EventSubscriptionStatus =
   'enabled' |
   'webhook_callback_verification_pending' |
   'webhook_callback_verification_failed' |
@@ -34,11 +23,11 @@ export type SubscriptionStatus =
   'websocket_network_timeout' |
   'websocket_network_error'
 
-// https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/
-export type SubscriptionType =
+/**
+ * {@link https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/}
+ */
+export type EventSubscriptionType =
   'automod.message.hold' |
-  'automod.message.hold' |
-  'automod.message.update' |
   'automod.message.update' |
   'automod.settings.update' |
   'automod.terms.update' |
@@ -68,14 +57,12 @@ export type SubscriptionType =
   'channel.unban_request.create' |
   'channel.unban_request.resolve' |
   'channel.moderate' |
-  'channel.moderate' |
   'channel.moderator.add' |
   'channel.moderator.remove' |
   'channel.guest_star_session.begin' |
   'channel.guest_star_session.end' |
   'channel.guest_star_guest.update' |
   'channel.guest_star_settings.update' |
-  'channel.channel_points_automatic_reward_redemption.add' |
   'channel.channel_points_automatic_reward_redemption.add' |
   'channel.channel_points_custom_reward.add' |
   'channel.channel_points_custom_reward.update' |
@@ -119,63 +106,73 @@ export type SubscriptionType =
   'user.update' |
   'user.whisper.message'
 
-interface SubscriptionCondition {
+interface StreamOnlineEvent {
+  id: string;
+  broadcaster_user_id: string;
+  broadcaster_user_login: string;
+  broadcaster_user_name: string;
+  type: StreamType;
+  started_at: string;
+}
+
+type NotificationEvent = StreamOnlineEvent;
+
+interface StreamOnlineCondition {
   broadcaster_user_id: string;
 }
 
-interface SubscriptionTransport {
-  method: 'webhook' | 'websocket';
-  callback: string;
+// TODO: Add more conditions as needed.
+/**
+ * Conditions for an EventSub subscription.
+ *
+ * {@link https://dev.twitch.tv/docs/eventsub/eventsub-reference/#conditions}
+ */
+type SubscriptionConditions = StreamOnlineCondition;
+
+/**
+ * {@link https://dev.twitch.tv/docs/eventsub/eventsub-reference/#transport}
+ */
+interface EventTransport {
+  method: TransportMethod;
+  callback?: string;
+  secret?: string;
+  session_id?: string;
+  connected_at?: string;
+  disconnected_at?: string;
 }
 
-export interface Subscription {
+/**
+ * {@link https://dev.twitch.tv/docs/eventsub/eventsub-reference/#subscription}
+ */
+export interface EventSubscription {
   id: string;
-  status: SubscriptionStatus;
-  type: SubscriptionType;
+  status: EventSubscriptionStatus;
+  type: EventSubscriptionType;
   version: string;
-  condition: SubscriptionCondition;
-  created_at: string;
-  transport: SubscriptionTransport;
+  /** How much the subscription counts against your limit. See [Subscription Limits](https://dev.twitch.tv/docs/eventsub/manage-subscriptions#subscription-limits) for more information. */
   cost: number;
+  condition: SubscriptionConditions;
+  transport: EventTransport;
+  created_at: string;
 }
 
-export interface User {
-  readonly id: string;
-  readonly login: string;
-  readonly display_name: string;
-  readonly type: '' | 'staff' | 'admin' | 'global_mod';
-  readonly broadcaster_type: '' | 'affiliate' | 'partner';
-  readonly description: string;
-  readonly profile_image_url: string;
-  readonly offline_image_url: string;
-  readonly created_at: string;
-  // "user:read:email" scope required
-  readonly email?: string;
+/** Base interface for all EventSub notifications. */
+interface EventNotification {
+  event: NotificationEvent;
+  subscription: EventSubscription;
 }
 
-interface UsersError {
-  readonly error: string;
-  readonly status: number;
-  readonly message: string;
+interface StreamOnlineSubscription extends EventSubscription {
+  condition: StreamOnlineCondition;
+  type: 'stream.online';
 }
 
-interface Users {
-  readonly data: User[];
+/**
+ * Payload for a Stream Online notification.
+ *
+ * {@link https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#streamonline}
+ */
+export interface StreamOnlineNotification extends EventNotification {
+  subscription: StreamOnlineSubscription;
+  event: StreamOnlineEvent;
 }
-
-export type UsersResponse = Users | UsersError;
-
-interface OAuthToken {
-  readonly access_token: string;
-  readonly expires_in: number;
-  readonly refresh_token: string;
-  readonly token_type: string;
-  readonly scope?: string[];
-}
-
-interface OAuthTokenError {
-  readonly status: number;
-  readonly message: string;
-}
-
-export type OAuthTokenResponse = OAuthToken | OAuthTokenError;

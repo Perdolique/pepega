@@ -7,7 +7,8 @@
   "type": "module",
   "exports": {
     "./connection": "./connection.ts",
-    "./constants": "./constants.ts"
+    "./constants": "./constants.ts",
+    "./types": "./types.ts"
   },
   "scripts": {
     "db:start": "docker compose up -d",
@@ -18,11 +19,11 @@
     "db:kit": "drizzle-kit"
   },
   "dependencies": {
-    "@neondatabase/serverless": "1.0.0",
+    "@neondatabase/serverless": "1.0.1",
     "@types/ws": "8.18.1",
-    "drizzle-kit": "0.31.0",
+    "drizzle-kit": "0.31.4",
     "drizzle-orm": "catalog:",
-    "tsx": "4.19.3",
-    "ws": "8.18.1"
+    "tsx": "4.20.3",
+    "ws": "8.18.3"
   }
 }

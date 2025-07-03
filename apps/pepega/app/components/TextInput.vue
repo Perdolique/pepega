@@ -1,6 +1,7 @@
 <template>
   <input
     type="text"
+    ref="input"
     :class="$style.component"
     v-model="model"
   />
@@ -9,6 +10,16 @@
 <script lang="ts" setup>
   const model = defineModel({
     required: true
+  })
+
+  const input = useTemplateRef('input')
+
+  function focus() {
+    input.value?.focus()
+  }
+
+  defineExpose({
+    focus
   })
 </script>
 

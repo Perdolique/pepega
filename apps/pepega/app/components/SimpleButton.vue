@@ -34,12 +34,11 @@
     align-items: center;
     justify-content: center;
     column-gap: var(--button-gap);
-    outline-offset: 3px;
+    outline-offset: var(--button-outline-offset);
     transition:
       background-color var(--button-transition),
       opacity var(--button-transition);
 
-    /* Use primary button style as default */
     background-color: var(--button-primary-color-bg);
     color: var(--button-primary-color-text);
 
@@ -75,6 +74,6 @@
   }
 
   .icon {
-    font-size: 20px;
+    font-size: var(--button-icon-size);
   }
 </style>

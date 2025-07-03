@@ -5,10 +5,14 @@
     </h3>
 
     <div
-      v-if="telegramChannelsStore.isGettingChannels"
+      v-if="isPending"
       :class="$style.loading"
     >
       Loading...
+    </div>
+
+    <div v-else-if="noChannels">
+      No channels added yet.
     </div>
 
     <div
@@ -16,7 +20,7 @@
       :class="$style.channels"
     >
       <ChannelChip
-        v-for="channel in telegramChannelsStore.channels.data"
+        v-for="channel in channels.data"
         :key="channel.id"
         :channel="channel"
         :active-channel-id="activeChannelId"
@@ -26,9 +30,9 @@
 
     <SimpleButton
       @click="showModal"
-      :disabled="telegramChannelsStore.isAddingChannel"
+      :disabled="isAddingChannel"
     >
-      <template v-if="telegramChannelsStore.isAddingChannel">
+      <template v-if="isAddingChannel">
         Adding channel...
       </template>
 
@@ -44,21 +48,27 @@
       :minlength="5"
       :maxlength="32"
       v-model="isOpened"
-      @submit="telegramChannelsStore.addChannel"
+      @submit="addChannel"
     />
   </BaseCard>
 </template>
 
 <script lang="ts" setup>
+  import { getTelegramChannels } from '~/composables/queries/telegram/channels'
+  import { useAddTelegramChannel } from '~/composables/mutations/telegram/add-channel'
   import BaseCard from '~/components/BaseCard.vue'
   import SimpleButton from '~/components/SimpleButton.vue'
   import InputDialog from '~/components/dialogs/InputDialog.vue'
-  import { useTelegramChannelsStore } from '~/stores/telegram-channels'
   import ChannelChip from './telegram/ChannelChip.vue'
 
   const isOpened = ref(false)
-  const telegramChannelsStore = useTelegramChannelsStore()
+  const { state: channels, isPending } = useQuery(getTelegramChannels)
+  const { mutate: addChannel, isLoading: isAddingChannel } = useAddTelegramChannel()
   const activeChannelId = ref<number | null>(null)
+
+  const noChannels = computed(
+    () => channels.value.data === undefined || channels.value.data?.length === 0
+  )
 
   function showModal() {
     isOpened.value = true

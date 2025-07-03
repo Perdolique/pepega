@@ -1,8 +1,8 @@
-import type { SubscriptionType } from '@pepega/twitch/models'
+import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
 
 interface SubscriptionModel {
   id: string;
-  type: SubscriptionType;
+  type: EventSubscriptionType;
   broadcasterId: string;
   streamerName: string | null;
   streamerLogin: string | null;

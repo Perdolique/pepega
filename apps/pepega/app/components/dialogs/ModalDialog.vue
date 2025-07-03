@@ -1,88 +1,105 @@
 <template>
-  <dialog
-    ref="dialogRef"
-    :class="$style.dialog"
-  >
-    <slot />
-  </dialog>
+  <DialogRoot v-model:open="open">
+    <AnimatePresence>
+      <DialogOverlay
+        :class="$style.overlay"
+        as-child
+        ref="overlayRef"
+      >
+        <Motion
+          :initial="{ opacity: 0 }"
+          :animate="{ opacity: 1, transition: animateTransition }"
+          :exit="{ opacity: 0, transition: exitTransition }"
+        />
+      </DialogOverlay>
+
+      <DialogContent
+        :class="$style.content"
+        :aria-describedby="undefined"
+        as-child
+        @pointer-down-outside="onPointerDownOutside"
+      >
+        <Motion
+          :initial="{ opacity: 0, scale: 0.95 }"
+          :animate="{ opacity: 1, scale: 1, transition: animateTransition }"
+          :exit="{ opacity: 0, scale: 0.95, transition: exitTransition }"
+        >
+          <DialogTitle>
+            {{ title }}
+          </DialogTitle>
+
+          <slot />
+        </Motion>
+      </DialogContent>
+    </AnimatePresence>
+  </DialogRoot>
 </template>
 
 <script lang="ts" setup>
-  import { useEventListener } from '@vueuse/core'
+  import { Motion, AnimatePresence } from 'motion-v'
+  import { DialogOverlay, DialogContent, DialogRoot, DialogTitle } from 'reka-ui'
 
-  const dialogRef = useTemplateRef('dialogRef')
+  type PointerDownOutsideEvent = CustomEvent<{
+    originalEvent: PointerEvent;
+  }>
 
-  const isOpened = defineModel<boolean>({
+  interface Props {
+    title: string
+  }
+
+  defineProps<Props>()
+
+  const overlayRef = useTemplateRef('overlayRef')
+
+  const animateTransition = {
+    ease: [0.25, 0.1, 0.25, 1.0],
+    duration: 0.2
+  } as const
+
+  const exitTransition = {
+    ease: [0.4, 0, 0.2, 1],
+    duration: 0.15
+  } as const
+
+  const open = defineModel<boolean>({
     required: true
   })
 
-  watchEffect(() => {
-    if (isOpened.value) {
-      dialogRef.value?.showModal()
-    } else {
-      dialogRef.value?.close()
+  /*
+   * We should handle clicks outside only on the overlay element.
+   * It helps to prevent closing the dialog when clicking on the other elements over the overlay.
+   * Ex.: toast notifications, tooltips, etc.
+   */
+  function onPointerDownOutside(event: PointerDownOutsideEvent) {
+    if (event.target !== overlayRef.value?.$el) {
+      event.preventDefault()
     }
-  });
-
-  useEventListener(dialogRef, 'close', () => {
-    isOpened.value = false
-  }, {
-    passive: true
-  })
-
-  // Close the dialog when clicking outside of it
-  useEventListener(dialogRef, 'click', ({ target }) => {
-    if (target === dialogRef.value) {
-      dialogRef.value?.close()
-    }
-  }, {
-    passive: true
-  })
+  }
 </script>
 
 <style module>
-  .dialog {
-    --transition-duration: var(--transition-normal);
-
-    /* Apply transitions */
-    opacity: 0;
-    scale: 1.1;
-    transition:
-      opacity var(--transition-duration) ease,
-      scale var(--transition-duration) ease,
-      overlay var(--transition-duration) ease allow-discrete,
-      display var(--transition-duration) ease allow-discrete;
-
-    &[open] {
-      will-change: scale;
-      opacity: 1;
-      scale: 1;
-
-      @starting-style {
-        opacity: 0;
-        scale: 1.1;
-      }
-    }
-  }
-
-  .dialog::backdrop {
-    background-color: transparent;
-    backdrop-filter: blur(0);
-    transition:
-      background-color var(--transition-duration) ease,
-      backdrop-filter var(--transition-duration) ease,
-      display var(--transition-duration) ease allow-discrete;
-  }
-
-  .dialog[open]::backdrop {
+  .overlay {
+    position: fixed;
+    inset: 0;
     background-color: var(--overlay-color-background);
     backdrop-filter: var(--overlay-backdrop-filter);
   }
 
-  @starting-style {
-    .dialog[open]::backdrop {
-      background-color: transparent;
-      backdrop-filter: blur(0);
-    }
+  .content {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    max-width: 90vw;
+    max-height: 85vh;
+    width: max-content;
+    min-width: var(--dialog-min-width);
+    display: grid;
+    row-gap: var(--spacing-16);
+    background-color: var(--dialog-color-background);
+    border-radius: var(--dialog-border-radius);
+    padding: var(--dialog-padding);
+    border: 1px solid var(--dialog-color-border);
+    translate: -50% -50%;
+    will-change: transform;
   }
 </style>

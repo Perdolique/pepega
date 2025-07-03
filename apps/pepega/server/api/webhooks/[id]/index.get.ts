@@ -2,7 +2,7 @@ import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 
 const paramsSchema = v.object({
-  id: webhookIdSchema
+  id: stringToIntegerSchema
 })
 
 function idValidator(params: unknown) {

@@ -8,6 +8,13 @@
       @click="toggleTooltip"
     >
       {{ channel.chatId }}
+
+      <Icon
+        v-if="channel.isVerified"
+        name="tabler:circle-check-filled"
+        size="1.25em"
+        :class="$style.channelIcon"
+      />
     </button>
 
     <AnimatePresence>
@@ -25,9 +32,24 @@
           ref="menuRef"
         >
           <button
+            v-if="channel.isVerified === false"
+            :class="$style.menuItem"
+            @click="openVerificationDialog"
+          >
+            <Icon
+              name="tabler:check"
+              size="1.25em"
+            />
+
+            <span :class="$style.menuItemText">
+              Verify channel
+            </span>
+          </button>
+
+          <button
             :class="[$style.menuItem, 'alert']"
             @click="showConfirmDialog"
-            :disabled="telegramChannelsStore.isDeletingChannel"
+            :disabled="isDeletingChannel"
           >
             <Icon
               name="tabler:trash-x"
@@ -35,7 +57,7 @@
             />
 
             <span :class="$style.menuItemText">
-              {{ telegramChannelsStore.isDeletingChannel ? 'Deleting...' : 'Delete channel' }}
+              {{ isDeletingChannel ? 'Deleting...' : 'Delete channel' }}
             </span>
           </button>
         </div>
@@ -50,6 +72,12 @@
     >
       Are you sure you want to delete the channel "{{ channel.chatId }}"? This action cannot be undone.
     </ConfirmationDialog>
+
+    <VerificationDialog
+      v-model="isVerificationDialogVisible"
+      :chat-id="channel.chatId"
+      :channel-id="channel.id"
+    />
   </div>
 </template>
 
@@ -58,8 +86,9 @@
   import { useIntersectionObserver } from '@vueuse/core'
   import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
   import { useClickOutside } from '~/composables/use-click-outside'
-  import { useTelegramChannelsStore } from '~/stores/telegram-channels'
+  import { useDeleteTelegramChannel } from '~/composables/mutations/telegram/delete-channel'
   import ConfirmationDialog from '~/components/dialogs/ConfirmationDialog.vue'
+  import VerificationDialog from './VerificationDialog.vue'
 
   type Emits = (event: 'toggle', channelId: number | null) => void
 
@@ -74,8 +103,9 @@
   const menuRef = useTemplateRef('menuRef')
   const isTooltipVisible = computed(() => activeChannelId === channel.id)
   const rightAligned = ref(false)
-  const telegramChannelsStore = useTelegramChannelsStore()
+  const { mutate: deleteChannel, isLoading: isDeletingChannel } = useDeleteTelegramChannel()
   const isConfirmationDialogVisible = ref(false)
+  const isVerificationDialogVisible = ref(false)
 
   const { pause, resume } = useIntersectionObserver(menuRef, ([entry]) => {
     if (entry === undefined) {
@@ -117,7 +147,13 @@
   }
 
   function onDeleteChannel() {
-    telegramChannelsStore.deleteChannel(channel.id)
+    deleteChannel(channel.id)
+  }
+
+  function openVerificationDialog() {
+    isVerificationDialogVisible.value = true
+
+    hideTooltip()
   }
 
   useClickOutside(isTooltipVisible, hideTooltip, {
@@ -141,6 +177,9 @@
   }
 
   .chip {
+    display: inline flex;
+    align-items: center;
+    column-gap: var(--spacing-4);
     outline: none;
     height: var(--chip-height);
     border: 2px solid transparent;
@@ -158,6 +197,10 @@
         0 0 0 calc(var(--chip-outline-size) / 2) var(--chip-color-bg-active),
         0 0 0 var(--chip-outline-size) var(--chip-color-border);
     }
+  }
+
+  .channelIcon {
+    color: var(--color-telegram-blue);
   }
 
   .tooltipWrapper {
@@ -203,6 +246,10 @@
 
     &:global(.alert) {
       color: var(--color-alert);
+    }
+
+    & + & {
+      border-top: 1px solid color-mix(in oklch, var(--chip-color-border), transparent 75%);
     }
   }
 

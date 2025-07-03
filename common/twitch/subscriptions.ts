@@ -1,14 +1,14 @@
 import { ofetch } from 'ofetch'
-import type { PaginatedResponse, Subscription, SubscriptionStatus, SubscriptionType } from './models';
-import logger from './logger';
+import type { PaginatedResponse } from './models/general';
+import type { EventSubscription, EventSubscriptionStatus, EventSubscriptionType } from './models/event-sub';
 
 interface GetSubscriptionsStatusFilters {
-  status?: SubscriptionStatus[];
+  status?: EventSubscriptionStatus[];
   type?: never;
 }
 
 interface GetSubscriptionsTypeFilters {
-  type?: SubscriptionType[];
+  type?: EventSubscriptionType[];
   status?: never;
 }
 
@@ -33,7 +33,7 @@ interface DeleteSubscriptionParams {
  * [Twitch API Reference](https://dev.twitch.tv/docs/eventsub/manage-subscriptions/#getting-the-list-of-events-you-subscribe-to)
  */
 export async function getSubscriptions({ token, clientId, filters = {} } : GetSubscriptionsParams) {
-  return await ofetch<PaginatedResponse<Subscription>>('https://api.twitch.tv/helix/eventsub/subscriptions', {
+  return await ofetch<PaginatedResponse<EventSubscription>>('https://api.twitch.tv/helix/eventsub/subscriptions', {
     params: {
       ...filters
     },

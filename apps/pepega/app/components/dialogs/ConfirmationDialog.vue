@@ -1,36 +1,31 @@
 <template>
-  <ModalDialog v-model="isOpened">
-    <div :class="$style.content">
-      <h2>
-        {{ headerText }}
-      </h2>
+  <ModalDialog
+    v-model="isOpened"
+    :title="headerText"
+  >
+    <slot />
 
-      <div>
-        <slot />
-      </div>
+    <div :class="$style.buttons">
+      <SimpleButton
+        variant="secondary"
+        :class="$style.button"
+        @click="close"
+      >
+        {{ cancelButtonText }}
+      </SimpleButton>
 
-      <div :class="$style.buttons">
-        <SimpleButton
-          variant="secondary"
-          :class="$style.button"
-          @click="close"
-        >
-          {{ cancelButtonText }}
-        </SimpleButton>
-
-        <SimpleButton
-          :class="$style.button"
-          @click="emitConfirm"
-        >
-          {{ confirmButtonText }}
-        </SimpleButton>
-      </div>
+      <SimpleButton
+        :class="$style.button"
+        @click="emitConfirm"
+      >
+        {{ confirmButtonText }}
+      </SimpleButton>
     </div>
   </ModalDialog>
 </template>
 
 <script lang="ts" setup>
-  import SimpleButton from '~/components/SimpleButton.vue';
+  import SimpleButton from '~/components/SimpleButton.vue'
   import ModalDialog from './ModalDialog.vue'
 
   interface Props {
