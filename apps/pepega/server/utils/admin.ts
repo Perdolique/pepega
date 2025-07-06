@@ -43,7 +43,7 @@ async function isUserAdmin(db: H3EventContext['db'], userId: string) {
  * const isAdmin = await checkAdmin(event)
  * ```
  */
-async function checkAdmin(
+export async function checkAdmin(
   event: H3Event<EventHandlerRequest>,
   { force = false } : CheckAdminOption = {}
 ) {
