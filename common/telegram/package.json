@@ -1,0 +1,17 @@
+{
+  "name": "@pepega/telegram",
+  "version": "0.0.1",
+  "description": "Telegram API utils",
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "./telegram.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@pepega/utils": "workspace:*",
+    "ofetch": "catalog:",
+    "valibot": "catalog:"
+  }
+}

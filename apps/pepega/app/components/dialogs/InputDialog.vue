@@ -1,14 +1,12 @@
 <template>
-  <ModalDialog v-model="isOpened">
+  <ModalDialog
+    v-model="isOpened"
+    :title="headerText"
+  >
     <form
-      method="dialog"
-      :class="$style.content"
-      @submit="handleSubmit"
+      :class="$style.form"
+      @submit.prevent="handleSubmit"
     >
-      <div :class="$style.header">
-        {{ headerText }}
-      </div>
-
       <TextInput
         required
         autofocus
@@ -22,6 +20,7 @@
 
       <div :class="$style.buttons">
         <SimpleButton
+          variant="secondary"
           type="button"
           @click="handleCancelClick"
         >
@@ -39,7 +38,7 @@
 <script lang="ts" setup>
   import SimpleButton from '~/components/SimpleButton.vue'
   import TextInput from '~/components/TextInput.vue'
-  import ModalDialog from './ModalDialog.vue'
+  import ModalDialog from './ModalDialog.vue';
 
   interface Props {
     readonly headerText: string;
@@ -53,7 +52,6 @@
   type Emits = (event: 'submit', input: string) => void
 
   const { initialValue = '' } = defineProps<Props>()
-  const textInputRef = useTemplateRef('textInputRef')
   const emit = defineEmits<Emits>()
   const input = ref(initialValue)
 
@@ -65,9 +63,11 @@
     isOpened.value = false
   }
 
-  function handleSubmit(event: Event) {
+  function handleSubmit() {
     if (input.value !== '') {
       emit('submit', input.value)
+
+      isOpened.value = false
     }
   }
 
@@ -78,31 +78,14 @@
       if (input.value !== initialValue) {
         input.value = initialValue
       }
-
-      // Select text in input field if it's not empty
-      nextTick(() => {
-        if (input.value !== '') {
-          textInputRef.value?.$el.select()
-        }
-      })
     }
   })
 </script>
 
 <style module>
-  .content {
+  .form {
     display: grid;
     row-gap: var(--spacing-24);
-    background-color: var(--dialog-color-background);
-    padding: var(--dialog-padding);
-    border-radius: var(--dialog-border-radius);
-    border: 1px solid var(--dialog-color-border);
-  }
-
-  .header {
-    font-size: var(--font-size-20);
-    font-weight: var(--font-weight-medium);
-    text-align: center;
   }
 
   .input {

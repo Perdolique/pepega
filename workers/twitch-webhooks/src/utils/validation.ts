@@ -1,6 +1,10 @@
+import { EventMessageType } from '@pepega/twitch/models/event-sub'
+import { UnionToTuple } from '@pepega/utils/types'
 import * as v from 'valibot'
-import { TwitchEventSubMessageType } from '../models/twitch'
 import logger from '../logger'
+import { EventHandlerRequest, H3Event } from 'h3'
+
+// TODO: move under validation directory
 
 const envSchema = v.object({
   // TWITCH_APP_SECRET
@@ -21,10 +25,14 @@ const envSchema = v.object({
   )
 })
 
-const twitchEventSubMessageTypeSchema = v.union([
-  v.literal<TwitchEventSubMessageType>('notification'),
-  v.literal<TwitchEventSubMessageType>('webhook_callback_verification'),
-  v.literal<TwitchEventSubMessageType>('revocation')
+// TODO: move to common package
+// PEPEGA_DEBUG="1"
+const envDebugSchema = v.literal('1')
+
+const eventMessageTypeSchema = v.picklist<UnionToTuple<EventMessageType>>([
+  'notification',
+  'webhook_callback_verification',
+  'revocation'
 ])
 
 const twitchEventSubVerificationHeadersSchema = v.pipe(
@@ -41,13 +49,13 @@ const twitchEventSubVerificationHeadersSchema = v.pipe(
   }))
 )
 
-export function getValidatedEnv(env: Env) : v.InferOutput<typeof envSchema> {
+export function getValidatedRequiredEnv(event: H3Event<EventHandlerRequest>) : v.InferOutput<typeof envSchema> {
   const testData = {
-    twitchClientId: env.TWITCH_CLIENT_ID,
-    twitchAppSecret: env.TWITCH_APP_SECRET,
-    databaseUrl: env.DATABASE_URL,
-    localDatabase: env.LOCAL_DATABASE,
-    encryptionKey: env.ENCRYPTION_KEY
+    twitchClientId: event.context.cloudflare.env.TWITCH_CLIENT_ID,
+    twitchAppSecret: event.context.cloudflare.env.TWITCH_APP_SECRET,
+    databaseUrl: event.context.cloudflare.env.DATABASE_URL,
+    localDatabase: event.context.cloudflare.env.LOCAL_DATABASE,
+    encryptionKey: event.context.cloudflare.env.ENCRYPTION_KEY
   } satisfies v.InferInput<typeof envSchema>
 
   const { success, output, issues } = v.safeParse(envSchema, testData)
@@ -76,11 +84,17 @@ export function getValidatedEnv(env: Env) : v.InferOutput<typeof envSchema> {
   return output
 }
 
-export function validateTwitchEventSubMessageType(value: unknown) {
-  return v.parse(twitchEventSubMessageTypeSchema, value)
+export function validateEventMessageType(value: unknown) {
+  return v.parse(eventMessageTypeSchema, value)
 }
 
 // TODO: Move to Twitch module
-export function validateTwitchEventSubVerificationHeaders(headers: unknown) {
+export function validateEventVerificationHeaders(headers: unknown) {
   return v.parse(twitchEventSubVerificationHeadersSchema, headers)
+}
+
+export function getValidatedDebug(event: H3Event<EventHandlerRequest>) : boolean {
+  const { success } = v.safeParse(envDebugSchema, event.context.cloudflare.env.PEPEGA_DEBUG)
+
+  return success
 }

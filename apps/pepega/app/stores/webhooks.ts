@@ -1,4 +1,4 @@
-import type { SubscriptionType } from '@pepega/twitch/models'
+import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
 import { type WebhookModel, type WebhookStatus } from '~~/shared/models/webhooks'
 import { isNotNull } from '~~/shared/utils/types'
 
@@ -9,7 +9,7 @@ interface Webhook {
   createdAt: string;
 }
 
-function transformWebhookType(type: string) : SubscriptionType | null {
+function transformWebhookType(type: string) : EventSubscriptionType | null {
   switch (type) {
     case 'stream.online': {
       return type
@@ -117,7 +117,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
     }
   }
 
-  async function createWebhook(type: SubscriptionType) {
+  async function createWebhook(type: EventSubscriptionType) {
     try {
       const result = await $fetch('/api/webhooks', {
         method: 'POST',

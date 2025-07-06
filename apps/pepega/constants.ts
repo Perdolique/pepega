@@ -18,3 +18,7 @@ export const kvStorageName = 'kv'
 export const kvStorageKeys = {
   twitchAppAccessToken: 'twitchAppAccessToken',
 }
+
+export const limits = {
+  notificationMessageLength: 500
+}

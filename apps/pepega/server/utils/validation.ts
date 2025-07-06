@@ -1,6 +1,7 @@
 import * as v from 'valibot'
+import type { NotificationEventType } from '~~/shared/models/notifications'
 
-export const webhookIdSchema = v.pipe(
+export const stringToIntegerSchema = v.pipe(
   v.string(),
   v.transform(Number),
   v.number(),
@@ -8,14 +9,30 @@ export const webhookIdSchema = v.pipe(
   v.minValue(1)
 )
 
-// OAUTH_TWITCH_CLIENT_ID
-const twitchClientIdSchema = v.string()
+export const idNumberSchema = v.pipe(
+  v.number(),
+  v.integer(),
+  v.minValue(1)
+)
 
-// OAUTH_TWITCH_CLIENT_SECRET
-const twitchClientSecretSchema = v.string()
+export const idStringAsNumberSchema = v.pipe(
+  v.string(),
+  v.nonEmpty(),
+  v.transform(value => Number(value)),
+  idNumberSchema
+)
 
-// ENCRYPTION_KEY
-const encryptionKeySchema = v.string()
+export const notificationEventTypeSchema = v.literal<NotificationEventType>('stream.online')
+
+// Any string that is not empty
+const envVariableStringSchema = v.pipe(
+  v.string(),
+  v.nonEmpty()
+)
+
+// TODO: move to common package
+// PEPEGA_DEBUG="1"
+const debugSchema = v.literal('1')
 
 // WEBHOOK_BASE_URL
 const webhookBaseUrlSchema = v.pipe(
@@ -24,7 +41,7 @@ const webhookBaseUrlSchema = v.pipe(
 )
 
 export function getValidatedTwitchClientId() {
-  const { success, output } = v.safeParse(twitchClientIdSchema, process.env.OAUTH_TWITCH_CLIENT_ID)
+  const { success, output } = v.safeParse(envVariableStringSchema, process.env.OAUTH_TWITCH_CLIENT_ID)
 
   if (success === false) {
     throw new Error('Invalid Twitch Client ID')
@@ -34,7 +51,7 @@ export function getValidatedTwitchClientId() {
 }
 
 export function getValidatedTwitchClientSecret() {
-  const { success, output } = v.safeParse(twitchClientSecretSchema, process.env.OAUTH_TWITCH_CLIENT_SECRET)
+  const { success, output } = v.safeParse(envVariableStringSchema, process.env.OAUTH_TWITCH_CLIENT_SECRET)
 
   if (success === false) {
     throw new Error('Invalid Twitch Client Secret')
@@ -44,7 +61,7 @@ export function getValidatedTwitchClientSecret() {
 }
 
 export function getValidatedEncryptionKey() {
-  const { success, output } = v.safeParse(encryptionKeySchema, process.env.ENCRYPTION_KEY)
+  const { success, output } = v.safeParse(envVariableStringSchema, process.env.ENCRYPTION_KEY)
 
   if (success === false) {
     throw new Error('Invalid Encryption Key')
@@ -58,6 +75,22 @@ export function getValidatedWebhookBaseUrl() {
 
   if (success === false) {
     throw new Error('Invalid Webhook Base URL')
+  }
+
+  return output
+}
+
+export function getValidatedDebug() : boolean {
+  const { success } = v.safeParse(debugSchema, process.env.PEPEGA_DEBUG)
+
+  return success
+}
+
+export function getValidatedTelegramBotToken() {
+  const { success, output } = v.safeParse(envVariableStringSchema, process.env.TELEGRAM_BOT_TOKEN)
+
+  if (success === false) {
+    throw new Error('Invalid Telegram bot token')
   }
 
   return output

@@ -1,6 +1,7 @@
 import * as v from 'valibot'
 import { count, eq, sql } from 'drizzle-orm'
 import { configKeys } from '@pepega/database/constants'
+import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
 
 const bodySchema = v.object({
   // TODO: I have no idea how it should be validated ¯\(ツ)/¯
@@ -23,7 +24,7 @@ function throwCreateChannelError(logMessage: string, logContext: Record<string, 
   })
 }
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (event) : Promise<TelegramChannelModel> => {
   const { chatId } = await readValidatedBody(event, bodyValidator)
   const { userId } = event.context
 

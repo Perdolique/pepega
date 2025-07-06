@@ -27,9 +27,10 @@
   --spacing-36: 2.25rem;
   --spacing-48: 3rem;
 
-  /* Twitch brand colors */
+  /* Brand colors */
   --color-twitch-purple: rgb(145, 70, 255);
   --color-twitch-purple-hover: color-mix(in oklch, var(--color-twitch-purple), black 10%);
+  --color-telegram-blue: oklch(67% 0.14 236.45);
 
   /* Colors */
   --color-background: light-dark(oklch(97% 0 0), oklch(15% 0 0));
@@ -50,6 +51,8 @@
   --button-gap: var(--spacing-8);
   --button-disabled-opacity: 0.5;
   --button-transition: var(--transition-fast);
+  --button-outline-offset: 3px;
+  --button-icon-size: var(--font-size-20);
 
   /* Primary button */
   --button-primary-color-bg: light-dark(oklch(30% 0.02 250), oklch(40% 0 0));
@@ -91,11 +94,15 @@
   --border-radius-16: 1rem;
   --border-radius-24: 1.5rem;
 
+  /* Shadows */
+  --shadow-1: 0 4px 16px light-dark(rgb(0 0 0 / 20%), rgb(255 255 255 / 10%));
+
   /* Dialog styles */
   --dialog-color-background: light-dark(oklch(93% 0 0), oklch(15% 0 0));
   --dialog-padding: var(--spacing-24);
   --dialog-color-border: var(--color-border);
   --dialog-border-radius: var(--border-radius-24);
+  --dialog-min-width: 320px;
 
   /* Transitions */
   /* TODO: add "duration" context to the name */
@@ -151,8 +158,8 @@
 
   /* Reset "a" default styles */
   a {
-    text-decoration: none;
     color: inherit;
+    text-underline-offset: 0.2em;
   }
 
   /* Reset headings */

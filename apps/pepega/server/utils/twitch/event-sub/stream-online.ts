@@ -57,14 +57,14 @@ interface SubscribeWebhookResponse {
  * * [`stream.online` subscription type](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#streamonline)
  */
 export async function subscribeWebhook(params: SubscribeWebhookParams) {
-  const { broadcasterUserId, callbackUrl, secret } = params
+  const { broadcasterUserId, callbackUrl, secret, appAccessToken } = params
 
   try {
     const response = await $fetch<SubscribeWebhookResponse>('https://api.twitch.tv/helix/eventsub/subscriptions', {
       method: 'POST',
 
       headers: {
-        Authorization: `Bearer ${params.appAccessToken}`,
+        Authorization: `Bearer ${appAccessToken}`,
         'Client-ID': params.clientId
       },
 
@@ -82,6 +82,12 @@ export async function subscribeWebhook(params: SubscribeWebhookParams) {
           secret
         }
       } satisfies SubscribeWebhookRequestBody
+    })
+
+    logger.info(`Webhook registered successfully`, {
+      broadcasterUserId,
+      callbackUrl,
+      'responseData[0]': response.data[0]
     })
 
     return { data: response }

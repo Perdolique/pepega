@@ -1,0 +1,1 @@
+ALTER TABLE "notificationDestinations" ADD CONSTRAINT "notificationDestinations_notificationId_providerId_unique" UNIQUE("notificationId","providerId");

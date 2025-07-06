@@ -6,8 +6,7 @@
   "author": "",
   "type": "module",
   "exports": {
-    "./crypto": "./crypto.ts",
-    "./logger": "./logger.ts"
+    "./*": "./*.ts"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -16,6 +15,6 @@
     "consola": "3.4.2"
   },
   "devDependencies": {
-    "@types/node": "22.14.1"
+    "@types/node": "24.0.10"
   }
 }

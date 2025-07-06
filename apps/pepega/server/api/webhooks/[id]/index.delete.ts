@@ -2,10 +2,10 @@ import { deleteSubscription } from '@pepega/twitch/subscriptions'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
-import { webhookIdSchema } from '~~/server/utils/validation'
+import { stringToIntegerSchema } from '~~/server/utils/validation'
 
 const paramsSchema = v.object({
-  id: webhookIdSchema
+  id: stringToIntegerSchema
 })
 
 function idValidator(params: unknown) {

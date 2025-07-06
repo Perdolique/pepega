@@ -1,0 +1,1 @@
+ALTER TABLE "notificationDestinations" ADD COLUMN "message" varchar NOT NULL;

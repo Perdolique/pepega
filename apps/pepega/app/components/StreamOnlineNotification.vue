@@ -33,6 +33,7 @@
         {{ createButtonLabel }}
       </SimpleButton>
 
+      <!-- TODO: move to settings -->
       <SimpleButton
         v-if="webhook"
         :class="$style.button"
@@ -41,6 +42,13 @@
       >
         Register
       </SimpleButton>
+
+      <LinkButton
+        to="/settings/notifications/stream-online"
+        icon-name="tabler:settings"
+      >
+        Settings
+      </LinkButton>
     </div>
   </BaseCard>
 </template>
@@ -52,6 +60,7 @@
   import { useUserStore } from '~/stores/user';
   import SimpleButton from '~/components/SimpleButton.vue'
   import BaseCard from '~/components/BaseCard.vue'
+  import LinkButton from '~/components/LinkButton.vue';
 
   const statusPollingInterval = 5000
   const isCreating = ref(false)

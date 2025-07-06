@@ -106,6 +106,69 @@
       "when": 1744393758729,
       "tag": "0014_seed_config_max_telegram_channels",
       "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1745001871778,
+      "tag": "0015_far_gideon",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1745085449674,
+      "tag": "0016_premium_bullseye",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1746122475468,
+      "tag": "0017_same_carlie_cooper",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1748190096600,
+      "tag": "0018_seed_notification_providers",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1748973287249,
+      "tag": "0019_tough_earthquake",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1750503008980,
+      "tag": "0020_legal_romulus",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1750598301149,
+      "tag": "0021_worried_talon",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1751567487112,
+      "tag": "0022_vengeful_moonstone",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1751823594165,
+      "tag": "0023_perpetual_black_panther",
+      "breakpoints": true
     }
   ]
 }
