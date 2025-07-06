@@ -2,6 +2,7 @@ import * as v from 'valibot'
 import { count, eq, sql } from 'drizzle-orm'
 import { configKeys } from '@pepega/database/constants'
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
+import { checkAdmin } from '~~/server/utils/admin'
 
 const bodySchema = v.object({
   // TODO: I have no idea how it should be validated ¯\(ツ)/¯
@@ -26,11 +27,35 @@ function throwCreateChannelError(logMessage: string, logContext: Record<string, 
 
 export default defineEventHandler(async (event) : Promise<TelegramChannelModel> => {
   const { chatId } = await readValidatedBody(event, bodyValidator)
-  const { userId } = event.context
+  const { db, userId } = event.context
+  const isAdmin = await checkAdmin(event)
+  const dbWebSocket = createDatabaseWebsocket()
 
-  const db = createDatabaseWebsocket()
+  // For admins, we don't check the limit
 
-  const result = await db.transaction(async (transaction) => {
+  if (isAdmin) {
+    const [insertedChannel] = await db
+      .insert(tables.telegramChannels)
+      .values({
+        userId,
+        chatId
+      })
+      .onConflictDoNothing()
+      .returning()
+
+    if (insertedChannel === undefined) {
+      throw createError({
+        statusCode: 500,
+        message: 'Failed to insert telegram channel'
+      })
+    }
+
+    return insertedChannel
+  }
+
+  // For regular users, we check the limit
+
+  const result = await dbWebSocket.transaction(async (transaction) => {
     // 1. Get confing from the database
     const config = await transaction.query.config.findFirst({
       columns: {},
@@ -71,7 +96,7 @@ export default defineEventHandler(async (event) : Promise<TelegramChannelModel> 
       })
     }
 
-    const [insertedChannel] = await db
+    const [insertedChannel] = await transaction
       .insert(tables.telegramChannels)
       .values({
         userId,
