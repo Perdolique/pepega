@@ -15,6 +15,12 @@
 
   "env": {
     "preview": {
+      "vars": {
+        "WEBHOOK_BASE_URL": "https://pooque-staging.pepega.app/",
+        "PEPEGA_DEBUG": "1",
+        "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot"
+      },
+
       "kv_namespaces": [{
         "binding": "KV",
         "id": "b331c1aeb9134b578548914dbf9adacc"
@@ -22,6 +28,11 @@
     },
 
     "production": {
+      "vars": {
+        "WEBHOOK_BASE_URL": "https://pooque.pepega.app/",
+        "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot"
+      },
+
       "kv_namespaces": [{
         "binding": "KV",
         "id": "f891dd5cc6414ad2a480b05014b371cc"
