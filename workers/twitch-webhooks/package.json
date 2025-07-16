@@ -12,7 +12,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@cloudflare/vitest-pool-workers": "0.8.53",
+    "@cloudflare/vitest-pool-workers": "0.8.54",
     "@pepega/database": "workspace:*",
     "@pepega/telegram": "workspace:*",
     "@pepega/twitch": "workspace:*",
