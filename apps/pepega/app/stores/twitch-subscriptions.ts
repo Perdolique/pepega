@@ -1,12 +1,4 @@
-import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
-
-interface SubscriptionModel {
-  id: string;
-  type: EventSubscriptionType;
-  broadcasterId: string;
-  streamerName: string | null;
-  streamerLogin: string | null;
-}
+import type { SubscriptionModel } from '#shared/models/twitch'
 
 export const useTwitchSubscriptionsStore = defineStore('twitch-subscriptions', () => {
   const subscriptions = ref(new Map<string, SubscriptionModel>())
