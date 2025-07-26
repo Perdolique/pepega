@@ -28,7 +28,6 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-01-06',
 
   typescript: {
-    strict: true,
     typeCheck: true
   },
 
@@ -78,10 +77,6 @@ export default defineNuxtConfig({
         binding: 'KV'
       }
     }
-  },
-
-  future: {
-    compatibilityVersion: 4
   },
 
   modules: [

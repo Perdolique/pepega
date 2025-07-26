@@ -1,6 +1,14 @@
-import { getSubscriptions } from '@pepega/twitch/subscriptions'
 import { inArray } from 'drizzle-orm'
+import { getSubscriptions } from '@pepega/twitch/subscriptions'
 import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
+import type { SubscriptionModel } from '#shared/models/twitch'
+
+// FIXME: (2025-07-26) `nuxt typecheck` command fails without this explicit type definition
+interface Streamer {
+  broadcasterId: string;
+  login: string | null;
+  displayName: string | null;
+}
 
 export default defineEventHandler(async (event) => {
   const { db } = event.context
@@ -10,7 +18,7 @@ export default defineEventHandler(async (event) => {
   const encryptionKey = getValidatedEncryptionKey()
   const appAccessToken = await obtainTwitchAppToken(encryptionKey)
   const clientId = getValidatedTwitchClientId()
-  const result = []
+  const result : SubscriptionModel[] = []
 
   if (appAccessToken === null) {
     logger.error('App access token not found')
@@ -28,7 +36,7 @@ export default defineEventHandler(async (event) => {
 
     const broadcasterIds = subscriptions.data.map(({ condition }) => condition.broadcaster_user_id)
 
-    const streamers = await db.query.streamers.findMany({
+    const streamers : Streamer[] = await db.query.streamers.findMany({
       columns: {
         broadcasterId: true,
         displayName: true,
