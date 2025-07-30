@@ -19,7 +19,7 @@
     "@pepega/utils": "workspace:*",
     "destr": "2.0.5",
     "drizzle-orm": "catalog:",
-    "h3": "1.15.3",
+    "h3": "1.15.4",
     "typescript": "catalog:",
     "valibot": "catalog:",
     "vitest": "3.2.4",
