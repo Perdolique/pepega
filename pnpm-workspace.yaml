@@ -9,9 +9,9 @@ packages:
 catalog:
   drizzle-orm: 0.44.4
   ofetch: 1.4.1
-  typescript: 5.8.3
+  typescript: 5.9.2
   valibot: 1.1.0
-  wrangler: 4.26.1
+  wrangler: 4.27.0
 
 nodeLinker: hoisted
 

@@ -24,7 +24,7 @@
     "typecheck": "pnpm --recursive --parallel run typecheck",
     "update:all": "taze -r -l -I latest"
   },
-  "packageManager": "pnpm@10.13.1",
+  "packageManager": "pnpm@10.14.0",
   "devDependencies": {
     "husky": "9.1.7",
     "taze": "19.1.0"
