@@ -29,16 +29,16 @@
     "date-fns": "4.1.0",
     "drizzle-orm": "catalog:",
     "modern-normalize": "3.0.1",
-    "motion-v": "1.6.1",
+    "motion-v": "1.7.0",
     "nitro-cloudflare-dev": "0.2.2",
-    "nuxt": "4.0.2",
+    "nuxt": "4.0.3",
     "pinia": "3.0.3",
     "reka-ui": "2.4.1",
     "ts-essentials": "10.1.1",
     "tsx": "4.20.3",
     "ufo": "1.6.1",
     "valibot": "catalog:",
-    "vue-tsc": "3.0.4",
+    "vue-tsc": "3.0.5",
     "wrangler": "catalog:"
   }
 }
