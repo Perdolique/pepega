@@ -23,7 +23,7 @@
     "@types/ws": "8.18.1",
     "drizzle-kit": "0.31.4",
     "drizzle-orm": "catalog:",
-    "tsx": "4.20.3",
+    "tsx": "4.20.4",
     "ws": "8.18.3"
   }
 }
