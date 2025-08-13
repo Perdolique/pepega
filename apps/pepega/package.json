@@ -13,10 +13,10 @@
     "typecheck": "nuxi typecheck"
   },
   "devDependencies": {
-    "@iconify-json/streamline-emojis": "1.2.2",
-    "@iconify-json/tabler": "1.2.20",
+    "@iconify-json/streamline-emojis": "1.2.4",
+    "@iconify-json/tabler": "1.2.22",
     "@nuxt/fonts": "0.11.4",
-    "@nuxt/icon": "1.15.0",
+    "@nuxt/icon": "2.0.0",
     "@pepega/database": "workspace:*",
     "@pepega/telegram": "workspace:*",
     "@pepega/twitch": "workspace:*",
@@ -35,7 +35,7 @@
     "pinia": "3.0.3",
     "reka-ui": "2.4.1",
     "ts-essentials": "10.1.1",
-    "tsx": "4.20.3",
+    "tsx": "4.20.4",
     "ufo": "1.6.1",
     "valibot": "catalog:",
     "vue-tsc": "3.0.5",
