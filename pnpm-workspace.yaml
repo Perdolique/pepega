@@ -11,7 +11,9 @@ catalog:
   ofetch: 1.4.1
   typescript: 5.9.2
   valibot: 1.1.0
-  wrangler: 4.30.0
+  wrangler: 4.32.0
+
+cleanupUnusedCatalogs: true
 
 nodeLinker: hoisted
 
