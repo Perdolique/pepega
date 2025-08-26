@@ -7,7 +7,7 @@ packages:
   - workers/*
 
 catalog:
-  drizzle-orm: 0.44.4
+  drizzle-orm: 0.44.5
   ofetch: 1.4.1
   typescript: 5.9.2
   valibot: 1.1.0
