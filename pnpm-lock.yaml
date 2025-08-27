@@ -7,8 +7,8 @@ settings:
 catalogs:
   default:
     drizzle-orm:
-      specifier: 0.44.4
-      version: 0.44.4
+      specifier: 0.44.5
+      version: 0.44.5
     ofetch:
       specifier: 1.4.1
       version: 1.4.1
@@ -19,8 +19,8 @@ catalogs:
       specifier: 1.1.0
       version: 1.1.0
     wrangler:
-      specifier: 4.32.0
-      version: 4.32.0
+      specifier: 4.33.0
+      version: 4.33.0
 
 importers:
 
@@ -43,7 +43,7 @@ importers:
         version: 1.2.22
       '@nuxt/fonts':
         specifier: 0.11.4
-        version: 0.11.4(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)(magicast@0.3.5)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))
+        version: 0.11.4(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)(magicast@0.3.5)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))
       '@nuxt/icon':
         specifier: 2.0.0
         version: 2.0.0(magicast@0.3.5)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.19(typescript@5.9.2))
@@ -60,14 +60,14 @@ importers:
         specifier: workspace:*
         version: link:../../common/utils
       '@pinia/colada':
-        specifier: 0.17.1
-        version: 0.17.1(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))
+        specifier: 0.17.2
+        version: 0.17.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))(vue@3.5.19(typescript@5.9.2))
       '@pinia/colada-devtools':
-        specifier: 0.1.5
-        version: 0.1.5
+        specifier: 0.1.6
+        version: 0.1.6
       '@pinia/colada-nuxt':
-        specifier: 0.2.1
-        version: 0.2.1(@pinia/colada@0.17.1(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2))))(magicast@0.3.5)
+        specifier: 0.2.2
+        version: 0.2.2(@pinia/colada@0.17.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))(vue@3.5.19(typescript@5.9.2)))(magicast@0.3.5)
       '@pinia/nuxt':
         specifier: 0.11.2
         version: 0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))
@@ -79,7 +79,7 @@ importers:
         version: 4.1.0
       drizzle-orm:
         specifier: 'catalog:'
-        version: 0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
+        version: 0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
       modern-normalize:
         specifier: 3.0.1
         version: 3.0.1
@@ -91,7 +91,7 @@ importers:
         version: 0.2.2
       nuxt:
         specifier: 4.0.3
-        version: 4.0.3(@netlify/blobs@9.1.2)(@parcel/watcher@2.5.1)(@types/node@24.3.0)(@vue/compiler-sfc@3.5.19)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))(ioredis@5.7.0)(magicast@0.3.5)(rollup@4.48.0)(terser@5.43.1)(tsx@4.20.5)(typescript@5.9.2)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))(vue-tsc@3.0.6(typescript@5.9.2))(yaml@2.8.1)
+        version: 4.0.3(@netlify/blobs@9.1.2)(@parcel/watcher@2.5.1)(@types/node@24.3.0)(@vue/compiler-sfc@3.5.19)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))(ioredis@5.7.0)(magicast@0.3.5)(rollup@4.48.0)(terser@5.43.1)(tsx@4.20.5)(typescript@5.9.2)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))(vue-tsc@3.0.6(typescript@5.9.2))(yaml@2.8.1)
       pinia:
         specifier: 3.0.3
         version: 3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2))
@@ -115,7 +115,7 @@ importers:
         version: 3.0.6(typescript@5.9.2)
       wrangler:
         specifier: 'catalog:'
-        version: 4.32.0
+        version: 4.33.0
 
   common/database:
     dependencies:
@@ -130,7 +130,7 @@ importers:
         version: 0.31.4
       drizzle-orm:
         specifier: 'catalog:'
-        version: 0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
+        version: 0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
       tsx:
         specifier: 4.20.5
         version: 4.20.5
@@ -175,8 +175,8 @@ importers:
   workers/twitch-webhooks:
     dependencies:
       '@cloudflare/vitest-pool-workers':
-        specifier: 0.8.66
-        version: 0.8.66(@vitest/runner@3.2.4)(@vitest/snapshot@3.2.4)(vitest@3.2.4(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))
+        specifier: 0.8.67
+        version: 0.8.67(@vitest/runner@3.2.4)(@vitest/snapshot@3.2.4)(vitest@3.2.4(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))
       '@pepega/database':
         specifier: workspace:*
         version: link:../../common/database
@@ -194,7 +194,7 @@ importers:
         version: 2.0.5
       drizzle-orm:
         specifier: 'catalog:'
-        version: 0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
+        version: 0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
       h3:
         specifier: 1.15.4
         version: 1.15.4
@@ -209,7 +209,7 @@ importers:
         version: 3.2.4(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1)
       wrangler:
         specifier: 'catalog:'
-        version: 4.32.0
+        version: 4.33.0
 
 packages:
 
@@ -358,8 +358,8 @@ packages:
     resolution: {integrity: sha512-+tv3z+SPp+gqTIcImN9o0hqE9xyfQjI1XD9pL6NuKjua9B1y7mNYv0S9cP+QEbA4ppVgGZEmKOvHX5G5Ei1CVA==}
     engines: {node: '>=18.0.0'}
 
-  '@cloudflare/unenv-preset@2.6.2':
-    resolution: {integrity: sha512-C7/tW7Qy+wGOCmHXu7xpP1TF3uIhRoi7zVY7dmu/SOSGjPilK+lSQ2lIRILulZsT467ZJNlI0jBxMbd8LzkGRg==}
+  '@cloudflare/unenv-preset@2.6.3':
+    resolution: {integrity: sha512-Bj3i0kHAKFh/fViM8RT5ToV7w5Q8bGUR6yw4R0pkNktn559rmBMNf0+hkRmX8BmVH4WTo1Ye79zjkCxnmNt4+g==}
     peerDependencies:
       unenv: 2.0.0-rc.19
       workerd: ^1.20250802.0
@@ -367,39 +367,39 @@ packages:
       workerd:
         optional: true
 
-  '@cloudflare/vitest-pool-workers@0.8.66':
-    resolution: {integrity: sha512-1W7Akip4wpOcVn4ZrQ2T9OXQEqYEzbC3Ul2Xll2+DPb2z1qRx43TaomAYe8qIhXNd+GhM3A1zZTSVVcXnXpQFw==}
+  '@cloudflare/vitest-pool-workers@0.8.67':
+    resolution: {integrity: sha512-1r893HW98f7VF1n/f0/lhdwg5tEwY6/FWSmZW0LmrH7cP+fzQjE1beSj21xuZkziHb9vkrtIZoFekPiEZSwY2A==}
     peerDependencies:
       '@vitest/runner': 2.0.x - 3.2.x
       '@vitest/snapshot': 2.0.x - 3.2.x
       vitest: 2.0.x - 3.2.x
 
-  '@cloudflare/workerd-darwin-64@1.20250816.0':
-    resolution: {integrity: sha512-yN1Rga4ufTdrJPCP4gEqfB47i1lWi3teY5IoeQbUuKnjnCtm4pZvXur526JzCmaw60Jx+AEWf5tizdwRd5hHBQ==}
+  '@cloudflare/workerd-darwin-64@1.20250823.0':
+    resolution: {integrity: sha512-yRLJc1cQNqQYcDViOk7kpTXnR5XuBP7B/Ms5KBdlQ6eTr2Vsg9mfKqWKInjzY8/Cx+p+Sic2Tbld42gcYkiM2A==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [darwin]
 
-  '@cloudflare/workerd-darwin-arm64@1.20250816.0':
-    resolution: {integrity: sha512-WyKPMQhbU+TTf4uDz3SA7ZObspg7WzyJMv/7J4grSddpdx2A4Y4SfPu3wsZleAOIMOAEVi0A1sYDhdltKM7Mxg==}
+  '@cloudflare/workerd-darwin-arm64@1.20250823.0':
+    resolution: {integrity: sha512-KJnikUe6J29Ga1QMPKNCc8eHD56DdBlu5XE5LoBH/AYRrbS5UI1d5F844hUWoFKJb8KRaPIH9F849HZWfNa1vw==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [darwin]
 
-  '@cloudflare/workerd-linux-64@1.20250816.0':
-    resolution: {integrity: sha512-NWHOuFnVBaPRhLHw8kjPO9GJmc2P/CTYbnNlNm0EThyi57o/oDx0ldWLJqEHlrdEPOw7zEVGBqM/6M+V9agC6w==}
+  '@cloudflare/workerd-linux-64@1.20250823.0':
+    resolution: {integrity: sha512-4QFXq4eDWEAK5QjGxRe0XUTBax1Fgarc08HETL6q0y/KPZp2nOTLfjLjklTn/qEiztafNFoJEIwhkiknHeOi/g==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [linux]
 
-  '@cloudflare/workerd-linux-arm64@1.20250816.0':
-    resolution: {integrity: sha512-FR+/yhaWs7FhfC3GKsM3+usQVrGEweJ9qyh7p+R6HNwnobgKr/h5ATWvJ4obGJF6ZHHodgSe+gOSYR7fkJ1xAQ==}
+  '@cloudflare/workerd-linux-arm64@1.20250823.0':
+    resolution: {integrity: sha512-sODSrSVe4W/maoBu76qb0sJGBhxhSM2Q2tg/+G7q1IPgRZSzArMKIPrW6nBnmBrrG1O0X6aoAdID6w5hfuEM4g==}
     engines: {node: '>=16'}
     cpu: [arm64]
     os: [linux]
 
-  '@cloudflare/workerd-windows-64@1.20250816.0':
-    resolution: {integrity: sha512-0lqClj2UMhFa8tCBiiX7Zhd5Bjp0V+X8oNBG6V6WsR9p9/HlIHAGgwRAM7aYkyG+8KC8xlbC89O2AXUXLpHx0g==}
+  '@cloudflare/workerd-windows-64@1.20250823.0':
+    resolution: {integrity: sha512-WaNqUOXUnrcEI+i2NI4+okA9CrJMI9n2XTfVtDg/pLvcA/ZPTz23MEFMZU1splr4SslS1th1NBO38RMPnDB4rA==}
     engines: {node: '>=16'}
     cpu: [x64]
     os: [win32]
@@ -1682,18 +1682,19 @@ packages:
     resolution: {integrity: sha512-dfUnCxiN9H4ap84DvD2ubjw+3vUNpstxa0TneY/Paat8a3R4uQZDLSvWjmznAY/DoahqTHl9V46HF/Zs3F29pg==}
     engines: {node: '>= 10.0.0'}
 
-  '@pinia/colada-devtools@0.1.5':
-    resolution: {integrity: sha512-KqWS6Uu8cOO6LTwbA5TxrMpExmZdffJiBYTDkp1l87JNNQ+Kj6tuYyrC3MuYz2ZY+OpwDGWX7IHlkDEaCu+PYQ==}
+  '@pinia/colada-devtools@0.1.6':
+    resolution: {integrity: sha512-wRW/GxP8SiahC5TRVulQe+5NuIQ7DGtgsO4Xsf9tP2HSTTRD8ac+7pn9vbKxovPdXrgAyAo9PWzk1b+y5MYEUQ==}
 
-  '@pinia/colada-nuxt@0.2.1':
-    resolution: {integrity: sha512-bYeuu6ITlNrnRTUoRXsPo+TttNDWa9MZbJ1rS/ElmzA4liPAXJD4mozJ6PS46Rb7inBFYWTDNvRfHXBuweifmg==}
+  '@pinia/colada-nuxt@0.2.2':
+    resolution: {integrity: sha512-9Y1U8WnytGvND8FahxwLn+Tjmf0XrzIV5v+ZE/swIe1zMJHjriw3EpRhoeBldlbKezc4E56kzW9iS3C87x5n3Q==}
     peerDependencies:
-      '@pinia/colada': '>=0.17.0'
+      '@pinia/colada': '>=0.17.2'
 
-  '@pinia/colada@0.17.1':
-    resolution: {integrity: sha512-we89QKKfLCCbhz/UOCJBYvZ5XdnbJYLDsO2prIO9W/0qMLSBRcehAi/Pm+q0wFIhvUbrAvblN3kUFxFNeyDxTw==}
+  '@pinia/colada@0.17.2':
+    resolution: {integrity: sha512-BOwO6dmVRFfhhSC0Pg023GOleW8QJDZIbjuFRvR/krIHyBNuwCK/75ezX9wmHAjnUFZ765wsyjF7Jx0nG1+PaA==}
     peerDependencies:
       pinia: ^2.2.6 || ^3.0.0
+      vue: ^3.5.17
 
   '@pinia/nuxt@0.11.2':
     resolution: {integrity: sha512-CgvSWpbktxxWBV7ModhAcsExsQZqpPq6vMYEe9DexmmY6959ev8ukL4iFhr/qov2Nb9cQAWd7niFDnaWkN+FHg==}
@@ -2096,6 +2097,9 @@ packages:
   '@vue/devtools-api@7.7.7':
     resolution: {integrity: sha512-lwOnNBH2e7x1fIIbVT7yF5D+YWhqELm55/4ZKf45R9T8r9dE2AIOy8HKjfqzGsoTHFbWbr337O4E0A0QADnjBg==}
 
+  '@vue/devtools-api@8.0.1':
+    resolution: {integrity: sha512-YBvjfpM7LEp5+b7ZDm4+mFrC+TgGjUmN8ff9lZcbHQ1MKhmftT/urCTZP0y1j26YQWr25l9TPaEbNLbILRiGoQ==}
+
   '@vue/devtools-core@7.7.7':
     resolution: {integrity: sha512-9z9TLbfC+AjAi1PQyWX+OErjIaJmdFlbDHcD+cAMYKY6Bh5VlsAtCeGyRMrXwIlMEQPukvnWt3gZBLwTAIMKzQ==}
     peerDependencies:
@@ -2104,8 +2108,14 @@ packages:
   '@vue/devtools-kit@7.7.7':
     resolution: {integrity: sha512-wgoZtxcTta65cnZ1Q6MbAfePVFxfM+gq0saaeytoph7nEa7yMXoi6sCPy4ufO111B9msnw0VOWjPEFCXuAKRHA==}
 
+  '@vue/devtools-kit@8.0.1':
+    resolution: {integrity: sha512-7kiPhgTKNtNeXltEHnJJjIDlndlJP4P+UJvCw54uVHNDlI6JzwrSiRmW4cxKTug2wDbc/dkGaMnlZghcwV+aWA==}
+
   '@vue/devtools-shared@7.7.7':
     resolution: {integrity: sha512-+udSj47aRl5aKb0memBvcUG9koarqnxNM5yjuREvqwK6T3ap4mn3Zqqc17QrBFTqSMjr3HK1cvStEZpMDpfdyw==}
+
+  '@vue/devtools-shared@8.0.1':
+    resolution: {integrity: sha512-PqtWqPPRpMwZ9FjTzyugb5KeV9kmg2C3hjxZHwjl0lijT4QIJDd0z6AWcnbM9w2nayjDymyTt0+sbdTv3pVeNg==}
 
   '@vue/language-core@3.0.6':
     resolution: {integrity: sha512-e2RRzYWm+qGm8apUHW1wA5RQxzNhkqbbKdbKhiDUcmMrNAZGyM8aTiL3UrTqkaFI5s7wJRGGrp4u3jgusuBp2A==}
@@ -2752,8 +2762,8 @@ packages:
     resolution: {integrity: sha512-tCPWVZWZqWVx2XUsVpJRnH9Mx0ClVOf5YUHerZ5so1OKSlqww4zy1R5ksEdGRcO3tM3zj0PYN6V48TbQCL1RfA==}
     hasBin: true
 
-  drizzle-orm@0.44.4:
-    resolution: {integrity: sha512-ZyzKFpTC/Ut3fIqc2c0dPZ6nhchQXriTsqTNs4ayRgl6sZcFlMs9QZKPSHXK4bdOf41GHGWf+FrpcDDYwW+W6Q==}
+  drizzle-orm@0.44.5:
+    resolution: {integrity: sha512-jBe37K7d8ZSKptdKfakQFdeljtu3P2Cbo7tJoJSVZADzIKOBo9IAJPOmMsH2bZl90bZgh8FQlD8BjxXA/zuBkQ==}
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
       '@cloudflare/workers-types': '>=4'
@@ -3568,8 +3578,8 @@ packages:
     resolution: {integrity: sha512-VP79XUPxV2CigYP3jWwAUFSku2aKqBH7uTAapFWCBqutsbmDo96KY5o8uh6U+/YSIn5OxJnXp73beVkpqMIGhA==}
     engines: {node: '>=18'}
 
-  miniflare@4.20250816.1:
-    resolution: {integrity: sha512-2X8yMy5wWw0dF1pNU4kztzZgp0jWv2KMqAOOb2FeQ/b11yck4aczmYHi7UYD3uyOgtj8WFhwG/KdRWAaATTtRA==}
+  miniflare@4.20250823.0:
+    resolution: {integrity: sha512-ofQRQ6rb/5P4nsz/J+xptdrN4zvYUm0wuezbKfaxbAGiIVTsM1vd+Pta5MtZwdQ6BKLM9tKMtU0rnbTzy3wntQ==}
     engines: {node: '>=18.0.0'}
     hasBin: true
 
@@ -5029,17 +5039,17 @@ packages:
     resolution: {integrity: sha512-DLiFIXYC5fMPxaRg832S6F5mJYvePtmO5G9v9IgUFPhXm9/GkXarH/TUrBAVzhTCzAj9anE/+GjrgXp/54nOgw==}
     engines: {node: '>= 12.0.0'}
 
-  workerd@1.20250816.0:
-    resolution: {integrity: sha512-5gIvHPE/3QVlQR1Sc1NdBkWmqWj/TSgIbY/f/qs9lhiLBw/Da+HbNBTVYGjvwYqEb3NQ+XQM4gAm5b2+JJaUJg==}
+  workerd@1.20250823.0:
+    resolution: {integrity: sha512-95lToK9zeaC7bX5ZmlP/wz6zqoUPBk3hhec1JjEMGZrxsXY9cPRkjWNCcjDctQ17U97vjMcY/ymchgx7w8Cfmg==}
     engines: {node: '>=16'}
     hasBin: true
 
-  wrangler@4.32.0:
-    resolution: {integrity: sha512-q7TRSavBW3Eg3pp4rxqKJwSK+u/ieFOBdNvUsq1P1EMmyj3//tN/iXDokFak+dkW0vDYjsVG3PfOfHxU92OS6w==}
+  wrangler@4.33.0:
+    resolution: {integrity: sha512-LIVnW/VePLMca8Y4pKz4ycXc8yPfXwJJnOnpq65fRTh9lR4UAuqHvSNW4Vx4JJI3ZniRZXIM8pb+tSntd5161w==}
     engines: {node: '>=18.0.0'}
     hasBin: true
     peerDependencies:
-      '@cloudflare/workers-types': ^4.20250816.0
+      '@cloudflare/workers-types': ^4.20250823.0
     peerDependenciesMeta:
       '@cloudflare/workers-types':
         optional: true
@@ -5352,42 +5362,42 @@ snapshots:
     dependencies:
       mime: 3.0.0
 
-  '@cloudflare/unenv-preset@2.6.2(unenv@2.0.0-rc.19)(workerd@1.20250816.0)':
+  '@cloudflare/unenv-preset@2.6.3(unenv@2.0.0-rc.19)(workerd@1.20250823.0)':
     dependencies:
       unenv: 2.0.0-rc.19
     optionalDependencies:
-      workerd: 1.20250816.0
+      workerd: 1.20250823.0
 
-  '@cloudflare/vitest-pool-workers@0.8.66(@vitest/runner@3.2.4)(@vitest/snapshot@3.2.4)(vitest@3.2.4(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))':
+  '@cloudflare/vitest-pool-workers@0.8.67(@vitest/runner@3.2.4)(@vitest/snapshot@3.2.4)(vitest@3.2.4(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
       '@vitest/runner': 3.2.4
       '@vitest/snapshot': 3.2.4
       birpc: 0.2.14
       cjs-module-lexer: 1.4.3
       devalue: 4.3.3
-      miniflare: 4.20250816.1
+      miniflare: 4.20250823.0
       semver: 7.7.2
       vitest: 3.2.4(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1)
-      wrangler: 4.32.0
+      wrangler: 4.33.0
       zod: 3.25.76
     transitivePeerDependencies:
       - '@cloudflare/workers-types'
       - bufferutil
       - utf-8-validate
 
-  '@cloudflare/workerd-darwin-64@1.20250816.0':
+  '@cloudflare/workerd-darwin-64@1.20250823.0':
     optional: true
 
-  '@cloudflare/workerd-darwin-arm64@1.20250816.0':
+  '@cloudflare/workerd-darwin-arm64@1.20250823.0':
     optional: true
 
-  '@cloudflare/workerd-linux-64@1.20250816.0':
+  '@cloudflare/workerd-linux-64@1.20250823.0':
     optional: true
 
-  '@cloudflare/workerd-linux-arm64@1.20250816.0':
+  '@cloudflare/workerd-linux-arm64@1.20250823.0':
     optional: true
 
-  '@cloudflare/workerd-windows-64@1.20250816.0':
+  '@cloudflare/workerd-windows-64@1.20250823.0':
     optional: true
 
   '@colors/colors@1.6.0': {}
@@ -6136,7 +6146,7 @@ snapshots:
       - utf-8-validate
       - vue
 
-  '@nuxt/fonts@0.11.4(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)(magicast@0.3.5)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))':
+  '@nuxt/fonts@0.11.4(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)(magicast@0.3.5)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))':
     dependencies:
       '@nuxt/devtools-kit': 2.6.3(magicast@0.3.5)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))
       '@nuxt/kit': 3.18.1(magicast@0.3.5)
@@ -6157,7 +6167,7 @@ snapshots:
       ufo: 1.6.1
       unifont: 0.4.1
       unplugin: 2.3.8
-      unstorage: 1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)
+      unstorage: 1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)
     transitivePeerDependencies:
       - '@azure/app-configuration'
       - '@azure/cosmos'
@@ -6548,19 +6558,20 @@ snapshots:
       '@parcel/watcher-win32-ia32': 2.5.1
       '@parcel/watcher-win32-x64': 2.5.1
 
-  '@pinia/colada-devtools@0.1.5': {}
+  '@pinia/colada-devtools@0.1.6': {}
 
-  '@pinia/colada-nuxt@0.2.1(@pinia/colada@0.17.1(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2))))(magicast@0.3.5)':
+  '@pinia/colada-nuxt@0.2.2(@pinia/colada@0.17.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))(vue@3.5.19(typescript@5.9.2)))(magicast@0.3.5)':
     dependencies:
-      '@nuxt/kit': 3.18.1(magicast@0.3.5)
-      '@pinia/colada': 0.17.1(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))
+      '@nuxt/kit': 4.0.3(magicast@0.3.5)
+      '@pinia/colada': 0.17.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))(vue@3.5.19(typescript@5.9.2))
     transitivePeerDependencies:
       - magicast
 
-  '@pinia/colada@0.17.1(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))':
+  '@pinia/colada@0.17.2(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))(vue@3.5.19(typescript@5.9.2))':
     dependencies:
-      '@vue/devtools-api': 7.7.7
+      '@vue/devtools-api': 8.0.1
       pinia: 3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2))
+      vue: 3.5.19(typescript@5.9.2)
 
   '@pinia/nuxt@0.11.2(magicast@0.3.5)(pinia@3.0.3(typescript@5.9.2)(vue@3.5.19(typescript@5.9.2)))':
     dependencies:
@@ -6994,6 +7005,10 @@ snapshots:
     dependencies:
       '@vue/devtools-kit': 7.7.7
 
+  '@vue/devtools-api@8.0.1':
+    dependencies:
+      '@vue/devtools-kit': 8.0.1
+
   '@vue/devtools-core@7.7.7(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))(vue@3.5.19(typescript@5.9.2))':
     dependencies:
       '@vue/devtools-kit': 7.7.7
@@ -7016,7 +7031,21 @@ snapshots:
       speakingurl: 14.0.1
       superjson: 2.2.2
 
+  '@vue/devtools-kit@8.0.1':
+    dependencies:
+      '@vue/devtools-shared': 8.0.1
+      birpc: 2.5.0
+      hookable: 5.5.3
+      mitt: 3.0.1
+      perfect-debounce: 1.0.0
+      speakingurl: 14.0.1
+      superjson: 2.2.2
+
   '@vue/devtools-shared@7.7.7':
+    dependencies:
+      rfdc: 1.4.1
+
+  '@vue/devtools-shared@8.0.1':
     dependencies:
       rfdc: 1.4.1
 
@@ -7531,9 +7560,9 @@ snapshots:
 
   date-fns@4.1.0: {}
 
-  db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)):
+  db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)):
     optionalDependencies:
-      drizzle-orm: 0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
+      drizzle-orm: 0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)
 
   de-indent@1.0.2: {}
 
@@ -7671,7 +7700,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5):
+  drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5):
     optionalDependencies:
       '@neondatabase/serverless': 1.0.1
       '@types/pg': 8.15.5
@@ -8440,7 +8469,7 @@ snapshots:
 
   mimic-function@5.0.1: {}
 
-  miniflare@4.20250816.1:
+  miniflare@4.20250823.0:
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       acorn: 8.14.0
@@ -8450,7 +8479,7 @@ snapshots:
       sharp: 0.33.5
       stoppable: 1.1.0
       undici: 7.15.0
-      workerd: 1.20250816.0
+      workerd: 1.20250823.0
       ws: 8.18.0
       youch: 4.1.0-beta.10
       zod: 3.22.3
@@ -8539,7 +8568,7 @@ snapshots:
       mlly: 1.8.0
       pkg-types: 2.3.0
 
-  nitropack@2.12.4(@netlify/blobs@9.1.2)(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)):
+  nitropack@2.12.4(@netlify/blobs@9.1.2)(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
       '@netlify/functions': 3.1.10(rollup@4.48.0)
@@ -8561,7 +8590,7 @@ snapshots:
       cookie-es: 2.0.0
       croner: 9.1.0
       crossws: 0.3.5
-      db0: 0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))
+      db0: 0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))
       defu: 6.1.4
       destr: 2.0.5
       dot-prop: 9.0.0
@@ -8607,7 +8636,7 @@ snapshots:
       unenv: 2.0.0-rc.19
       unimport: 5.2.0
       unplugin-utils: 0.2.5
-      unstorage: 1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)
+      unstorage: 1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)
       untyped: 2.0.0
       unwasm: 0.3.11
       youch: 4.1.0-beta.8
@@ -8699,7 +8728,7 @@ snapshots:
     dependencies:
       boolbase: 1.0.0
 
-  nuxt@4.0.3(@netlify/blobs@9.1.2)(@parcel/watcher@2.5.1)(@types/node@24.3.0)(@vue/compiler-sfc@3.5.19)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))(ioredis@5.7.0)(magicast@0.3.5)(rollup@4.48.0)(terser@5.43.1)(tsx@4.20.5)(typescript@5.9.2)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))(vue-tsc@3.0.6(typescript@5.9.2))(yaml@2.8.1):
+  nuxt@4.0.3(@netlify/blobs@9.1.2)(@parcel/watcher@2.5.1)(@types/node@24.3.0)(@vue/compiler-sfc@3.5.19)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))(ioredis@5.7.0)(magicast@0.3.5)(rollup@4.48.0)(terser@5.43.1)(tsx@4.20.5)(typescript@5.9.2)(vite@7.1.3(@types/node@24.3.0)(jiti@2.5.1)(terser@5.43.1)(tsx@4.20.5)(yaml@2.8.1))(vue-tsc@3.0.6(typescript@5.9.2))(yaml@2.8.1):
     dependencies:
       '@nuxt/cli': 3.28.0(magicast@0.3.5)
       '@nuxt/devalue': 2.0.2
@@ -8734,7 +8763,7 @@ snapshots:
       mlly: 1.8.0
       mocked-exports: 0.1.1
       nanotar: 0.2.0
-      nitropack: 2.12.4(@netlify/blobs@9.1.2)(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))
+      nitropack: 2.12.4(@netlify/blobs@9.1.2)(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))
       nypm: 0.6.1
       ofetch: 1.4.1
       ohash: 2.0.11
@@ -8759,7 +8788,7 @@ snapshots:
       unimport: 5.2.0
       unplugin: 2.3.8
       unplugin-vue-router: 0.15.0(@vue/compiler-sfc@3.5.19)(typescript@5.9.2)(vue-router@4.5.1(vue@3.5.19(typescript@5.9.2)))(vue@3.5.19(typescript@5.9.2))
-      unstorage: 1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)
+      unstorage: 1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0)
       untyped: 2.0.0
       vue: 3.5.19(typescript@5.9.2)
       vue-bundle-renderer: 2.1.2
@@ -9907,7 +9936,7 @@ snapshots:
       picomatch: 4.0.3
       webpack-virtual-modules: 0.6.2
 
-  unstorage@1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0):
+  unstorage@1.17.0(@netlify/blobs@9.1.2)(db0@0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5)))(ioredis@5.7.0):
     dependencies:
       anymatch: 3.1.3
       chokidar: 4.0.3
@@ -9919,7 +9948,7 @@ snapshots:
       ufo: 1.6.1
     optionalDependencies:
       '@netlify/blobs': 9.1.2
-      db0: 0.3.2(drizzle-orm@0.44.4(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))
+      db0: 0.3.2(drizzle-orm@0.44.5(@neondatabase/serverless@1.0.1)(@types/pg@8.15.5))
       ioredis: 5.7.0
 
   untun@0.1.3:
@@ -10178,24 +10207,24 @@ snapshots:
       triple-beam: 1.4.1
       winston-transport: 4.9.0
 
-  workerd@1.20250816.0:
+  workerd@1.20250823.0:
     optionalDependencies:
-      '@cloudflare/workerd-darwin-64': 1.20250816.0
-      '@cloudflare/workerd-darwin-arm64': 1.20250816.0
-      '@cloudflare/workerd-linux-64': 1.20250816.0
-      '@cloudflare/workerd-linux-arm64': 1.20250816.0
-      '@cloudflare/workerd-windows-64': 1.20250816.0
+      '@cloudflare/workerd-darwin-64': 1.20250823.0
+      '@cloudflare/workerd-darwin-arm64': 1.20250823.0
+      '@cloudflare/workerd-linux-64': 1.20250823.0
+      '@cloudflare/workerd-linux-arm64': 1.20250823.0
+      '@cloudflare/workerd-windows-64': 1.20250823.0
 
-  wrangler@4.32.0:
+  wrangler@4.33.0:
     dependencies:
       '@cloudflare/kv-asset-handler': 0.4.0
-      '@cloudflare/unenv-preset': 2.6.2(unenv@2.0.0-rc.19)(workerd@1.20250816.0)
+      '@cloudflare/unenv-preset': 2.6.3(unenv@2.0.0-rc.19)(workerd@1.20250823.0)
       blake3-wasm: 2.1.5
       esbuild: 0.25.4
-      miniflare: 4.20250816.1
+      miniflare: 4.20250823.0
       path-to-regexp: 6.3.0
       unenv: 2.0.0-rc.19
-      workerd: 1.20250816.0
+      workerd: 1.20250823.0
     optionalDependencies:
       fsevents: 2.3.3
     transitivePeerDependencies:
