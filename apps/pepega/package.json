@@ -29,7 +29,7 @@
     "date-fns": "4.1.0",
     "drizzle-orm": "catalog:",
     "modern-normalize": "3.0.1",
-    "motion-v": "1.7.0",
+    "motion-v": "1.7.1",
     "nitro-cloudflare-dev": "0.2.2",
     "nuxt": "4.0.3",
     "pinia": "3.0.3",
