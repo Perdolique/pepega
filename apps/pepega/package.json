@@ -25,7 +25,7 @@
     "@pinia/colada-devtools": "0.1.6",
     "@pinia/colada-nuxt": "0.2.2",
     "@pinia/nuxt": "0.11.2",
-    "@vueuse/core": "13.8.0",
+    "@vueuse/core": "13.9.0",
     "date-fns": "4.1.0",
     "drizzle-orm": "catalog:",
     "modern-normalize": "3.0.1",
