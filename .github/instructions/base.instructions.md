@@ -1,3 +1,7 @@
+---
+applyTo: **/*
+---
+
 # Core requirements
 
 - The end goal is stability, speed and great user experience.
