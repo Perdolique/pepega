@@ -21,7 +21,7 @@
     "@pepega/telegram": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
-    "@pinia/colada": "0.17.3",
+    "@pinia/colada": "0.17.5",
     "@pinia/colada-devtools": "0.1.6",
     "@pinia/colada-nuxt": "0.2.2",
     "@pinia/nuxt": "0.11.2",
@@ -31,14 +31,14 @@
     "modern-normalize": "3.0.1",
     "motion-v": "1.7.1",
     "nitro-cloudflare-dev": "0.2.2",
-    "nuxt": "4.1.0",
+    "nuxt": "4.1.2",
     "pinia": "3.0.3",
     "reka-ui": "2.5.0",
     "ts-essentials": "10.1.1",
     "tsx": "4.20.5",
     "ufo": "1.6.1",
     "valibot": "catalog:",
-    "vue-tsc": "3.0.6",
+    "vue-tsc": "3.0.7",
     "wrangler": "catalog:"
   }
 }
