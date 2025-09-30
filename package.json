@@ -25,7 +25,7 @@
     "update:all": "taze -r -l -I latest",
     "update:newest": "taze -r -l -I newest"
   },
-  "packageManager": "pnpm@10.16.1",
+  "packageManager": "pnpm@10.17.1",
   "devDependencies": {
     "husky": "9.1.7",
     "taze": "19.7.0"
