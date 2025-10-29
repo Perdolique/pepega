@@ -1,7 +1,7 @@
 {
-  "$schema": "node_modules/wrangler/config-schema.json",
+  "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "pepega",
-  "compatibility_date": "2025-01-28",
+  "compatibility_date": "2025-10-29",
   "pages_build_output_dir": "./dist",
 
   "dev": {

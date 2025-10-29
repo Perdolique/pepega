@@ -6,7 +6,7 @@
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "twitch-webhooks",
   "main": "src/app.ts",
-  "compatibility_date": "2025-01-09",
+  "compatibility_date": "2025-10-29",
 
   "compatibility_flags": [
     "nodejs_compat"
