@@ -8,10 +8,10 @@ packages:
 
 catalog:
   drizzle-orm: 0.44.7
-  ofetch: 1.5.0
+  ofetch: 1.5.1
   typescript: 5.9.3
   valibot: 1.1.0
-  wrangler: 4.45.2
+  wrangler: 4.46.0
 
 cleanupUnusedCatalogs: true
 
