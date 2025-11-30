@@ -9,6 +9,7 @@ packages:
 catalog:
   drizzle-orm: 0.44.7
   ofetch: 1.5.1
+  tsx: 4.21.0
   typescript: 5.9.3
   valibot: 1.2.0
   wrangler: 4.51.0

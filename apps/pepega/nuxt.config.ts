@@ -1,6 +1,5 @@
 import { createHash, type BinaryLike } from 'crypto'
 import { basename } from 'path'
-import nitroCloudflareBindings from 'nitro-cloudflare-dev'
 import { kvStorageName } from './constants'
 
 type ComponentType = 'page' | 'layout' | 'component'
@@ -25,14 +24,20 @@ function getComponentName(componentName: string, componentType: ComponentType) :
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-10-29',
+  compatibilityDate: '2025-11-30',
 
-  typescript: {
-    typeCheck: true
-  },
+  modules: [
+    '@nuxt/fonts',
+    '@nuxt/icon',
+    '@pinia/nuxt',
+    '@pinia/colada-nuxt'
+  ],
 
   experimental: {
     viewTransition: true,
+    scanPageMeta: true,
+    granularCachedData: true,
+    typescriptPlugin: true,
     viteEnvironmentApi: true,
 
     defaults: {
@@ -47,6 +52,14 @@ export default defineNuxtConfig({
     }
   },
 
+  future: {
+    compatibilityVersion: 5
+  },
+
+  typescript: {
+    typeCheck: true
+  },
+
   runtimeConfig: {
     public: {
       telegramBotName: '@pepega_app_test_bot'
@@ -58,6 +71,10 @@ export default defineNuxtConfig({
     scan: false
   },
 
+  devtools: {
+    enabled: true
+  },
+
   // Disable autoimport for components
   components: [],
 
@@ -65,12 +82,12 @@ export default defineNuxtConfig({
     port: 4000
   },
 
-  devtools: {
-    enabled: true
-  },
-
   nitro: {
-    preset: 'cloudflare-pages',
+    preset: 'cloudflare_module',
+
+    cloudflare: {
+      deployConfig: false
+    },
 
     storage: {
       [kvStorageName]: {
@@ -79,14 +96,6 @@ export default defineNuxtConfig({
       }
     }
   },
-
-  modules: [
-    '@nuxt/fonts',
-    '@nuxt/icon',
-    '@pinia/nuxt',
-    '@pinia/colada-nuxt',
-    nitroCloudflareBindings
-  ],
 
   icon: {
     clientBundle: {

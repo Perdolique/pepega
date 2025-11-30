@@ -1,0 +1,32 @@
+name: Build and Deploy
+
+permissions:
+  contents: read
+  pull-requests: write
+
+on:
+  pull_request:
+    branches:
+      - master
+    types:
+      - opened
+      - synchronize
+  push:
+    branches:
+      - master
+
+concurrency:
+  group: build-and-deploy-app-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    uses: Perdolique/automations/.github/workflows/deploy.yml@v1.0.3
+    with:
+      working-directory: './apps/pepega'
+      artifact-path: '.output'
+      artifact-name: 'deployment-artifact-apps-pepega'
+    secrets:
+      cloudflare-account-id: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      cloudflare-api-token: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+

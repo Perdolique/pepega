@@ -1,20 +1,49 @@
 {
   "$schema": "../../node_modules/wrangler/config-schema.json",
   "name": "pepega",
-  "compatibility_date": "2025-10-29",
-  "pages_build_output_dir": "./dist",
+  "compatibility_date": "2025-11-30",
+  "main": ".output/server/index.mjs",
+  "upload_source_maps": true,
 
   "dev": {
     "port": 5000
   },
 
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true,
+      "invocation_logs": true
+    },
+
+    "traces": {
+      "enabled": true,
+      "head_sampling_rate": 1,
+      "persist": true
+    }
+  },
+
+  "placement": {
+    "mode": "smart"
+  },
+
+  "assets": {
+    "directory": ".output/public"
+  },
+
   "kv_namespaces": [{
     "binding": "KV",
-    "id": "b331c1aeb9134b578548914dbf9adacc"
+    "id": "b331c1aeb9134b578548914dbf9adacc",
+    "remote": true
   }],
 
   "env": {
-    "preview": {
+    "staging": {
+      "name": "pepega-staging",
+      "preview_urls": true,
+      "workers_dev": true,
+
       "vars": {
         "WEBHOOK_BASE_URL": "https://pooque-staging.pepega.app/",
         "PEPEGA_DEBUG": "1",
@@ -28,6 +57,10 @@
     },
 
     "production": {
+      "name": "pepega",
+      "preview_urls": false,
+      "workers_dev": false,
+
       "vars": {
         "WEBHOOK_BASE_URL": "https://pooque.pepega.app/",
         "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot"
@@ -36,6 +69,11 @@
       "kv_namespaces": [{
         "binding": "KV",
         "id": "f891dd5cc6414ad2a480b05014b371cc"
+      }],
+
+      "routes": [{
+        "pattern": "pepega.app",
+        "custom_domain": true
       }]
     }
   }
