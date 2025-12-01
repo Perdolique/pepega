@@ -21,7 +21,7 @@ concurrency:
 
 jobs:
   deploy:
-    uses: Perdolique/automations/.github/workflows/deploy.yml@v1.0.3
+    uses: Perdolique/automations/.github/workflows/deploy.yml@v1.0.4
     with:
       working-directory: './apps/pepega'
       artifact-path: '.output'
