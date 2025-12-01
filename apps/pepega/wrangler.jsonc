@@ -58,8 +58,8 @@
 
     "production": {
       "name": "pepega",
-      "preview_urls": true,
-      "workers_dev": true,
+      "preview_urls": false,
+      "workers_dev": false,
 
       "vars": {
         "WEBHOOK_BASE_URL": "https://pooque.pepega.app/",
