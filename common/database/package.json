@@ -21,7 +21,7 @@
   "dependencies": {
     "@neondatabase/serverless": "1.0.2",
     "@types/ws": "8.18.1",
-    "drizzle-kit": "0.31.7",
+    "drizzle-kit": "0.31.8",
     "drizzle-orm": "catalog:",
     "tsx": "catalog:",
     "ws": "8.18.3"

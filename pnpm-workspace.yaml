@@ -7,7 +7,7 @@ packages:
   - workers/*
 
 catalog:
-  drizzle-orm: 0.44.7
+  drizzle-orm: 0.45.0
   ofetch: 1.5.1
   tsx: 4.21.0
   typescript: 5.9.3
