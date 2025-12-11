@@ -12,7 +12,7 @@ catalog:
   tsx: 4.21.0
   typescript: 5.9.3
   valibot: 1.2.0
-  wrangler: 4.53.0
+  wrangler: 4.54.0
 
 cleanupUnusedCatalogs: true
 
