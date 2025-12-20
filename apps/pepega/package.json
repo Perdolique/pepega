@@ -38,7 +38,7 @@
     "tsx": "catalog:",
     "ufo": "1.6.1",
     "valibot": "catalog:",
-    "vue-tsc": "3.1.8",
+    "vue-tsc": "3.2.0",
     "wrangler": "catalog:"
   }
 }
