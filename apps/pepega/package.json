@@ -15,15 +15,15 @@
   },
   "devDependencies": {
     "@iconify-json/streamline-emojis": "1.2.4",
-    "@iconify-json/tabler": "1.2.24",
+    "@iconify-json/tabler": "1.2.25",
     "@nuxt/fonts": "0.12.1",
     "@nuxt/icon": "2.1.1",
     "@pepega/database": "workspace:*",
     "@pepega/telegram": "workspace:*",
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
-    "@pinia/colada": "0.19.1",
-    "@pinia/colada-nuxt": "0.2.6",
+    "@pinia/colada": "0.20.0",
+    "@pinia/colada-nuxt": "0.3.0",
     "@pinia/nuxt": "0.11.3",
     "@vueuse/core": "14.1.0",
     "date-fns": "4.1.0",
@@ -33,12 +33,12 @@
     "nitro-cloudflare-dev": "0.2.2",
     "nuxt": "4.2.2",
     "pinia": "3.0.4",
-    "reka-ui": "2.6.1",
+    "reka-ui": "2.7.0",
     "ts-essentials": "10.1.1",
     "tsx": "catalog:",
     "ufo": "1.6.1",
     "valibot": "catalog:",
-    "vue-tsc": "3.1.8",
+    "vue-tsc": "3.2.1",
     "wrangler": "catalog:"
   }
 }
