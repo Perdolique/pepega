@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@iconify-json/streamline-emojis": "1.2.4",
-    "@iconify-json/tabler": "1.2.25",
+    "@iconify-json/tabler": "1.2.26",
     "@nuxt/fonts": "0.12.1",
     "@nuxt/icon": "2.1.1",
     "@pepega/database": "workspace:*",
