@@ -42,8 +42,8 @@ importers:
         specifier: 1.2.4
         version: 1.2.4
       '@iconify-json/tabler':
-        specifier: 1.2.25
-        version: 1.2.25
+        specifier: 1.2.26
+        version: 1.2.26
       '@nuxt/fonts':
         specifier: 0.12.1
         version: 0.12.1(db0@0.3.4(drizzle-orm@0.45.1(@neondatabase/serverless@1.0.2)(@types/pg@8.15.6)))(ioredis@5.8.2)(magicast@0.5.1)(vite@7.2.7(@types/node@25.0.3)(jiti@2.6.1)(lightningcss@1.30.2)(terser@5.44.1)(tsx@4.21.0)(yaml@2.8.2))
@@ -84,8 +84,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       motion-v:
-        specifier: 1.7.4
-        version: 1.7.4(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))
+        specifier: 1.7.5
+        version: 1.7.5(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))
       nitro-cloudflare-dev:
         specifier: 0.2.2
         version: 0.2.2
@@ -1045,8 +1045,8 @@ packages:
   '@iconify-json/streamline-emojis@1.2.4':
     resolution: {integrity: sha512-iNr9T9XuZVTyQPJO8ZlLxBzPkpi7qMl+z1l0C31vpEMqhPMelth3n7CeWQYtixdetDPdI81yeG4ROqjWpYJE6A==}
 
-  '@iconify-json/tabler@1.2.25':
-    resolution: {integrity: sha512-yU0aipjN4moGTqeCbdA9m7Wl7CZ9PUqnlwQXng/iGXod43FiSZHNUyMbc1+mu0cR8BV7gf8rkQZJy+as8gWAEw==}
+  '@iconify-json/tabler@1.2.26':
+    resolution: {integrity: sha512-92G+ZD70AZgeJf07JfQzH+isnai6DwPcMBuF/qL1F+xAxdXCJzGd3w2RmsRvOmB+w1ImmWEEDms50QivQIjd6g==}
 
   '@iconify/collections@1.0.629':
     resolution: {integrity: sha512-1iT8HyMKpOvml6jxZDaW2dkdgzls4Ik7I/tn79hHqbPGWkNpIQsJSB3Dto+vAyboXLtsRvIKIwtSvfgrHR0HRw==}
@@ -2836,20 +2836,6 @@ packages:
   fraction.js@5.3.4:
     resolution: {integrity: sha512-1X1NTtiJphryn/uLQz3whtY6jK3fTqoE3ohKs0tT+Ujr1W59oopxmoEh7Lu5p6vBaPbgoM0bzveAW4Qi5RyWDQ==}
 
-  framer-motion@12.23.12:
-    resolution: {integrity: sha512-6e78rdVtnBvlEVgu6eFEAgG9v3wLnYEboM8I5O5EXvfKC8gxGQB8wXJdhkMy10iVcn05jl6CNw7/HTsTCfwcWg==}
-    peerDependencies:
-      '@emotion/is-prop-valid': '*'
-      react: ^18.0.0 || ^19.0.0
-      react-dom: ^18.0.0 || ^19.0.0
-    peerDependenciesMeta:
-      '@emotion/is-prop-valid':
-        optional: true
-      react:
-        optional: true
-      react-dom:
-        optional: true
-
   fresh@2.0.0:
     resolution: {integrity: sha512-Rx/WycZ60HOaqLKAi6cHRKKI7zxWbJ31MhntmtwMoaTeF7XFH9hhBp8vITaMidfljRQ6eYWCKkaTK+ykVJHP2A==}
     engines: {node: '>= 0.8'}
@@ -3318,14 +3304,14 @@ packages:
     resolution: {integrity: sha512-VqlMdYi59Uch6fnUPxnpijWUQe+TW6zeWCvyr6Mb7JibheHzSuAAoJi2c71ZwIaWKpECpGpYHoaaBp6rBRr+/g==}
     engines: {node: '>=6'}
 
-  motion-dom@12.23.12:
-    resolution: {integrity: sha512-RcR4fvMCTESQBD/uKQe49D5RUeDOokkGRmz4ceaJKDBgHYtZtntC/s2vLvY38gqGaytinij/yi3hMcWVcEF5Kw==}
+  motion-dom@12.23.23:
+    resolution: {integrity: sha512-n5yolOs0TQQBRUFImrRfs/+6X4p3Q4n1dUEqt/H58Vx7OW6RF+foWEgmTVDhIWJIMXOuNNL0apKH2S16en9eiA==}
 
   motion-utils@12.23.6:
     resolution: {integrity: sha512-eAWoPgr4eFEOFfg2WjIsMoqJTW6Z8MTUCgn/GZ3VRpClWBdnbjryiA3ZSNLyxCTmCQx4RmYX6jX1iWHbenUPNQ==}
 
-  motion-v@1.7.4:
-    resolution: {integrity: sha512-YNDUAsany04wfI7YtHxQK3kxzNvh+OdFUk9GpA3+hMt7j6P+5WrVAAgr8kmPPoVza9EsJiAVhqoN3YYFN0Twrw==}
+  motion-v@1.7.5:
+    resolution: {integrity: sha512-xSqAWoMVAlh0RhdjMCnPMv62mr3yZ2bynXirj2Aq/rDFxiZ69JuIz63aSBCiK87A3wxVqwCZzZE2p4WN875k3Q==}
     peerDependencies:
       '@vueuse/core': '>=10.0.0'
       vue: '>=3.0.0'
@@ -4518,6 +4504,7 @@ packages:
   wrangler@4.56.0:
     resolution: {integrity: sha512-Nqi8duQeRbA+31QrD6QlWHW3IZVnuuRxMy7DEg46deUzywivmaRV/euBN5KKXDPtA24VyhYsK7I0tkb7P5DM2w==}
     engines: {node: '>=20.0.0'}
+    deprecated: Version 4.55.0 and 4.56.0 can incorrectly automatically delegate 'wrangler deploy' to 'opennextjs-cloudflare'. Use an older or newer version.
     hasBin: true
     peerDependencies:
       '@cloudflare/workers-types': ^4.20251217.0
@@ -5200,7 +5187,7 @@ snapshots:
     dependencies:
       '@iconify/types': 2.0.0
 
-  '@iconify-json/tabler@1.2.25':
+  '@iconify-json/tabler@1.2.26':
     dependencies:
       '@iconify/types': 2.0.0
 
@@ -7239,12 +7226,6 @@ snapshots:
 
   fraction.js@5.3.4: {}
 
-  framer-motion@12.23.12:
-    dependencies:
-      motion-dom: 12.23.12
-      motion-utils: 12.23.6
-      tslib: 2.8.1
-
   fresh@2.0.0: {}
 
   fsevents@2.3.3:
@@ -7689,23 +7670,18 @@ snapshots:
 
   modern-normalize@3.0.1: {}
 
-  motion-dom@12.23.12:
+  motion-dom@12.23.23:
     dependencies:
       motion-utils: 12.23.6
 
   motion-utils@12.23.6: {}
 
-  motion-v@1.7.4(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3)):
+  motion-v@1.7.5(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3)):
     dependencies:
       '@vueuse/core': 14.1.0(vue@3.5.26(typescript@5.9.3))
-      framer-motion: 12.23.12
       hey-listen: 1.0.8
-      motion-dom: 12.23.12
+      motion-dom: 12.23.23
       vue: 3.5.26(typescript@5.9.3)
-    transitivePeerDependencies:
-      - '@emotion/is-prop-valid'
-      - react
-      - react-dom
 
   mrmime@2.0.1: {}
 
