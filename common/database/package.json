@@ -24,6 +24,6 @@
     "drizzle-kit": "0.31.8",
     "drizzle-orm": "catalog:",
     "tsx": "catalog:",
-    "ws": "8.18.3"
+    "ws": "8.19.0"
   }
 }
