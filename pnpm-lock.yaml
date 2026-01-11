@@ -84,8 +84,8 @@ importers:
         specifier: 3.0.1
         version: 3.0.1
       motion-v:
-        specifier: 1.8.0
-        version: 1.8.0(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))
+        specifier: 1.8.1
+        version: 1.8.1(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3))
       nitro-cloudflare-dev:
         specifier: 0.2.2
         version: 0.2.2
@@ -3321,8 +3321,8 @@ packages:
   motion-utils@12.24.10:
     resolution: {integrity: sha512-x5TFgkCIP4pPsRLpKoI86jv/q8t8FQOiM/0E8QKBzfMozWHfkKap2gA1hOki+B5g3IsBNpxbUnfOum1+dgvYww==}
 
-  motion-v@1.8.0:
-    resolution: {integrity: sha512-ivt0zjsLZKKju/vjPQdGmR2C3RKNnPJP5RzNidkVjgnYl/78zGYTyjeCP2D+9hiP7tdTYGvmNwFZs0rjhLJXzQ==}
+  motion-v@1.8.1:
+    resolution: {integrity: sha512-OS6ve/vdNlrKTmCAHy+lxujIVTggjs9nbzl1auWiewy49FthkpCs5Wwpf40+55Ko3mbTajlKadkTlQYysrnL4A==}
     peerDependencies:
       '@vueuse/core': '>=10.0.0'
       vue: '>=3.0.0'
@@ -7687,7 +7687,7 @@ snapshots:
 
   motion-utils@12.24.10: {}
 
-  motion-v@1.8.0(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3)):
+  motion-v@1.8.1(@vueuse/core@14.1.0(vue@3.5.26(typescript@5.9.3)))(vue@3.5.26(typescript@5.9.3)):
     dependencies:
       '@vueuse/core': 14.1.0(vue@3.5.26(typescript@5.9.3))
       framer-motion: 12.25.0
