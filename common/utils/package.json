@@ -15,6 +15,6 @@
     "consola": "3.4.2"
   },
   "devDependencies": {
-    "@types/node": "25.0.8"
+    "@types/node": "25.0.9"
   }
 }
