@@ -31,14 +31,14 @@
     "modern-normalize": "3.0.1",
     "motion-v": "1.9.0",
     "nitro-cloudflare-dev": "0.2.2",
-    "nuxt": "4.2.2",
+    "nuxt": "4.3.0",
     "pinia": "3.0.4",
     "reka-ui": "2.7.0",
     "ts-essentials": "10.1.1",
     "tsx": "catalog:",
     "ufo": "1.6.3",
     "valibot": "catalog:",
-    "vue-tsc": "3.2.2",
+    "vue-tsc": "3.2.3",
     "wrangler": "catalog:"
   }
 }
