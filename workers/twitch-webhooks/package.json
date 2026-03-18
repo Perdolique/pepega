@@ -17,7 +17,7 @@
     "@pepega/utils": "workspace:*",
     "destr": "2.0.5",
     "drizzle-orm": "catalog:",
-    "h3": "1.15.5",
+    "h3": "1.15.6",
     "typescript": "catalog:",
     "valibot": "catalog:",
     "wrangler": "catalog:"
