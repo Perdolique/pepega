@@ -8,7 +8,7 @@ packages:
 
 allowBuilds:
   '@parcel/watcher': false
-  esbuild: false
+  esbuild: true
   sharp: false
   vue-demi: false
   workerd: false
@@ -24,8 +24,5 @@ catalog:
 cleanupUnusedCatalogs: true
 
 nodeLinker: hoisted
-
-onlyBuiltDependencies:
-  - esbuild
 
 saveExact: true
