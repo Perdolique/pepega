@@ -39,6 +39,7 @@
   import SimpleButton from '~/components/SimpleButton.vue'
   import TextInput from '~/components/TextInput.vue'
   import ModalDialog from './ModalDialog.vue';
+  import { ref, watch } from 'vue';
 
   interface Props {
     readonly headerText: string;

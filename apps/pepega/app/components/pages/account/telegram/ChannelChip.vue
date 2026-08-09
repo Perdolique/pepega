@@ -89,6 +89,7 @@
   import { useDeleteTelegramChannel } from '~/composables/mutations/telegram/delete-channel'
   import ConfirmationDialog from '~/components/dialogs/ConfirmationDialog.vue'
   import VerificationDialog from './VerificationDialog.vue'
+  import { computed, ref, useTemplateRef, watch } from 'vue'
 
   type Emits = (event: 'toggle', channelId: number | null) => void
 

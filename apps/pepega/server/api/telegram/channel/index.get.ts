@@ -1,5 +1,5 @@
-import { eq } from 'drizzle-orm'
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
+import { defineEventHandler } from 'h3'
 
 export default defineEventHandler(async (event) : Promise<TelegramChannelModel[]> => {
   const { userId, db } = event.context
@@ -12,7 +12,9 @@ export default defineEventHandler(async (event) : Promise<TelegramChannelModel[]
       isVerified: true
     },
 
-    where: eq(tables.telegramChannels.userId, userId)
+    where: {
+      userId
+    }
   })
 
   return channels

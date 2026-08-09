@@ -1,5 +1,7 @@
 import { isSamePath } from 'ufo'
 import { publicApiPaths } from '~~/constants'
+import { getAppSession } from '~~/server/utils/session'
+import { createError, defineEventHandler, getRequestURL } from 'h3'
 
 declare module 'h3' {
   interface H3EventContext {

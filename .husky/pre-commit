@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+
+vp run lint:markdown >/dev/null || exit 1
+vp run lint:oxlint >/dev/null || exit 1
+vp run test:typecheck >/dev/null || exit 1
+vp run test:unit:ci >/dev/null || exit 1

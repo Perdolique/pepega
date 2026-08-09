@@ -1,8 +1,19 @@
-import { createHash, type BinaryLike } from 'crypto'
-import { basename } from 'path'
+import { createHash, type BinaryLike } from 'node:crypto'
+import { basename } from 'node:path'
 import { kvStorageName } from './constants'
+import type { NuxtOptions } from 'nuxt/schema'
 
 type ComponentType = 'page' | 'layout' | 'component'
+type TypeScriptCompilerOptions = NonNullable<
+  NuxtOptions['typescript']['tsConfig']['compilerOptions']
+>
+
+const projectTypeScriptCompilerOptions = {
+  noFallthroughCasesInSwitch: true,
+  noImplicitReturns: true,
+  noUnusedLocals: true,
+  noUnusedParameters: true
+} satisfies TypeScriptCompilerOptions
 
 function getComponentType(filePath: string) : ComponentType {
   if (filePath.includes('/app/pages/')) {
@@ -24,7 +35,7 @@ function getComponentName(componentName: string, componentType: ComponentType) :
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2025-11-30',
+  compatibilityDate: '2026-07-18',
 
   modules: [
     '@nuxt/fonts',
@@ -35,21 +46,12 @@ export default defineNuxtConfig({
 
   experimental: {
     viewTransition: true,
-    scanPageMeta: true,
-    granularCachedData: true,
-    typescriptPlugin: true,
-    viteEnvironmentApi: true,
-
-    defaults: {
-      nuxtLink: {
-        prefetch: true,
-
-        prefetchOn: {
-          interaction: true,
-          visibility: false
-        }
-      }
-    }
+    /**
+     * FIXME: Disable once Nuxt modules stop relying on Nitro auto-imports.
+     *
+     * https://github.com/nuxt/nuxt/issues/34142
+     */
+    nitroAutoImports: true
   },
 
   future: {
@@ -57,7 +59,23 @@ export default defineNuxtConfig({
   },
 
   typescript: {
-    typeCheck: true
+    tsConfig: {
+      compilerOptions: {
+        ...projectTypeScriptCompilerOptions
+      }
+    },
+
+    sharedTsConfig: {
+      compilerOptions: {
+        ...projectTypeScriptCompilerOptions
+      }
+    },
+
+    nodeTsConfig: {
+      compilerOptions: {
+        ...projectTypeScriptCompilerOptions
+      }
+    }
   },
 
   runtimeConfig: {
@@ -68,7 +86,7 @@ export default defineNuxtConfig({
 
   // Disable all autoimports (except components)
   imports: {
-    scan: false
+    autoImport: false
   },
 
   devtools: {
@@ -84,6 +102,14 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'cloudflare_module',
+
+    typescript: {
+      tsConfig: {
+        compilerOptions: {
+          ...projectTypeScriptCompilerOptions
+        }
+      }
+    },
 
     cloudflare: {
       deployConfig: false

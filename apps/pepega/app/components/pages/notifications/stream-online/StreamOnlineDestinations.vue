@@ -30,6 +30,8 @@
   import { getByNotificationId } from '~/composables/queries/notification/destinations'
   import BaseCard from '~/components/BaseCard.vue'
   import FidgetSpinner from '~/components/FidgetSpinner.vue'
+  import { computed } from 'vue'
+  import { useQuery } from '@pinia/colada'
 
   interface Props {
     notificationId: number;
@@ -37,9 +39,8 @@
 
   const { notificationId } = defineProps<Props>()
 
-  const { state: destinations, isPending } = useQuery(
-    getByNotificationId,
-    () => notificationId
+  const { state: destinations, isPending } = useQuery(() =>
+    getByNotificationId(notificationId)
   )
 
   const hasDestinations = computed(() => {

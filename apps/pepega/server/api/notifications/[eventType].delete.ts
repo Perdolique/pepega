@@ -1,6 +1,8 @@
 import { and, eq, sql } from 'drizzle-orm'
 import * as v from 'valibot'
 import { notificationEventTypeSchema } from '~~/server/utils/validation'
+import { tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
 
 const routeParamsSchema = v.object({
   eventType: notificationEventTypeSchema

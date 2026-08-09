@@ -1,6 +1,9 @@
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import type { NotificationDestinationModel } from '~~/shared/models/notifications'
+import { tables } from '~~/server/utils/database'
+import { stringToIntegerSchema } from '~~/server/utils/validation'
+import { defineEventHandler, getValidatedQuery } from 'h3'
 
 const routeParamsSchema = v.object({
   notificationId: stringToIntegerSchema

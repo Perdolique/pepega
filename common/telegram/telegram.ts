@@ -43,6 +43,10 @@ interface SendMessageParams {
 
 const logger = createLogger('telegram')
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null
+}
+
 export async function sendMessage({ chatId, text, debug, botToken } : SendMessageParams) : Promise<SuccessResult | ErrorResult> {
   const tokenValidationResult = validateBotToken(botToken)
 
@@ -78,12 +82,14 @@ export async function sendMessage({ chatId, text, debug, botToken } : SendMessag
     let errorMessage = 'Unknown error'
 
     if (error instanceof FetchError) {
-      if (error?.data?.error_code !== undefined) {
-        errorCode = error.data.error_code
+      const errorData: unknown = error.data
+
+      if (isRecord(errorData) && typeof errorData.error_code === 'number') {
+        errorCode = errorData.error_code
       }
 
-      if (error?.data?.description !== undefined) {
-        errorMessage = error.data.description
+      if (isRecord(errorData) && typeof errorData.description === 'string') {
+        errorMessage = errorData.description
       }
     }
 

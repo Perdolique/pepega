@@ -1,5 +1,7 @@
 import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications'
-import { notificationKeys } from '../keys/notifications'
+import { notificationKeys } from '~/composables/keys/notifications'
+import { defineMutation, useMutation, useQueryCache } from '@pinia/colada'
+import { $fetch } from 'ofetch'
 
 /**
  *  Composable to initialize notifications for a specific event type.
@@ -48,7 +50,7 @@ export const useDeleteNotification = defineMutation(() => {
       })
     },
 
-    onSuccess(data, eventType) {
+    onSuccess(_data, eventType) {
       cache.setQueryData(notificationKeys.byEventType(eventType), undefined)
     }
   })

@@ -38,6 +38,8 @@
   import { decodeStateData } from '@pepega/twitch/auth'
   import { useUserStore } from '~/stores/user'
   import FidgetSpinner from '~/components/FidgetSpinner.vue'
+  import { onBeforeMount, ref } from 'vue'
+  import { $fetch, definePageMeta, navigateTo, useHead, useRoute } from '#imports'
 
   definePageMeta({
     layout: false,

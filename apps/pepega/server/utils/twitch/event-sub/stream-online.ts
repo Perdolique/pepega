@@ -1,4 +1,5 @@
-import { FetchError } from 'ofetch'
+import { $fetch, FetchError } from 'ofetch'
+import logger from '~~/server/utils/logger'
 
 interface SubscribeWebhookParams {
   broadcasterUserId: string;

@@ -5,6 +5,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { definePageMeta, useHead } from '#imports'
+
   definePageMeta({
     title: 'Pepega',
     skipAuth: true

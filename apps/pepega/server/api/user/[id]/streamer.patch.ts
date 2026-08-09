@@ -1,6 +1,9 @@
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import type { UserModel } from '~~/shared/models/user'
+import { tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
+import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
   id: v.pipe(

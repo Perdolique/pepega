@@ -1,7 +1,8 @@
-import { H3Error } from 'h3'
-import { eq } from 'drizzle-orm'
+import { createError, defineEventHandler, H3Error, readValidatedBody } from 'h3'
 import * as v from 'valibot'
 import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
+import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
+import logger from '~~/server/utils/logger'
 
 const bodySchema = v.object({
   type: v.union([
@@ -25,7 +26,9 @@ export default defineEventHandler(async (event) => {
         id: true
       },
 
-      where: eq(tables.streamers.userId, userId)
+      where: {
+        userId
+      }
     })
 
     if (streamer === undefined) {

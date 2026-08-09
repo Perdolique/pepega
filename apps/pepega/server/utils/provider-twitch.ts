@@ -1,4 +1,4 @@
-import { H3Event } from 'h3'
+import { H3Event, getRequestURL } from 'h3'
 
 export function getTwitchRedirectUri(event: H3Event) : string {
   const url = getRequestURL(event)

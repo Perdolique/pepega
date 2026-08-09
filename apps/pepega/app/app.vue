@@ -8,6 +8,7 @@
 
 <script setup lang="ts">
   import CustomToaster from '@/components/toaster/CustomToaster.vue';
+  import { useHead } from '#imports';
 
   useHead({
     link: [{

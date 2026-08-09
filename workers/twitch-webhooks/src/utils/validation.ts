@@ -1,5 +1,4 @@
 import { EventMessageType } from '@pepega/twitch/models/event-sub'
-import { UnionToTuple } from '@pepega/utils/types'
 import * as v from 'valibot'
 import logger from '../logger'
 import { EventHandlerRequest, H3Event } from 'h3'
@@ -29,11 +28,11 @@ const envSchema = v.object({
 // PEPEGA_DEBUG="1"
 const envDebugSchema = v.literal('1')
 
-const eventMessageTypeSchema = v.picklist<UnionToTuple<EventMessageType>>([
+const eventMessageTypeSchema = v.picklist([
   'notification',
   'webhook_callback_verification',
   'revocation'
-])
+] as const satisfies readonly EventMessageType[])
 
 const twitchEventSubVerificationHeadersSchema = v.pipe(
   v.object({

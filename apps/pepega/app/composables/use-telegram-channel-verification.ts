@@ -1,3 +1,5 @@
+import { $fetch } from 'ofetch'
+
 interface SendCodeParams {
   code: string
   channelId: string

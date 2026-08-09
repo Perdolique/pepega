@@ -1,4 +1,6 @@
 import { eq } from 'drizzle-orm'
+import { tables } from '~~/server/utils/database'
+import { defineEventHandler } from 'h3'
 
 export default defineEventHandler(async (event) => {
   const { userId, db } = event.context

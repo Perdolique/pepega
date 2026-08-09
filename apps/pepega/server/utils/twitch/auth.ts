@@ -1,6 +1,9 @@
 import { getAppAccessToken } from '@pepega/twitch/auth'
 import { decrypt, encrypt } from '@pepega/utils/crypto'
 import { kvStorageKeys, kvStorageName } from '~~/constants'
+import { getValidatedTwitchClientId, getValidatedTwitchClientSecret } from '~~/server/utils/validation'
+import { useStorage } from 'nitropack/runtime/internal/storage'
+import logger from '~~/server/utils/logger'
 
 export async function getStoredToken(encryptionKey: string) : Promise<string | null> {
   const storage = useStorage(kvStorageName)

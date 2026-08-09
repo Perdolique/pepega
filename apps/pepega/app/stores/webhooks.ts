@@ -1,6 +1,11 @@
 import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
 import { type WebhookModel, type WebhookStatus } from '~~/shared/models/webhooks'
 import { isNotNull } from '~~/shared/utils/types'
+import { ref } from 'vue'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { $fetch } from 'ofetch'
+import { createLogger } from '@pepega/utils/logger'
+import { useFetch } from '#imports'
 
 interface Webhook {
   id: number;
@@ -8,6 +13,8 @@ interface Webhook {
   type: string;
   createdAt: string;
 }
+
+const logger = createLogger('PEPEGA')
 
 function transformWebhookType(type: string) : EventSubscriptionType | null {
   switch (type) {
@@ -75,7 +82,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
   async function fetchWebhook(webhookId: number) {
     try {
-      const result = await $fetch(`/api/webhooks/${webhookId}`)
+      const result = await $fetch<Webhook>(`/api/webhooks/${webhookId}`)
       const webhook = transformWebhook(result)
 
       if (webhook !== null) {
@@ -83,9 +90,11 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
         return webhook
       }
-    } catch (error) {
+    } catch {
       // TODO: Handle error properly
     }
+
+    return
   }
 
   function replaceWebhooks(newWebhooks: WebhookModel[]) {
@@ -98,7 +107,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
   async function fetchWebhooks() {
     try {
-      const response = await $fetch('/api/webhooks')
+      const response = await $fetch<Webhook[]>('/api/webhooks')
       const data = transformWebhooks(response)
 
       replaceWebhooks(data)
@@ -119,7 +128,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
   async function createWebhook(type: EventSubscriptionType) {
     try {
-      const result = await $fetch('/api/webhooks', {
+      const result = await $fetch<Webhook>('/api/webhooks', {
         method: 'POST',
 
         body: {
@@ -151,7 +160,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       })
 
       removeWebhooks([webhookId])
-    } catch (error) {
+    } catch {
       // TODO: Handle error properly
     }
   }
@@ -160,9 +169,12 @@ export const useWebhooksStore = defineStore('webhooks', () => {
     const webhookId = webhook.id
 
     try {
-      const result = await $fetch(`/api/webhooks/${webhookId}/register`, {
-        method: 'POST'
-      })
+      const result = await $fetch<{ webhookId: number; status: WebhookStatus }>(
+        `/api/webhooks/${webhookId}/register`,
+        {
+          method: 'POST'
+        }
+      )
 
       const updatedWebhook = webhooks.value.get(result.webhookId)
 

@@ -64,6 +64,8 @@
   import TelegramChannels from '~/components/pages/notifications/stream-online/TelegramChannels.vue'
   import BaseCard from '~/components/BaseCard.vue'
   import StreamOnlineEmptyState from '~/components/pages/notifications/stream-online/StreamOnlineEmptyState.vue'
+  import { computed, ref } from 'vue'
+  import { useQuery } from '@pinia/colada'
 
   const defaultMessage = 'ЗАЙДИТЕ НА СТРИМ ПОЖАЛУЙСТА Я ПОДРУБИЛСЯ!'
   const { deleteNotification, isLoading: isDeletingNotification } = useDeleteNotification()
@@ -78,9 +80,8 @@
       isCreatingNotification.value
   )
 
-  const { state: notification, isPending: isNotificationPending } = useQuery(
-    getNotificationByType,
-    () => 'stream.online' as const
+  const { state: notification, isPending: isNotificationPending } = useQuery(() =>
+    getNotificationByType('stream.online')
   )
 
   function onDeleteNotificationClick() {

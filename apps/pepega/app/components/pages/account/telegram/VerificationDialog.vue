@@ -49,6 +49,9 @@
   import ModalDialog from '~/components/dialogs/ModalDialog.vue'
   import SimpleButton from '~/components/SimpleButton.vue'
   import TextInput from '~/components/TextInput.vue'
+  import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+  import { useQuery } from '@pinia/colada'
+  import { $fetch, useRuntimeConfig } from '#imports'
 
   interface Props {
     channelId: number;

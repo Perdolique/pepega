@@ -19,6 +19,8 @@
   import NotStreamerPlaceholder from '~/components/NotStreamerPlaceholder.vue'
   import StreamOnlineNotification from '~/components/StreamOnlineNotification.vue'
   import PageBase from '~/components/PageBase.vue'
+  import { watch } from 'vue'
+  import { useAsyncData } from '#imports'
 
   const webhooksStore = useWebhooksStore()
   const userStore = useUserStore()

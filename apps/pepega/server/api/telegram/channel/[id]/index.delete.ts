@@ -1,6 +1,8 @@
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { idStringAsNumberSchema } from '~~/server/utils/validation'
+import { tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
 
 const paramsSchema = v.object({
   id: idStringAsNumberSchema

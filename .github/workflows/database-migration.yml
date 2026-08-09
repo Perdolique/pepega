@@ -1,0 +1,36 @@
+name: Database migration
+
+permissions:
+  contents: read
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - 'common/database/migrations/**'
+      - .github/workflows/database-migration.yml
+  push:
+    branches:
+      - master
+    paths:
+      - 'common/database/migrations/**'
+      - .github/workflows/database-migration.yml
+
+jobs:
+  migration:
+    runs-on: ubuntu-24.04
+    environment: ${{ github.event_name == 'push' && 'production' || 'staging' }}
+    steps:
+      - uses: Perdolique/automations/.github/actions/setup-pnpm@v3
+        with:
+          install-dependencies: 'true'
+      - name: Run database migration
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm --filter @pepega/database run db:migrate
+      - name: Seed staging database
+        if: github.event_name == 'pull_request'
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+        run: pnpm --filter @pepega/database run db:seed

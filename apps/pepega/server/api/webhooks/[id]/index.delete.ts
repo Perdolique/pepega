@@ -2,7 +2,11 @@ import { deleteSubscription } from '@pepega/twitch/subscriptions'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
-import { stringToIntegerSchema } from '~~/server/utils/validation'
+import { getValidatedEncryptionKey, getValidatedTwitchClientId, stringToIntegerSchema } from '~~/server/utils/validation'
+import { validateAdmin } from '~~/server/utils/admin'
+import { tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
+import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
   id: stringToIntegerSchema

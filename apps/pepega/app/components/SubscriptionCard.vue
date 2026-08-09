@@ -44,6 +44,7 @@
   import BaseCard from '~/components/BaseCard.vue'
   import SimpleButton from '~/components/SimpleButton.vue'
   import ChipLink from '~/components/ChipLink.vue'
+  import { computed, ref } from 'vue'
 
   interface Props {
     subscriptionId: string;

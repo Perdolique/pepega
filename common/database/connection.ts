@@ -2,6 +2,7 @@ import { drizzle as drizzleNeon } from 'drizzle-orm/neon-http'
 import { drizzle as drizzleServerless } from 'drizzle-orm/neon-serverless'
 import { neon, neonConfig, Pool } from '@neondatabase/serverless'
 import ws from 'ws'
+import { relations } from './relations'
 import * as schema from './schema'
 
 export const tables = schema
@@ -16,7 +17,7 @@ export function createDrizzle(databaseUrl: string, isLocalDatabase = false) {
 
   const drizzleDb = drizzleNeon({
     client: db,
-    schema,
+    relations,
     logger: isLocalDatabase
   })
 
@@ -46,7 +47,7 @@ export function createDrizzleWebsocket(databaseUrl: string, isLocalDatabase = fa
 
   const drizzleDb = drizzleServerless({
     client: pool,
-    schema,
+    relations,
     logger: isLocalDatabase
   })
 

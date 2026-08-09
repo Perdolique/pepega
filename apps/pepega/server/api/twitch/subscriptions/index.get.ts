@@ -1,7 +1,10 @@
-import { inArray } from 'drizzle-orm'
 import { getSubscriptions } from '@pepega/twitch/subscriptions'
 import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
 import type { SubscriptionModel } from '#shared/models/twitch'
+import { validateAdmin } from '~~/server/utils/admin'
+import { getValidatedEncryptionKey, getValidatedTwitchClientId } from '~~/server/utils/validation'
+import { createError, defineEventHandler } from 'h3'
+import logger from '~~/server/utils/logger'
 
 // FIXME: (2025-07-26) `nuxt typecheck` command fails without this explicit type definition
 interface Streamer {
@@ -43,7 +46,11 @@ export default defineEventHandler(async (event) => {
         login: true
       },
 
-      where: inArray(tables.streamers.broadcasterId, broadcasterIds)
+      where: {
+        broadcasterId: {
+          in: broadcasterIds
+        }
+      }
     })
 
     const streamersList = streamers.map((streamer) => [streamer.broadcasterId, streamer] as const)

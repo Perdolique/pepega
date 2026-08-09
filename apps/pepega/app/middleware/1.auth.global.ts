@@ -1,5 +1,6 @@
 import { useUserStore } from '~/stores/user';
 import { shouldSkipAuth } from '~/utils/router';
+import { defineNuxtRouteMiddleware, navigateTo } from '#imports';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (shouldSkipAuth(to)) {

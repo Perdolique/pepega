@@ -3,6 +3,10 @@ import * as v from 'valibot'
 import { kvStorageName } from '~~/constants'
 import { getTelegramChannelVerificationCodeKey } from '~~/server/utils/kv'
 import { idStringAsNumberSchema } from '~~/server/utils/validation'
+import { tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, getValidatedRouterParams, readValidatedBody, sendNoContent } from 'h3'
+import { useStorage } from 'nitropack/runtime/internal/storage'
+import logger from '~~/server/utils/logger'
 
 const routerParamsSchema = v.object({
   id: idStringAsNumberSchema
@@ -37,11 +41,9 @@ export default defineEventHandler(async (event) => {
       chatId: true
     },
 
-    where: and(
-      eq(tables.telegramChannels.userId, userId),
-      eq(tables.telegramChannels.id, channelId),
-      eq(tables.telegramChannels.isVerified, false)
-    )
+    where: {
+      AND: [{ userId }, { id: channelId }, { isVerified: false }]
+    }
   })
 
   if (channel === undefined) {

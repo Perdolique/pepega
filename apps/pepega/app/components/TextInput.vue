@@ -8,6 +8,8 @@
 </template>
 
 <script lang="ts" setup>
+  import { useTemplateRef } from 'vue'
+
   const model = defineModel({
     required: true
   })

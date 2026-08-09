@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "deploy:production": "wrangler deploy --env production",
+    "deploy:dry-run": "wrangler deploy --dry-run",
     "deploy:staging": "wrangler deploy --env staging",
     "dev": "wrangler dev",
     "start": "wrangler dev",

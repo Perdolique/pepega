@@ -1,8 +1,9 @@
-import type { H3Event } from 'h3'
+import { createError, type H3Event } from 'h3'
 import { and, eq } from 'drizzle-orm'
 import type { OAuthProvider, OAuthUser } from '~~/shared/models/oauth'
 import { useAppSession } from '~~/server/utils/session'
 import type { UserModel } from '~~/shared/models/user';
+import { createDatabaseWebsocket, tables } from '~~/server/utils/database';
 
 const defaultUser : UserModel = {
   id: null,
@@ -27,7 +28,9 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
         isStreamer: true
       },
 
-      where: eq(tables.users.id, userId)
+      where: {
+        id: userId
+      }
     })
 
   if (users?.id === undefined) {
@@ -81,7 +84,9 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
         id: true
       },
 
-      where: eq(tables.oauthProviders.type, provider)
+      where: {
+        type: provider
+      }
     })
 
     if (providerData === undefined) {
@@ -125,7 +130,9 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
           id: true
         },
 
-        where: eq(tables.streamers.broadcasterId, user.id)
+        where: {
+          broadcasterId: user.id
+        }
       })
 
       if (foundStreamer === undefined) {

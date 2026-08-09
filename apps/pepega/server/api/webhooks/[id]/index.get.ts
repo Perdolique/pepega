@@ -1,5 +1,9 @@
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
+import { tables } from '~~/server/utils/database'
+import { stringToIntegerSchema } from '~~/server/utils/validation'
+import { createError, defineEventHandler, getValidatedRouterParams } from 'h3'
+import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
   id: stringToIntegerSchema

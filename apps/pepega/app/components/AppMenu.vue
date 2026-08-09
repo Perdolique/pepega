@@ -82,6 +82,8 @@
   import { useClickOutside } from '~/composables/use-click-outside';
   import { useUserStore } from '~/stores/user';
   import AppMenuItem from './AppMenuItem.vue';
+  import { ref, useTemplateRef } from 'vue';
+  import { navigateTo } from '#imports';
 
   const userStore = useUserStore();
   const isMenuVisible = ref(false);

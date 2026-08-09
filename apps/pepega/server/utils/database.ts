@@ -1,6 +1,6 @@
-import { createDrizzle, createDrizzleWebsocket, tables } from '@pepega/database/connection'
+import { createDrizzle, createDrizzleWebsocket } from '@pepega/database/connection'
 
-export { tables }
+export { tables } from '@pepega/database/connection'
 
 export function createDatabase() {
   if (process.env.DATABASE_URL === undefined) {

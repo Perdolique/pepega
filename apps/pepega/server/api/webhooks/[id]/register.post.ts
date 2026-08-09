@@ -2,9 +2,12 @@ import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { encrypt } from '@pepega/utils/crypto'
 import { subscribeWebhook } from '~~/server/utils/twitch/event-sub/stream-online'
-import { stringToIntegerSchema } from '~~/server/utils/validation'
+import { getValidatedDebug, getValidatedEncryptionKey, getValidatedTwitchClientId, getValidatedWebhookBaseUrl, stringToIntegerSchema } from '~~/server/utils/validation'
 import { type WebhookStatus } from '~~/shared/models/webhooks'
 import { getStoredToken, obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
+import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, getValidatedRouterParams } from 'h3'
+import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
   id: stringToIntegerSchema

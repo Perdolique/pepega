@@ -1,4 +1,10 @@
 import type { SubscriptionModel } from '#shared/models/twitch'
+import { ref } from 'vue'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { $fetch } from 'ofetch'
+import { createLogger } from '@pepega/utils/logger'
+
+const logger = createLogger('PEPEGA')
 
 export const useTwitchSubscriptionsStore = defineStore('twitch-subscriptions', () => {
   const subscriptions = ref(new Map<string, SubscriptionModel>())
@@ -8,7 +14,7 @@ export const useTwitchSubscriptionsStore = defineStore('twitch-subscriptions', (
     try {
       isFetching.value = true
 
-      const response = await $fetch('/api/twitch/subscriptions')
+      const response = await $fetch<SubscriptionModel[]>('/api/twitch/subscriptions')
 
       for (const subscription of response) {
         subscriptions.value.set(subscription.id, subscription)

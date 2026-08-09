@@ -1,5 +1,5 @@
 import { limits } from './constants'
-import { relations, sql } from 'drizzle-orm'
+import { sql } from 'drizzle-orm'
 import { boolean, index, integer, jsonb, pgTable, timestamp, unique, uuid, varchar } from 'drizzle-orm/pg-core'
 import type { NotificationDestinationConfig, NotificationProviderType } from './types'
 
@@ -397,85 +397,3 @@ export const config = pgTable('config', {
     varchar()
     .notNull()
 })
-
-/**
- * Relations
- */
-
-export const usersRelations = relations(users, ({ many }) => ({
-  oauthAccounts: many(oauthAccounts),
-  streamers: many(streamers),
-  telegramChannels: many(telegramChannels)
-}))
-
-export const oauthProvidersRelations = relations(oauthProviders, ({ many }) => ({
-  oauthAccounts: many(oauthAccounts)
-}))
-
-export const oauthAccountsRelations = relations(oauthAccounts, ({ one }) => ({
-  user: one(users, {
-    fields: [oauthAccounts.userId],
-    references: [users.id]
-  }),
-
-  provider: one(oauthProviders, {
-    fields: [oauthAccounts.providerId],
-    references: [oauthProviders.id]
-  })
-}))
-
-export const streamersRelations = relations(streamers, ({ one, many }) => ({
-  user: one(users, {
-    fields: [streamers.userId],
-    references: [users.id]
-  }),
-
-  webhooks: many(webhooks),
-  notifications: many(notifications)
-}))
-
-export const webhooksRelations = relations(webhooks, ({ one }) => ({
-  streamer: one(streamers, {
-    fields: [webhooks.streamerId],
-    references: [streamers.id]
-  })
-}))
-
-export const telegramChannelsRelations = relations(telegramChannels, ({ one, many }) => ({
-  user: one(users, {
-    fields: [telegramChannels.userId],
-    references: [users.id]
-  }),
-
-  notificationDestinations: many(notificationDestinations)
-}))
-
-export const notificationProvidersRelations = relations(notificationProviders, ({ many }) => ({
-  notificationDestinations: many(notificationDestinations)
-}))
-
-export const notificationsRelations = relations(notifications, ({ one, many }) => ({
-  streamer: one(streamers, {
-    fields: [notifications.streamerId],
-    references: [streamers.id]
-  }),
-
-  notificationDestinations: many(notificationDestinations)
-}))
-
-export const notificationDestinationsRelations = relations(notificationDestinations, ({ one }) => ({
-  notification: one(notifications, {
-    fields: [notificationDestinations.notificationId],
-    references: [notifications.id]
-  }),
-
-  provider: one(notificationProviders, {
-    fields: [notificationDestinations.providerId],
-    references: [notificationProviders.id]
-  }),
-
-  telegramChannel: one(telegramChannels, {
-    fields: [notificationDestinations.telegramChannelId],
-    references: [telegramChannels.id]
-  })
-}))

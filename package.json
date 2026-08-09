@@ -19,14 +19,30 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "exit 0",
+    "build": "pnpm --filter @pepega/pepega run build",
+    "cf-typegen": "pnpm --filter @pepega/twitch-webhooks run cf-typegen",
+    "deploy:production": "pnpm --filter @pepega/pepega run deploy:production",
+    "deploy:staging": "pnpm --filter @pepega/pepega run deploy:staging",
+    "lint:markdown": "markdownlint '**/*.md'",
+    "lint:oxlint": "oxlint",
+    "lint:oxlint:agent": "oxlint --format agent",
     "prepare": "husky",
-    "typecheck": "pnpm --recursive --parallel run typecheck",
+    "test:typecheck": "tsc --noEmit && pnpm --filter @pepega/pepega run test:typecheck && pnpm --filter @pepega/twitch-webhooks run typecheck",
+    "test:unit": "vitest",
+    "test:unit:agent": "vitest run --reporter agent",
+    "test:unit:ci": "vitest run",
     "update:all": "taze -r -l -I"
   },
   "packageManager": "pnpm@11.20.0",
   "devDependencies": {
+    "eslint-config-greenpie": "17.5.0",
     "husky": "9.1.7",
-    "taze": "20.0.0"
+    "markdownlint": "0.41.1",
+    "markdownlint-cli": "0.49.1",
+    "oxlint": "1.77.0",
+    "oxlint-tsgolint": "7.0.2001",
+    "taze": "20.0.0",
+    "typescript": "catalog:",
+    "vitest": "4.1.10"
   }
 }

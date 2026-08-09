@@ -3,6 +3,9 @@ import { count, eq, sql } from 'drizzle-orm'
 import { configKeys } from '@pepega/database/constants'
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
 import { checkAdmin } from '~~/server/utils/admin'
+import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, readValidatedBody } from 'h3'
+import logger from '~~/server/utils/logger'
 
 const bodySchema = v.object({
   // TODO: I have no idea how it should be validated ¯\(ツ)/¯
@@ -59,7 +62,9 @@ export default defineEventHandler(async (event) : Promise<TelegramChannelModel> 
     // 1. Get confing from the database
     const config = await transaction.query.config.findFirst({
       columns: {},
-      where: eq(tables.config.key, configKeys.maxTelegramChannelsPerUser),
+      where: {
+        key: configKeys.maxTelegramChannelsPerUser
+      },
       extras: {
         value: sql<number>`CAST(${tables.config.value} AS INTEGER)`.as('value')
       }

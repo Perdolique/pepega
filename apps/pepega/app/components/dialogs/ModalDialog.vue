@@ -38,6 +38,7 @@
 <script lang="ts" setup>
   import { Motion, AnimatePresence } from 'motion-v'
   import { DialogOverlay, DialogContent, DialogRoot, DialogTitle } from 'reka-ui'
+  import { useTemplateRef } from 'vue'
 
   type PointerDownOutsideEvent = CustomEvent<{
     originalEvent: PointerEvent;

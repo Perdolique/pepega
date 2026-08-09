@@ -60,6 +60,8 @@
   import SimpleButton from '~/components/SimpleButton.vue'
   import InputDialog from '~/components/dialogs/InputDialog.vue'
   import ChannelChip from './telegram/ChannelChip.vue'
+  import { computed, ref } from 'vue'
+  import { useQuery } from '@pinia/colada'
 
   const isOpened = ref(false)
   const { state: channels, isPending } = useQuery(getTelegramChannels)

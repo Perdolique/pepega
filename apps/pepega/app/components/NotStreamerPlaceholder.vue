@@ -29,6 +29,7 @@
 <script lang="ts" setup>
   import { useUserStore } from '~/stores/user'
   import SimpleButton from '~/components/SimpleButton.vue'
+  import { ref } from 'vue'
 
   const isCreating = ref(false)
   const userStore = useUserStore()

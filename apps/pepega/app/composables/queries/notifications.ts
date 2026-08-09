@@ -1,6 +1,7 @@
 import { defineQueryOptions } from '@pinia/colada'
 import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications'
-import { notificationKeys } from '../keys/notifications'
+import { notificationKeys } from '~/composables/keys/notifications'
+import { $fetch } from 'ofetch'
 
 export const getNotificationByType = defineQueryOptions((eventType: NotificationEventType) => ({
   key: notificationKeys.byEventType(eventType),
@@ -16,4 +17,3 @@ export const getNotificationByType = defineQueryOptions((eventType: Notification
     })
   }
 }))
-

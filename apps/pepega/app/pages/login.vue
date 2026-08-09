@@ -12,6 +12,7 @@
 
 <script setup lang="ts">
   import SimpleButton from '~/components/SimpleButton.vue';
+  import { useHead, useRoute } from '#imports';
 
   useHead({
     title: 'Twitch login',

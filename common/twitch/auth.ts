@@ -212,11 +212,10 @@ export function decodeStateData(state: unknown) {
     }
 
     const stateString = atob(state)
-    const data = JSON.parse(stateString)
-    const stateData = v.parse(stateDataSchema, data)
+    const stateData = v.parse(stateDataSchema, JSON.parse(stateString))
 
     return stateData
-  } catch (error) {
+  } catch {
     return null
   }
 }

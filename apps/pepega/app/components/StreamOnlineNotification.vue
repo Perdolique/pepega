@@ -61,6 +61,7 @@
   import SimpleButton from '~/components/SimpleButton.vue'
   import BaseCard from '~/components/BaseCard.vue'
   import LinkButton from '~/components/LinkButton.vue';
+  import { computed, ref, watch } from 'vue';
 
   const statusPollingInterval = 5000
   const isCreating = ref(false)
@@ -75,6 +76,8 @@
         return webhook
       }
     }
+
+    return
   })
 
   const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active')

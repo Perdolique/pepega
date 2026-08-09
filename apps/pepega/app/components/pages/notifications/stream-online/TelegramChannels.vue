@@ -34,6 +34,8 @@
 
 <script lang="ts" setup>
   import { getTelegramChannels } from '~/composables/queries/telegram/channels'
+  import { computed } from 'vue'
+  import { useQuery } from '@pinia/colada'
 
   const selectedChannel = defineModel<number | null>({
     default: null

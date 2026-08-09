@@ -1,6 +1,11 @@
 import { getOAuthToken, getUserInfo } from '@pepega/twitch/auth'
 import * as v from 'valibot'
 import type { UserModel } from '~~/shared/models/user'
+import { getTwitchRedirectUri } from '~~/server/utils/provider-twitch'
+import { updateAppSession } from '~~/server/utils/session'
+import { createOAuthUser, getSessionUser, getUserByOAuthAccount } from '~~/server/utils/user'
+import { getValidatedTwitchClientId, getValidatedTwitchClientSecret } from '~~/server/utils/validation'
+import { createError, defineEventHandler, readValidatedBody } from 'h3'
 
 const bodySchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty())

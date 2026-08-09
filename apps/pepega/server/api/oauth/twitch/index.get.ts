@@ -1,4 +1,7 @@
 import { getAuthUrl } from '@pepega/twitch/auth'
+import { getTwitchRedirectUri } from '~~/server/utils/provider-twitch'
+import { getValidatedTwitchClientId } from '~~/server/utils/validation'
+import { getQuery, defineEventHandler, sendRedirect } from 'h3'
 
 export default defineEventHandler(async (event) => {
   // TODO: Check if the user is already logged in and linked their account
@@ -15,5 +18,5 @@ export default defineEventHandler(async (event) => {
     redirectUri
   })
 
-  sendRedirect(event, redirectUrl)
+  return sendRedirect(event, redirectUrl)
 })

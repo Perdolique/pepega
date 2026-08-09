@@ -1,4 +1,5 @@
 import { useUserStore } from '~/stores/user'
+import { defineNuxtRouteMiddleware } from '#imports'
 
 export default defineNuxtRouteMiddleware(async () => {
   if (import.meta.server) {

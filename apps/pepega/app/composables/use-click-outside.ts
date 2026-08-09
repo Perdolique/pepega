@@ -1,3 +1,5 @@
+import { watch, type Ref } from 'vue'
+
 interface Params {
   ignore?: Ref<HTMLElement | null>[];
 }

@@ -28,6 +28,7 @@
   import SimpleButton from '~/components/SimpleButton.vue'
   import SubscriptionCard from '~/components/SubscriptionCard.vue'
   import { useTwitchSubscriptionsStore } from '~/stores/twitch-subscriptions'
+  import { computed } from 'vue'
 
   const twitchSubscriptionsStore = useTwitchSubscriptionsStore()
 

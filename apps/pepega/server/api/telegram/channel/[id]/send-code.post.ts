@@ -1,9 +1,12 @@
-import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { sendMessage } from '@pepega/telegram'
 import { kvStorageName } from '~~/constants'
 import { getValidatedDebug, getValidatedTelegramBotToken, idStringAsNumberSchema } from '~~/server/utils/validation'
 import { getTelegramChannelVerificationCodeKey } from '~~/server/utils/kv'
+import { getRandomCode } from '~~/server/utils/random'
+import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
+import { useStorage } from 'nitropack/runtime/internal/storage'
+import logger from '~~/server/utils/logger'
 
 const routerParamsSchema = v.object({
   id: idStringAsNumberSchema
@@ -26,11 +29,9 @@ export default defineEventHandler(async (event) => {
       chatId: true
     },
 
-    where: and(
-      eq(tables.telegramChannels.userId, userId),
-      eq(tables.telegramChannels.id, channelId),
-      eq(tables.telegramChannels.isVerified, false)
-    )
+    where: {
+      AND: [{ userId }, { id: channelId }, { isVerified: false }]
+    }
   })
 
   if (channel === undefined) {

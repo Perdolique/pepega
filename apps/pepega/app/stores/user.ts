@@ -1,4 +1,8 @@
 import type { UserModel } from '~~/shared/models/user'
+import { computed, ref } from 'vue'
+import { acceptHMRUpdate, defineStore } from 'pinia'
+import { $fetch } from 'ofetch'
+import { useFetch } from '#imports'
 
 export const useUserStore = defineStore('user', () => {
   const hasData = ref(false)
@@ -37,7 +41,7 @@ export const useUserStore = defineStore('user', () => {
 
   async function setStreamer(newValue: boolean) {
     try {
-      const response = await $fetch(`/api/user/${userId.value}/streamer`, {
+      const response = await $fetch<UserModel>(`/api/user/${userId.value}/streamer`, {
         method: 'PATCH',
 
         body: {
@@ -46,7 +50,7 @@ export const useUserStore = defineStore('user', () => {
       })
 
       updateUser(response)
-    } catch (error) {
+    } catch {
       // TODO: Handle error
     }
   }

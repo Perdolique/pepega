@@ -26,6 +26,7 @@
   import { useUserStore } from '~/stores/user'
   import SimpleButton from '~/components/SimpleButton.vue'
   import BaseCard from '~/components/BaseCard.vue'
+  import { ref } from 'vue'
 
   const isPending = ref(false)
   const userStore = useUserStore()

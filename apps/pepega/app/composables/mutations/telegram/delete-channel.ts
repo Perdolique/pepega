@@ -1,5 +1,7 @@
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
-import { telegramQueryKeys } from '../../keys/telegram'
+import { telegramQueryKeys } from '~/composables/keys/telegram'
+import { defineMutation, useMutation, useQueryCache } from '@pinia/colada'
+import { $fetch } from 'ofetch'
 
 export const useDeleteTelegramChannel = defineMutation(() => {
   const queryCache = useQueryCache()
@@ -25,7 +27,7 @@ export const useDeleteTelegramChannel = defineMutation(() => {
       return { previousChannels }
     },
 
-    onError(error, channelId, { previousChannels }) {
+    onError(_error, _channelId, { previousChannels }) {
       const channelsKey = telegramQueryKeys.channels()
 
       queryCache.setQueryData(channelsKey, previousChannels)

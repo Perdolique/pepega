@@ -1,6 +1,4 @@
 import * as v from 'valibot'
-import { UnionToTuple } from '@pepega/utils/types'
-
 import {
   EventSubscriptionStatus,
   EventSubscriptionType,
@@ -8,7 +6,7 @@ import {
   TransportMethod
 } from '@pepega/twitch/models/event-sub'
 
-const eventSubscriptionStatusSchema = v.picklist<UnionToTuple<EventSubscriptionStatus>>([
+const eventSubscriptionStatusSchema = v.picklist([
   'enabled',
   'webhook_callback_verification_pending',
   'webhook_callback_verification_failed',
@@ -25,20 +23,20 @@ const eventSubscriptionStatusSchema = v.picklist<UnionToTuple<EventSubscriptionS
   'websocket_internal_error',
   'websocket_network_timeout',
   'websocket_network_error'
-])
+] as const satisfies readonly EventSubscriptionStatus[])
 
-const transportMethodSchema = v.picklist<UnionToTuple<TransportMethod>>([
+const transportMethodSchema = v.picklist([
   'webhook',
   'websocket'
-])
+] as const satisfies readonly TransportMethod[])
 
-const streamTypeSchema = v.picklist<UnionToTuple<StreamType>>([
+const streamTypeSchema = v.picklist([
   'live',
   'playlist',
   'watch_party',
   'premiere',
   'rerun'
-])
+] as const satisfies readonly StreamType[])
 
 const conditionSchema = v.object({
   broadcaster_user_id: v.string()

@@ -1,4 +1,4 @@
-import type { H3Event, EventHandlerRequest, SessionConfig } from 'h3'
+import { clearSession, getSession, updateSession, useSession, type H3Event, type EventHandlerRequest, type SessionConfig } from 'h3'
 import { sessionCookieName } from '~~/constants';
 
 interface SessionData {

@@ -21,6 +21,7 @@
 
 <script lang="ts" setup>
   import useToaster, { type Toast } from '~/composables/use-toaster';
+  import { computed, onBeforeUnmount, onMounted, ref } from 'vue';
 
   interface Props {
     readonly message: Toast['message'];

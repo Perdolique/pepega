@@ -34,7 +34,7 @@ interface DeleteSubscriptionParams {
  */
 export async function getSubscriptions({ token, clientId, filters = {} } : GetSubscriptionsParams) {
   return await ofetch<PaginatedResponse<EventSubscription>>('https://api.twitch.tv/helix/eventsub/subscriptions', {
-    params: {
+    query: {
       ...filters
     },
 
@@ -49,7 +49,7 @@ export async function deleteSubscription({ token, clientId, id } : DeleteSubscri
   return await ofetch<unknown>('https://api.twitch.tv/helix/eventsub/subscriptions', {
     method: 'DELETE',
 
-    params: {
+    query: {
       id
     },
 
