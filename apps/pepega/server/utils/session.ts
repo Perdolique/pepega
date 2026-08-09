@@ -2,8 +2,8 @@ import { clearSession, getSession, updateSession, useSession, type H3Event, type
 import { sessionCookieName } from '~~/constants';
 
 interface SessionData {
-  userId: string | null;
-  isAdmin: boolean;
+  userId?: string | null;
+  isAdmin?: boolean;
   lastAdminCheck?: string;
 }
 
