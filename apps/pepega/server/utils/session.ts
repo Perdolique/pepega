@@ -7,7 +7,7 @@ interface SessionData {
   lastAdminCheck?: string;
 }
 
-function getSessionConfig() : SessionConfig {
+function getSessionConfig() {
   return {
     // TODO: use env validator
     password: process.env.SESSION_SECRET ?? '',
@@ -19,7 +19,7 @@ function getSessionConfig() : SessionConfig {
       secure: true,
       maxAge: 60 * 60 * 24 * 7 // 1 week
     }
-  }
+  } satisfies SessionConfig
 }
 
 export async function useAppSession(event: H3Event<EventHandlerRequest>) {
@@ -43,5 +43,12 @@ export async function updateAppSession(event: H3Event<EventHandlerRequest>, data
 export async function clearAppSession(event: H3Event<EventHandlerRequest>) {
   const config = getSessionConfig()
 
-  return clearSession(event, config)
+  return clearSession(event, {
+    ...config,
+
+    cookie: {
+      ...config.cookie,
+      maxAge: 0
+    }
+  })
 }
