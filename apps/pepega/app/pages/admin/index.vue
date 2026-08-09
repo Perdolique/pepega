@@ -1,49 +1,16 @@
-<template>
-  <PageBase title="Admin panel">
-    <div :class="$style.page">
-      <div>
-        <SimpleButton
-          :disabled="twitchSubscriptionsStore.isFetching"
-          @click="twitchSubscriptionsStore.fetchSubscriptions"
-        >
-          {{ fetchButtonText }}
-        </SimpleButton>
-      </div>
+<template><div :class="$style.component"><UiPageHeader title="Admin" description="Inspect and remove Twitch EventSub subscriptions."><template #action><UiButton variant="secondary" :disabled="store.isFetching" @click="store.fetchSubscriptions">{{ store.isFetching ? 'Refreshing…' : 'Refresh' }}</UiButton></template></UiPageHeader><UiPanel :class="$style.region" variant="quiet"><UiStatePanel v-if="store.hasFetched === false" title="Subscriptions not fetched" icon="tabler:database-search">Use Refresh to request the current Twitch subscription list.</UiStatePanel><UiStatePanel v-else-if="store.isFetching" title="Loading subscriptions" icon="tabler:loader-2" live>Requesting subscriptions from Twitch…</UiStatePanel><UiStatePanel v-else-if="store.fetchError" title="Could not fetch subscriptions" icon="tabler:alert-triangle">The request failed. Use Refresh to try again.</UiStatePanel><UiStatePanel v-else-if="subscriptionList.length === 0" title="No subscriptions" icon="tabler:webhook-off">Twitch returned no EventSub subscriptions.</UiStatePanel><div v-else :class="$style.table" role="table" aria-label="Twitch subscriptions"><div :class="$style.tableHeader" role="row"><span role="columnheader">Type</span><span role="columnheader">Broadcaster</span><span role="columnheader">Twitch</span><span role="columnheader">Action</span></div><div v-for="subscription in subscriptionList" :key="subscription.id" :class="$style.row" role="row"><div role="cell" data-label="Type"><code>{{ subscription.type }}</code></div><div role="cell" data-label="Broadcaster"><strong>{{ subscription.streamerName ?? 'Unknown streamer' }}</strong><span :class="$style.metadata">{{ subscription.broadcasterId }}</span></div><div role="cell" data-label="Twitch"><a v-if="subscription.streamerLogin" :href="`https://twitch.tv/${subscription.streamerLogin}`" target="_blank" rel="noopener noreferrer">@{{ subscription.streamerLogin }}<Icon name="tabler:external-link" aria-hidden="true" /></a><span v-else>Unavailable</span></div><div role="cell" data-label="Action"><UiButton variant="danger" @click="confirmDelete(subscription)">Delete</UiButton></div></div></div></UiPanel><UiConfirmDialog v-model="isDeleteOpen" title="Delete Twitch subscription?" confirm-label="Delete subscription" @confirm="deleteSubscription">This removes the selected EventSub subscription from Twitch. The local webhook may need registration again.</UiConfirmDialog></div></template>
+<script setup lang="ts">
+  import type { SubscriptionModel } from '#shared/models/twitch'; import UiButton from '~/components/ui/UiButton.vue'; import UiConfirmDialog from '~/components/ui/UiConfirmDialog.vue'; import UiPageHeader from '~/components/ui/UiPageHeader.vue'; import UiPanel from '~/components/ui/UiPanel.vue'; import UiStatePanel from '~/components/ui/UiStatePanel.vue'; import { useTwitchSubscriptionsStore } from '~/stores/twitch-subscriptions'; import { computed, ref } from 'vue'; import { useHead } from '#imports'
 
-      <SubscriptionCard
-        v-for="[, subscription] in twitchSubscriptionsStore.subscriptions"
-        :key="subscription.id"
-        :subscription-id="subscription.id"
-        :subscription-type="subscription.type"
-        :broadcaster-id="subscription.broadcasterId"
-        :streamer-name="subscription.streamerName"
-        :streamer-login="subscription.streamerLogin"
-      />
-    </div>
-  </PageBase>
-</template>
-
-<script lang="ts" setup>
-  import PageBase from '~/components/PageBase.vue'
-  import SimpleButton from '~/components/SimpleButton.vue'
-  import SubscriptionCard from '~/components/SubscriptionCard.vue'
-  import { useTwitchSubscriptionsStore } from '~/stores/twitch-subscriptions'
-  import { computed } from 'vue'
-
-  const twitchSubscriptionsStore = useTwitchSubscriptionsStore()
-
-  const fetchButtonText = computed(() => {
-    if (twitchSubscriptionsStore.isFetching) {
-      return 'Fetching subscriptions...'
-    }
-
-    return 'Fetch subscriptions'
-  })
+  const store = useTwitchSubscriptionsStore(); const isDeleteOpen = ref(false); const deletionTarget = ref<SubscriptionModel | null>(null); const subscriptionList = computed(() => [...store.subscriptions.values()]); function confirmDelete(subscription: SubscriptionModel) { deletionTarget.value = subscription; isDeleteOpen.value = true } async function deleteSubscription() { if (deletionTarget.value === null) {return;} await store.deleteSubscription(deletionTarget.value.id); deletionTarget.value = null } useHead({ title: 'Admin — Pepega' })
 </script>
-
 <style module>
-  .page {
-    display: grid;
-    row-gap: var(--spacing-16);
-  }
+  .component { display: grid; gap: var(--space-xl); }
+  .region { display: grid; gap: var(--space-md); overflow: hidden; }
+  .table { display: grid; gap: var(--space-xs); }
+  .tableHeader, .row { display: grid; grid-template-columns: minmax(10rem, 1fr) minmax(12rem, 1.25fr) minmax(10rem, 1fr) auto; align-items: center; gap: var(--space-md); }
+  .tableHeader { padding: 0 var(--space-md); color: var(--color-ink-muted); font: 700 var(--text-metadata)/1.4 var(--font-metadata); text-transform: uppercase; }
+  .row { padding: var(--space-md); border: var(--outline); border-radius: var(--radius-inner); background: var(--color-surface); & [role="cell"] { min-inline-size: 0; } & strong, & span { display: block; } & a { display: inline-flex; align-items: center; gap: var(--space-xxs); } }
+  .metadata { overflow: hidden; color: var(--color-ink-muted); font: 500 var(--text-metadata)/1.4 var(--font-metadata); text-overflow: ellipsis; }
+  @media (max-width: 47.99rem) { .tableHeader { display: none; } .row { grid-template-columns: 1fr; } .row [role="cell"] { display: grid; grid-template-columns: 7rem minmax(0, 1fr); gap: var(--space-sm); &::before { content: attr(data-label); color: var(--color-ink-muted); font: 700 var(--text-metadata)/1.4 var(--font-metadata); text-transform: uppercase; } } }
 </style>

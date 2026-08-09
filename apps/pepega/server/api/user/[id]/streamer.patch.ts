@@ -4,6 +4,7 @@ import type { UserModel } from '~~/shared/models/user'
 import { tables } from '~~/server/utils/database'
 import { createError, defineEventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
 import logger from '~~/server/utils/logger'
+import { getSessionUser } from '~~/server/utils/user'
 
 const paramsSchema = v.object({
   id: v.pipe(
@@ -62,5 +63,5 @@ export default defineEventHandler(async (event) : Promise<UserModel> => {
     })
   }
 
-  return updatedUser
+  return await getSessionUser(event)
 })

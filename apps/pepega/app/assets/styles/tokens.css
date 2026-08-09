@@ -1,0 +1,61 @@
+:root {
+  color-scheme: light dark;
+  --color-paper: light-dark(#fff4dd, oklch(0.18 0.012 70));
+  --color-surface: light-dark(#fffdf7, oklch(0.24 0.014 70));
+  --color-surface-muted: light-dark(#f6e7c9, oklch(0.29 0.018 72));
+  --color-surface-featured: light-dark(#fff0bd, oklch(0.31 0.055 72));
+  --color-ink: light-dark(#26201a, oklch(0.93 0.025 80));
+  --color-ink-secondary: light-dark(#5c5347, oklch(0.78 0.025 75));
+  --color-ink-muted: light-dark(#7a6e60, oklch(0.68 0.024 72));
+  --color-shadow: light-dark(#26201a, oklch(0.08 0.005 70));
+  --color-primary: light-dark(#ff5c2b, oklch(0.68 0.20 38));
+  --color-primary-hover: light-dark(#ff7045, oklch(0.74 0.19 42));
+  --color-on-primary: light-dark(#26201a, oklch(0.20 0.03 38));
+  --color-sun: light-dark(#ffd84d, oklch(0.78 0.14 82));
+  --color-sun-hover: light-dark(#ffe270, oklch(0.83 0.13 84));
+  --color-on-sun: light-dark(#26201a, oklch(0.22 0.04 82));
+  --color-mint: light-dark(#a8e6bd, oklch(0.75 0.10 148));
+  --color-on-mint: light-dark(#173a24, oklch(0.19 0.03 148));
+  --color-sky: light-dark(#a5dcff, oklch(0.73 0.095 232));
+  --color-on-sky: light-dark(#26201a, oklch(0.20 0.03 235));
+  --color-danger: light-dark(#c92f2f, #ff7870);
+  --color-danger-hover: light-dark(#b92323, #ff918a);
+  --color-on-danger: light-dark(#fffdf7, #301313);
+  --color-twitch: #9146ff;
+  --color-on-twitch: #fff;
+  --font-display: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-metadata: ui-monospace, "SFMono-Regular", "Cascadia Code", Menlo, Consolas, monospace;
+  --text-body-sm: 0.875rem;
+  --text-body-md: 1rem;
+  --text-body-lg: 1.125rem;
+  --text-label-sm: 0.8125rem;
+  --text-metadata: 0.75rem;
+  --space-xxs: 0.25rem;
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-xxl: 3rem;
+  --space-section: 4rem;
+  --radius-cell: 0.375rem;
+  --radius-control: 0.625rem;
+  --radius-inner: 0.75rem;
+  --radius-card: 1rem;
+  --radius-feature: 1.25rem;
+  --radius-full: 999px;
+  --control-size: 2.75rem;
+  --outline: 2px solid var(--color-ink);
+  --focus-outline: 3px solid var(--color-primary);
+  --shadow-control: 3px 3px 0 var(--color-shadow);
+  --shadow-card: 4px 4px 0 var(--color-shadow);
+  --shadow-feature: 6px 6px 0 var(--color-shadow);
+  --motion-fast: 120ms;
+  --motion-normal: 200ms;
+  --motion-slow: 320ms;
+  --ease-product: cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }

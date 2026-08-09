@@ -29,7 +29,6 @@
     "date-fns": "4.4.0",
     "drizzle-orm": "catalog:",
     "modern-normalize": "3.0.1",
-    "motion-v": "1.10.3",
     "nitro-cloudflare-dev": "0.2.2",
     "nuxt": "4.5.2",
     "ofetch": "catalog:",

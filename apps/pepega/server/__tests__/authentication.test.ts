@@ -6,6 +6,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 import logoutHandler from '../api/user/logout.post'
 import apiSessionCheck from '../middleware/1.api-session-check'
 import { checkAdmin } from '../utils/admin'
+import { updateAppSession } from '../utils/session'
 import { getSessionUser } from '../utils/user'
 
 describe('authentication', () => {
@@ -34,6 +35,14 @@ describe('authentication', () => {
 
     router.get('/session-user', defineEventHandler(async (event) => {
       return await getSessionUser(event)
+    }))
+
+    router.get('/login-test', defineEventHandler(async (event) => {
+      await updateAppSession(event, {
+        userId: '01912345-6789-7abc-8def-0123456789ab'
+      })
+
+      return 'logged-in'
     }))
 
     router.get('/admin-check', defineEventHandler(async (event) => {
@@ -99,9 +108,11 @@ describe('authentication', () => {
     const user: unknown = await response.json()
 
     expect(user).toStrictEqual({
+      displayName: null,
       id: null,
       isAdmin: false,
-      isStreamer: false
+      isStreamer: false,
+      login: null
     })
     expect(findFirstUser).not.toHaveBeenCalled()
   })
@@ -112,5 +123,36 @@ describe('authentication', () => {
 
     expect(isAdmin).toBe(false)
     expect(findFirstUser).not.toHaveBeenCalled()
+  })
+
+  it('should return Twitch identity for an authenticated user', async () => {
+    findFirstUser.mockResolvedValueOnce({
+      id: '01912345-6789-7abc-8def-0123456789ab',
+      isAdmin: false,
+      isStreamer: true,
+      streamers: [{
+        displayName: 'Perdolique',
+        login: 'perdolique'
+      }]
+    })
+
+    const loginResponse = await fetch(new URL('/login-test', url))
+    const setCookie = loginResponse.headers.get('set-cookie')
+
+    expect(setCookie).not.toBeNull()
+
+    const cookie = setCookie?.split(';')[0] ?? ''
+    const response = await fetch(new URL('/session-user', url), {
+      headers: { cookie }
+    })
+    const user: unknown = await response.json()
+
+    expect(user).toStrictEqual({
+      displayName: 'Perdolique',
+      id: '01912345-6789-7abc-8def-0123456789ab',
+      isAdmin: false,
+      isStreamer: true,
+      login: 'perdolique'
+    })
   })
 })

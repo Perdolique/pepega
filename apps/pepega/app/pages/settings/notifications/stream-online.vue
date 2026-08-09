@@ -1,141 +1,23 @@
-<template>
-  <PageBase title="Stream Online notifications">
-    <LoadingState v-if="isNotificationPending">
-      Loading notifications...
-    </LoadingState>
-
-    <div
-      v-else-if="notification.data"
-      :class="$style.cards"
-    >
-      <BaseCard :class="$style.card">
-        <section :class="$style.formSection">
-          <fieldset :class="$style.fieldset">
-            <legend>Telegram channels</legend>
-
-            <TelegramChannels v-model="selectedChannel" />
-          </fieldset>
-
-          <fieldset :class="$style.fieldset">
-            <legend>Notification message</legend>
-
-            <textarea
-              :class="$style.message"
-              v-model="notificationMessage"
-              :placeholder="defaultMessage"
-              :disabled="isMessageFieldDisabled"
-              :maxlength="limits.notificationMessageLength"
-            ></textarea>
-
-            <SimpleButton
-              :disabled="isSubmitDisabled"
-              @click="onCreateNotificationClick"
-            >
-              Create notification
-            </SimpleButton>
-          </fieldset>
-        </section>
-      </BaseCard>
-
-      <StreamOnlineDestinations :notification-id="notification.data.id" />
-
-      <SimpleButton
-        variant="secondary"
-        :disabled="isDeletingNotification"
-        @click="onDeleteNotificationClick"
-      >
-        Delete notification
-      </SimpleButton>
-    </div>
-
-    <StreamOnlineEmptyState v-else />
-  </PageBase>
-</template>
-
+<template><div :class="$style.component"><UiPageHeader title="Stream online" description="Choose where the alert goes and what it says." :breadcrumb="{ label: 'Notifications', to: '/notifications' }" /><UiStatePanel v-if="isNotificationPending" title="Loading notification settings" icon="tabler:loader-2" live>Checking the saved notification and destinations…</UiStatePanel><UiStatePanel v-else-if="notification.data === undefined" title="Create stream notification" icon="tabler:bell-plus">Initialize the stream-online notification before adding a Telegram destination.<template #action><UiButton :disabled="isInitializing" @click="initializeNotification">{{ isInitializing ? 'Creating…' : 'Create notification' }}</UiButton></template></UiStatePanel><template v-else><div :class="$style.grid"><UiPanel variant="quiet"><form :class="$style.form" @submit.prevent="createDestination"><h2>Add destination</h2><fieldset :class="$style.fieldset"><legend>Verified Telegram channel</legend><UiStatePanel v-if="isChannelsPending" title="Loading channels" icon="tabler:loader-2" live>Looking for verified Telegram channels…</UiStatePanel><UiStatePanel v-else-if="verifiedChannels.length === 0" title="No verified channels" icon="tabler:brand-telegram">Add and verify a Telegram channel in Account.<template #action><UiButtonLink to="/account" variant="secondary">Open account</UiButtonLink></template></UiStatePanel><label v-for="channel in verifiedChannels" v-else :key="channel.id" :class="$style.channel"><input v-model="selectedChannel" type="radio" name="telegramChannel" :value="channel.id" /><span>@{{ channel.chatId }}</span></label></fieldset><UiField label="Notification message" for-id="notification-message" helper="Sent when Twitch reports that your channel is live." :counter="messageCounter" :error="mutationError"><UiTextarea id="notification-message" v-model="notificationMessage" :maxlength="limits.notificationMessageLength" /></UiField><UiButton type="submit" :disabled="isSubmitDisabled">{{ isCreatingDestination ? 'Saving…' : 'Add destination' }}</UiButton></form></UiPanel><StreamOnlineDestinations :notification-id="notification.data.id" /></div><UiPanel :class="$style.danger" variant="quiet"><div><h2>Danger zone</h2><p>Delete the notification and every saved destination.</p></div><UiButton variant="danger" :disabled="isDeletingNotification" @click="isDeleteOpen = true">Delete notification</UiButton></UiPanel><UiConfirmDialog v-model="isDeleteOpen" title="Delete Stream online?" confirm-label="Delete Stream online" @confirm="deleteCurrentNotification">This permanently deletes the “Stream online” notification and all of its destinations.</UiConfirmDialog></template></div></template>
 <script setup lang="ts">
-  import { limits } from '~~/constants'
-  import { getNotificationByType } from '~/composables/queries/notifications'
-  import { useDeleteNotification } from '~/composables/mutations/notifications'
-  import { useCreateTelegramNotification } from '~/composables/mutations/notification/destinations'
-  import PageBase from '~/components/PageBase.vue'
-  import LoadingState from '~/components/pages/notifications/stream-online/LoadingState.vue'
-  import SimpleButton from '~/components/SimpleButton.vue'
-  import StreamOnlineDestinations from '~/components/pages/notifications/stream-online/StreamOnlineDestinations.vue'
-  import TelegramChannels from '~/components/pages/notifications/stream-online/TelegramChannels.vue'
-  import BaseCard from '~/components/BaseCard.vue'
-  import StreamOnlineEmptyState from '~/components/pages/notifications/stream-online/StreamOnlineEmptyState.vue'
-  import { computed, ref } from 'vue'
-  import { useQuery } from '@pinia/colada'
+  import { limits } from '~~/constants'; import { getNotificationByType } from '~/composables/queries/notifications'; import { getTelegramChannels } from '~/composables/queries/telegram/channels'; import { useCreateTelegramNotification } from '~/composables/mutations/notification/destinations'; import { useDeleteNotification, useInitNotifications } from '~/composables/mutations/notifications'
+  import StreamOnlineDestinations from '~/components/pages/notifications/stream-online/StreamOnlineDestinations.vue'; import UiButton from '~/components/ui/UiButton.vue'; import UiButtonLink from '~/components/ui/UiButtonLink.vue'; import UiConfirmDialog from '~/components/ui/UiConfirmDialog.vue'; import UiField from '~/components/ui/UiField.vue'; import UiPageHeader from '~/components/ui/UiPageHeader.vue'; import UiPanel from '~/components/ui/UiPanel.vue'; import UiStatePanel from '~/components/ui/UiStatePanel.vue'; import UiTextarea from '~/components/ui/UiTextarea.vue'
+  import { useQuery } from '@pinia/colada'; import { computed, ref } from 'vue'; import { useHead } from '#imports'
 
-  const defaultMessage = 'ЗАЙДИТЕ НА СТРИМ ПОЖАЛУЙСТА Я ПОДРУБИЛСЯ!'
-  const { deleteNotification, isLoading: isDeletingNotification } = useDeleteNotification()
-  const { createNotification, isLoading: isCreatingNotification } = useCreateTelegramNotification()
-  const selectedChannel = ref<number | null>(null)
-  const notificationMessage = ref('')
-  const isMessageFieldDisabled = computed(() => selectedChannel.value === null)
-
-  const isSubmitDisabled = computed(
-    () =>
-      isMessageFieldDisabled.value ||
-      isCreatingNotification.value
-  )
-
-  const { state: notification, isPending: isNotificationPending } = useQuery(() =>
-    getNotificationByType('stream.online')
-  )
-
-  function onDeleteNotificationClick() {
-    deleteNotification('stream.online')
-  }
-
-  function onCreateNotificationClick() {
-    if (selectedChannel.value === null || notification.value.data === undefined) {
-      console.warn('Cannot create notification: missing required fields')
-
-      return
-    }
-
-    const message = notificationMessage.value || defaultMessage
-
-    createNotification({
-      message,
-      notificationId: notification.value.data.id,
-      telegramChannelId: selectedChannel.value
-    })
-  }
+  const defaultMessage = 'ЗАЙДИТЕ НА СТРИМ ПОЖАЛУЙСТА Я ПОДРУБИЛСЯ!'; const selectedChannel = ref<number | null>(null); const notificationMessage = ref(defaultMessage); const mutationError = ref(''); const isDeleteOpen = ref(false)
+  const { state: notification, isPending: isNotificationPending } = useQuery(() => getNotificationByType('stream.online')); const { state: channels, isPending: isChannelsPending } = useQuery(getTelegramChannels); const { initNotifications, isLoading: isInitializing } = useInitNotifications(); const { createNotificationAsync, isLoading: isCreatingDestination } = useCreateTelegramNotification(); const { deleteNotification, isLoading: isDeletingNotification } = useDeleteNotification()
+  const verifiedChannels = computed(() => channels.value.data?.filter(channel => channel.isVerified) ?? []); const messageCounter = computed(() => `${notificationMessage.value.length}/${limits.notificationMessageLength}`); const isSubmitDisabled = computed(() => selectedChannel.value === null || notificationMessage.value.length === 0 || isCreatingDestination.value)
+  function initializeNotification() { mutationError.value = ''; initNotifications('stream.online') }
+  async function createDestination() { const notificationId = notification.value.data?.id; if (selectedChannel.value === null || notificationId === undefined) {return;} mutationError.value = ''; try { await createNotificationAsync({ message: notificationMessage.value, notificationId, telegramChannelId: selectedChannel.value }) } catch (error) { console.error('Failed to create notification destination', error); mutationError.value = 'The destination could not be saved. Try again.' } }
+  function deleteCurrentNotification() { deleteNotification('stream.online') }
+  useHead({ title: 'Stream online settings — Pepega' })
 </script>
-
 <style module>
-  .cards {
-    display: grid;
-    gap: var(--spacing-16);
-    align-items: start;
-
-    @container (width > 768px) {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  .card {
-    display: grid;
-    row-gap: var(--spacing-20);
-  }
-
-  .formSection {
-    display: grid;
-    gap: var(--spacing-16);
-  }
-
-  .fieldset {
-    border-radius: var(--border-radius-16);
-    padding: var(--spacing-16);
-  }
-
-  .message {
-    width: 100%;
-    height: 100px;
-    resize: none;
-    padding: var(--spacing-8);
-    border-radius: var(--border-radius-12);
-  }
+  .component { display: grid; gap: var(--space-xl); }
+  .grid { display: grid; align-items: start; gap: var(--space-lg); }
+  .form { display: grid; gap: var(--space-lg); & > button { justify-self: start; } }
+  .fieldset { display: grid; gap: var(--space-xs); margin: 0; padding: 0; border: 0; & legend { margin-bottom: var(--space-xs); font: 700 0.9375rem/1.2 var(--font-display); } }
+  .channel { min-block-size: var(--control-size); display: flex; align-items: center; gap: var(--space-sm); padding: 0 var(--space-md); border: var(--outline); border-radius: var(--radius-control); background: var(--color-surface); }
+  .danger { display: flex; justify-content: space-between; align-items: center; gap: var(--space-lg); flex-wrap: wrap; & p { color: var(--color-ink-secondary); } }
+  @media (min-width: 48rem) { .grid { grid-template-columns: minmax(0, 1fr) minmax(18rem, 0.75fr); } }
 </style>

@@ -1,9 +1,11 @@
+import type { ToastTone } from '~/types/ui'
 import { useState } from '#imports'
 
 export interface Toast {
   readonly id: string;
   readonly message: string;
   readonly title?: string;
+  readonly tone?: ToastTone;
   readonly duration?: number | null;
 }
 

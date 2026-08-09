@@ -15,7 +15,7 @@ interface CreateTelegramNotificationParams {
 export const useCreateTelegramNotification = defineMutation(() => {
   const cache = useQueryCache()
 
-  const { mutate, ...mutation } = useMutation({
+  const { mutate, mutateAsync, ...mutation } = useMutation({
     mutation({ telegramChannelId, message, notificationId } : CreateTelegramNotificationParams) {
       return $fetch<NotificationDestinationModel>('/api/notifications/destinations', {
         method: 'POST',
@@ -44,8 +44,13 @@ export const useCreateTelegramNotification = defineMutation(() => {
     return mutate(params)
   }
 
+  function createNotificationAsync(params : CreateTelegramNotificationParams) {
+    return mutateAsync(params)
+  }
+
   return {
     createNotification,
+    createNotificationAsync,
     ...mutation
   }
 })

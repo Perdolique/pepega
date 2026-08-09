@@ -1,20 +1,24 @@
-<template>
-  <PageBase title="Dashboard">
-    <div :class="$style.content">
-      <Icon name="streamline-emojis:dog" />
-      <Icon name="streamline-emojis:dashing-away" />
-    </div>
-  </PageBase>
-</template>
-
+<template><div :class="$style.component"><UiPageHeader title="Dashboard" :description="welcomeCopy" /><UiPanel v-if="viewerMode" :class="$style.feature" variant="featured"><Icon name="tabler:rocket" aria-hidden="true" /><div><h2>Ready to stream?</h2><p>Turn on Streamer mode to unlock Twitch live alerts and Telegram destinations.</p></div><UiButtonLink to="/account">Open account</UiButtonLink></UiPanel><template v-else><UiPanel :class="$style.feature" variant="featured"><Icon :name="summaryIcon" aria-hidden="true" /><div><h2>{{ summaryTitle }}</h2><p>{{ summaryDescription }}</p></div><UiButtonLink :to="primaryAction.to">{{ primaryAction.label }}</UiButtonLink></UiPanel><section :class="$style.steps" aria-labelledby="setup-title"><h2 id="setup-title">Setup overview</h2><div :class="$style.stepGrid"><UiPanel v-for="step in steps" :key="step.title" variant="quiet"><div :class="$style.step"><Icon :name="step.done ? 'tabler:circle-check-filled' : 'tabler:circle-dashed'" aria-hidden="true" /><div><strong>{{ step.title }}</strong><p>{{ step.description }}</p></div><UiStatusBadge :tone="step.done ? 'success' : 'warning'">{{ step.done ? 'Ready' : 'Needed' }}</UiStatusBadge></div></UiPanel></div></section></template></div></template>
 <script setup lang="ts">
-  import PageBase from '~/components/PageBase.vue';
+  import { getTelegramChannels } from '~/composables/queries/telegram/channels'; import { getNotificationByType } from '~/composables/queries/notifications'; import { useUserStore } from '~/stores/user'; import { useWebhooksStore } from '~/stores/webhooks'
+  import UiButtonLink from '~/components/ui/UiButtonLink.vue'; import UiPageHeader from '~/components/ui/UiPageHeader.vue'; import UiPanel from '~/components/ui/UiPanel.vue'; import UiStatusBadge from '~/components/ui/UiStatusBadge.vue'
+  import { useQuery } from '@pinia/colada'; import { computed, onMounted } from 'vue'; import { useHead } from '#imports'
+
+  interface SetupStep { description: string; done: boolean; title: string }
+  const userStore = useUserStore(); const webhooksStore = useWebhooksStore(); const { state: channels } = useQuery(getTelegramChannels); const { state: notification } = useQuery(() => getNotificationByType('stream.online'))
+  const viewerMode = computed(() => userStore.isStreamer === false); const welcomeCopy = computed(() => `Welcome back${userStore.displayName === null ? '' : `, ${userStore.displayName}`}. Here is your live alert setup.`)
+  const hasVerifiedChannel = computed(() => channels.value.data?.some(channel => channel.isVerified) ?? false); const streamWebhook = computed(() => [...webhooksStore.webhooks.values()].find(webhook => webhook.type === 'stream.online')); const hasActiveWebhook = computed(() => streamWebhook.value?.status === 'active'); const hasNotification = computed(() => notification.value.data !== undefined)
+  const steps = computed<SetupStep[]>(() => [{ description: 'Your Twitch identity is connected.', done: userStore.login !== null, title: 'Twitch connection' }, { description: 'A verified channel can receive alerts.', done: hasVerifiedChannel.value, title: 'Telegram channel' }, { description: 'Twitch can tell Pepega when you go live.', done: hasActiveWebhook.value, title: 'Live webhook' }, { description: 'A live notification destination is configured.', done: hasNotification.value, title: 'Notification destination' }])
+  const firstIncompleteStep = computed(() => steps.value.findIndex(step => step.done === false)); const isComplete = computed(() => firstIncompleteStep.value === -1)
+  const primaryAction = computed(() => { if (hasVerifiedChannel.value === false) {return { label: 'Add Telegram channel', to: '/account' };} if (hasActiveWebhook.value === false) {return { label: 'Set up notifications', to: '/notifications' };} return { label: isComplete.value ? 'Manage live alerts' : 'Choose destination', to: '/settings/notifications/stream-online' } })
+  const summaryIcon = computed(() => isComplete.value ? 'tabler:bell-check' : 'tabler:list-check'); const summaryTitle = computed(() => isComplete.value ? 'Live alerts are ready' : 'Finish your live alert setup'); const summaryDescription = computed(() => isComplete.value ? 'Pepega is ready to send your Telegram alert when Twitch reports that you are live.' : 'Complete the next step and keep the setup moving.')
+  onMounted(() => { if (userStore.isStreamer) {webhooksStore.fetchWebhooks()} }); useHead({ title: 'Dashboard — Pepega' })
 </script>
-
 <style module>
-  .content {
-    text-align: center;
-    font-size: 64px;
-  }
+  .component { display: grid; gap: var(--space-xl); }
+  .feature { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--space-lg); & > svg { font-size: 3rem; } & h2 { font-size: 1.75rem; } & p { color: var(--color-ink-secondary); } & > a { grid-column: 1 / -1; justify-self: start; } }
+  .steps { display: grid; gap: var(--space-md); & > h2 { font-size: 1.75rem; } }
+  .stepGrid { display: grid; gap: var(--space-md); }
+  .step { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: var(--space-md); & > svg { color: var(--color-primary); font-size: 1.75rem; } & strong { font-family: var(--font-display); } & p { color: var(--color-ink-secondary); font-size: var(--text-body-sm); } }
+  @media (min-width: 48rem) { .feature { grid-template-columns: auto 1fr auto; & > a { grid-column: auto; } } .stepGrid { grid-template-columns: repeat(2, 1fr); } }
 </style>
-

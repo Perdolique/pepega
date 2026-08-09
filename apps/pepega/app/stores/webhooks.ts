@@ -90,8 +90,8 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
         return webhook
       }
-    } catch {
-      // TODO: Handle error properly
+    } catch (error) {
+      logger.error('Failed to fetch webhook', error)
     }
 
     return
@@ -111,8 +111,10 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       const data = transformWebhooks(response)
 
       replaceWebhooks(data)
-    } catch {
-      // TODO: Handle error properly
+      return true
+    } catch (error) {
+      logger.error('Failed to fetch webhooks', error)
+      return false
     }
   }
 
@@ -140,11 +142,13 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
       if (webhook !== null) {
         webhooks.value.set(webhook.id, webhook)
+        return true
       }
     } catch (error) {
-      // TODO: Handle error properly
       logger.error('Failed to create webhook', error)
     }
+
+    return false
   }
 
   async function deleteWebhook(webhookId: number) {
@@ -160,8 +164,10 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       })
 
       removeWebhooks([webhookId])
-    } catch {
-      // TODO: Handle error properly
+      return true
+    } catch (error) {
+      logger.error('Failed to delete webhook', error)
+      return false
     }
   }
 
@@ -181,9 +187,10 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       if (updatedWebhook !== undefined) {
         updatedWebhook.status = result.status
       }
+      return true
     } catch (error) {
-      // TODO: Handle error properly
       logger.error('Failed to register webhook', error)
+      return false
     }
   }
 

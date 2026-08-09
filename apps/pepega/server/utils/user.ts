@@ -6,9 +6,11 @@ import type { UserModel } from '~~/shared/models/user';
 import { createDatabaseWebsocket, tables } from '~~/server/utils/database';
 
 const defaultUser : UserModel = {
+  displayName: null,
   id: null,
   isAdmin: false,
-  isStreamer: false
+  isStreamer: false,
+  login: null
 }
 
 export async function getSessionUser(event: H3Event) : Promise<UserModel> {
@@ -28,6 +30,16 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
         isStreamer: true
       },
 
+      with: {
+        streamers: {
+          columns: {
+            displayName: true,
+            login: true
+          },
+          limit: 1
+        }
+      },
+
       where: {
         id: userId
       }
@@ -37,10 +49,14 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
     return defaultUser
   }
 
+  const streamer = users.streamers[0]
+
   return {
+    displayName: streamer?.displayName ?? null,
     id: users.id,
     isAdmin: users.isAdmin,
-    isStreamer: users.isStreamer
+    isStreamer: users.isStreamer,
+    login: streamer?.login ?? null
   }
 }
 
@@ -55,7 +71,9 @@ export async function getUserByOAuthAccount(
     .select({
       id: tables.oauthAccounts.userId,
       isAdmin: tables.users.isAdmin,
-      isStreamer: tables.users.isStreamer
+      isStreamer: tables.users.isStreamer,
+      displayName: tables.streamers.displayName,
+      login: tables.streamers.login
     })
     .from(tables.oauthAccounts)
     .innerJoin(
@@ -70,6 +88,10 @@ export async function getUserByOAuthAccount(
     .innerJoin(
       tables.users,
       eq(tables.users.id, tables.oauthAccounts.userId)
+    )
+    .leftJoin(
+      tables.streamers,
+      eq(tables.streamers.userId, tables.users.id)
     )
 
   return foundUser ?? defaultUser
@@ -159,15 +181,19 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
     }
 
     return {
+      displayName: user.display_name,
       id: foundUser.id,
       isAdmin: foundUser.isAdmin,
-      isStreamer: foundUser.isStreamer
+      isStreamer: foundUser.isStreamer,
+      login: user.login
     }
   })
 
   return {
+    displayName: newUser.displayName,
     id: newUser.id,
     isAdmin: newUser.isAdmin,
-    isStreamer: newUser.isStreamer
+    isStreamer: newUser.isStreamer,
+    login: newUser.login
   }
 }

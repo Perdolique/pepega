@@ -1,260 +1,29 @@
-<template>
-  <BaseCard :class="$style.card">
-    <div :class="$style.header">
-      <div :class="$style.title">
-        Stream online
-      </div>
-
-      <span :class="[$style.status, status]">
-        {{ status }}
-      </span>
-    </div>
-
-    <div :class="$style.description">
-      Get notified when your stream goes live
-    </div>
-
-    <div :class="$style.buttons">
-      <SimpleButton
-        v-if="hasRemoveButton"
-        :class="$style.button"
-        :disabled="isRemoveDisabled"
-        @click="onRemoveClick"
-      >
-        {{ removeButtonLabel }}
-      </SimpleButton>
-
-      <SimpleButton
-        v-if="hasCreateButton"
-        :class="$style.button"
-        :disabled="isCreating"
-        @click="onCreateClick"
-      >
-        {{ createButtonLabel }}
-      </SimpleButton>
-
-      <!-- TODO: move to settings -->
-      <SimpleButton
-        v-if="webhook"
-        :class="$style.button"
-        :disabled="isRegisterDisabled"
-        @click="onRegisterClick"
-      >
-        Register
-      </SimpleButton>
-
-      <LinkButton
-        to="/settings/notifications/stream-online"
-        icon-name="tabler:settings"
-      >
-        Settings
-      </LinkButton>
-    </div>
-  </BaseCard>
-</template>
-
+<template><UiPanel :class="$style.component"><header :class="$style.header"><div><p :class="$style.kicker">TWITCH EVENT</p><h2>Stream online</h2></div><UiStatusBadge :tone="statusTone">{{ statusLabel }}</UiStatusBadge></header><p :class="$style.description">Send a Telegram notification when your Twitch channel goes live.</p><p v-if="actionError" :class="$style.error" role="alert">{{ actionError }}</p><div :class="$style.actions"><UiButton v-if="webhook === undefined" :disabled="isCreating" @click="createWebhook">{{ isCreating ? 'Creating…' : 'Create webhook' }}</UiButton><UiButton v-else-if="canRegister" :disabled="isRegistering" @click="registerWebhook">{{ isRegistering ? 'Registering…' : 'Register' }}</UiButton><UiButtonLink to="/settings/notifications/stream-online" :variant="webhook === undefined ? 'ghost' : 'secondary'" icon="tabler:settings">Settings</UiButtonLink><UiButton v-if="canRemove" variant="danger" :disabled="isRemoving" @click="isConfirmOpen = true">Remove</UiButton></div><UiConfirmDialog v-model="isConfirmOpen" title="Remove stream webhook?" confirm-label="Remove webhook" @confirm="removeWebhook">This removes the Twitch subscription used for live alerts. Notification settings will remain until you delete them separately.</UiConfirmDialog></UiPanel></template>
 <script setup lang="ts">
-  import { useTimeoutPoll } from '@vueuse/core'
-  import type { WebhookStatus } from '~~/shared/models/webhooks'
-  import { useWebhooksStore } from '~/stores/webhooks';
-  import { useUserStore } from '~/stores/user';
-  import SimpleButton from '~/components/SimpleButton.vue'
-  import BaseCard from '~/components/BaseCard.vue'
-  import LinkButton from '~/components/LinkButton.vue';
-  import { computed, ref, watch } from 'vue';
+  import { useTimeoutPoll } from '@vueuse/core'; import type { StatusTone } from '~/types/ui'; import type { WebhookStatus } from '~~/shared/models/webhooks'; import { useWebhooksStore } from '~/stores/webhooks'; import { useUserStore } from '~/stores/user'
+  import UiButton from './ui/UiButton.vue'; import UiButtonLink from './ui/UiButtonLink.vue'; import UiConfirmDialog from './ui/UiConfirmDialog.vue'; import UiPanel from './ui/UiPanel.vue'; import UiStatusBadge from './ui/UiStatusBadge.vue'; import { computed, ref, watch } from 'vue'
 
-  const statusPollingInterval = 5000
-  const isCreating = ref(false)
-  const isRemoving = ref(false)
-  const isRegistering = ref(false)
-  const webhooksStore = useWebhooksStore()
-  const userStore = useUserStore()
-
-  const webhook = computed(() => {
-    for (const webhook of webhooksStore.webhooks.values()) {
-      if (webhook.type === 'stream.online') {
-        return webhook
-      }
+  const webhooksStore = useWebhooksStore(); const userStore = useUserStore(); const isCreating = ref(false); const isRegistering = ref(false); const isRemoving = ref(false); const isConfirmOpen = ref(false); const actionError = ref('')
+  const webhook = computed(() => [...webhooksStore.webhooks.values()].find(item => item.type === 'stream.online')); const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active'); const canRegister = computed(() => webhook.value !== undefined && !['active', 'pending'].includes(webhook.value.status)); const canRemove = computed(() => webhook.value !== undefined && userStore.isAdmin)
+  const statusLabels: Record<WebhookStatus, string> = { active: 'Active', failed: 'Failed', not_active: 'Not active', pending: 'Pending', revoked: 'Revoked' }; const statusLabel = computed(() => statusLabels[status.value]); const statusTone = computed<StatusTone>(() => {
+    switch (status.value) {
+      case 'active': { return 'success' }
+      case 'pending': { return 'warning' }
+      case 'not_active': { return 'neutral' }
+      default: { return 'danger' }
     }
-
-    return
   })
-
-  const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active')
-  const hasRemoveButton = computed(() => webhook.value !== undefined && userStore.isAdmin)
-  const hasCreateButton = computed(() => webhook.value === undefined)
-
-  const { pause: stopStatusPolling, resume: startStatusPolling } = useTimeoutPoll(async () => {
-    if (webhook.value?.status === 'pending') {
-      await webhooksStore.fetchWebhook(webhook.value.id)
-    }
-  }, statusPollingInterval, {
-    immediate: false
-  })
-
-  const isRegisterDisabled = computed(() => {
-    if (isRegistering.value || webhook.value === undefined) {
-      return true
-    }
-
-    if (webhook.value.status === 'active' || webhook.value.status === 'pending') {
-      return true
-    }
-
-    return false
-  })
-
-  const isRemoveDisabled = computed(() => isRemoving.value || isRegistering.value)
-
-  const createButtonLabel = computed(() => {
-    if (isCreating.value) {
-      return 'Creating...'
-    }
-
-    return 'Create'
-  })
-
-  const removeButtonLabel = computed(() => {
-    if (isRemoving.value) {
-      return 'Removing...'
-    }
-
-    return 'Remove'
-  })
-
-  async function onCreateClick() {
-    if (isCreating.value) {
-      return
-    }
-
-    isCreating.value = true
-
-    await webhooksStore.createWebhook('stream.online')
-
-    isCreating.value = false
-  }
-
-  async function onRemoveClick() {
-    if (isRemoving.value || webhook.value === undefined) {
-      return
-    }
-
-    isRemoving.value = true
-
-    // TODO: delete webhook from subscriptions store
-    await webhooksStore.deleteWebhook(webhook.value.id)
-
-    isRemoving.value = false
-  }
-
-  async function onRegisterClick() {
-    if (isRegistering.value || webhook.value === undefined) {
-      return
-    }
-
-    isRegistering.value = true
-
-    await webhooksStore.registerWebhook(webhook.value)
-
-    isRegistering.value = false
-  }
-
-  watch(status, (newStatus) => {
-    // Do not start polling on the server
-    if (import.meta.server) {
-      return
-    }
-
-    if (newStatus === 'pending') {
-      startStatusPolling()
-    } else {
-      stopStatusPolling()
-    }
-  }, {
-    immediate: true
-  })
+  const { pause, resume } = useTimeoutPoll(async () => { if (webhook.value?.status === 'pending') {await webhooksStore.fetchWebhook(webhook.value.id)} }, 5000, { immediate: false })
+  async function createWebhook() { isCreating.value = true; actionError.value = ''; const success = await webhooksStore.createWebhook('stream.online'); if (success === false) {actionError.value = 'The webhook could not be created. Try again.';} isCreating.value = false }
+  async function registerWebhook() { if (webhook.value === undefined) {return;} isRegistering.value = true; actionError.value = ''; const success = await webhooksStore.registerWebhook(webhook.value); if (success === false) {actionError.value = 'Twitch registration failed. Try again.';} isRegistering.value = false }
+  async function removeWebhook() { if (webhook.value === undefined) {return;} isRemoving.value = true; actionError.value = ''; const success = await webhooksStore.deleteWebhook(webhook.value.id); if (success === false) {actionError.value = 'The webhook could not be removed. Try again.';} isRemoving.value = false }
+  watch(status, value => { if (import.meta.server) {return;} if (value === 'pending') {resume();} else {pause()} }, { immediate: true })
 </script>
-
 <style module>
-  .card {
-    /* Status Colors */
-    --status-active: light-dark(oklch(65% 0.2 142), oklch(70% 0.2 142));
-    --status-pending: light-dark(oklch(65% 0.2 80), oklch(70% 0.2 80));
-    --status-failed: light-dark(oklch(65% 0.2 30), oklch(70% 0.2 30));
-    --status-revoked: light-dark(oklch(65% 0.1 0), oklch(70% 0.1 0));
-    --status-not-active: light-dark(oklch(50% 0 0), oklch(70% 0 0));
-
-    display: grid;
-    row-gap: var(--spacing-12);
-  }
-
-  .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: start;
-  }
-
-  .title {
-    font-size: var(--font-size-20);
-    font-weight: var(--font-weight-medium);
-
-    @container (width > 375px) {
-      font-size: var(--font-size-24);
-    }
-  }
-
-  .status {
-    font-size: var(--font-size-12);
-    font-weight: var(--font-weight-medium);
-    padding: var(--spacing-4) var(--spacing-8);
-    border-radius: var(--border-radius-8);
-    text-transform: uppercase;
-
-    @container (width > 375px) {
-      font-size: var(--font-size-14);
-    }
-
-    &:global(.active) {
-      color: var(--status-active);
-      background-color: color-mix(in oklch, var(--status-active), transparent 80%);
-    }
-
-    &:global(.pending) {
-      color: var(--status-pending);
-      background-color: color-mix(in oklch, var(--status-pending), transparent 80%);
-    }
-
-    &:global(.failed) {
-      color: var(--status-failed);
-      background-color: color-mix(in oklch, var(--status-failed), transparent 80%);
-    }
-
-    &:global(.revoked) {
-      color: var(--status-revoked);
-      background-color: color-mix(in oklch, var(--status-revoked), transparent 80%);
-    }
-
-    &:global(.not_active) {
-      color: var(--status-not-active);
-      background-color: color-mix(in oklch, var(--status-not-active), transparent 80%);
-    }
-  }
-
-  .description {
-    font-size: var(--font-size-14);
-    color: var(--color-secondary);
-
-    @container (width > 375px) {
-      font-size: var(--font-size-16);
-    }
-  }
-
-  .buttons {
-    display: flex;
-    column-gap: var(--spacing-8);
-  }
-
-  .button {
-    justify-self: start;
-  }
+  .component { display: grid; gap: var(--space-md); }
+  .header { display: flex; justify-content: space-between; align-items: start; gap: var(--space-md); & h2 { font-size: 1.75rem; } }
+  .kicker { color: var(--color-ink-muted); font: 700 0.6875rem/1.4 var(--font-metadata); letter-spacing: 0.08em; }
+  .description { color: var(--color-ink-secondary); }
+  .error { color: var(--color-danger); font-weight: 700; }
+  .actions { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
 </style>
