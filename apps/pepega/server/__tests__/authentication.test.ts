@@ -3,6 +3,7 @@ import { createServer, type Server } from 'node:http'
 import { promisify } from 'node:util'
 import { createApp, createRouter, defineEventHandler, toNodeListener } from 'h3'
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import logoutHandler from '../api/user/logout.post'
 import apiSessionCheck from '../middleware/1.api-session-check'
 import { checkAdmin } from '../utils/admin'
 import { getSessionUser } from '../utils/user'
@@ -45,6 +46,8 @@ describe('authentication', () => {
       return 'authenticated'
     }))
 
+    router.post('/api/user/logout', logoutHandler)
+
     app.use(router)
 
     server = createServer(toNodeListener(app))
@@ -81,6 +84,14 @@ describe('authentication', () => {
     const response = await fetch(new URL('/api/private', url))
 
     expect(response.status).toBe(401)
+  })
+
+  it('should allow logout without an authenticated session', async () => {
+    const response = await fetch(new URL('/api/user/logout', url), {
+      method: 'POST'
+    })
+
+    expect(response.status).toBe(204)
   })
 
   it('should return the guest user without querying the database', async () => {

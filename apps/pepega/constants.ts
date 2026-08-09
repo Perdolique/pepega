@@ -4,7 +4,8 @@ export const sessionCookieName = 'pepeger'
 export const adminCheckInterval = 60 * 60 * 1000
 
 export const publicApiPaths = [
-  '/api/oauth/twitch'
+  '/api/oauth/twitch',
+  '/api/user/logout'
 ] as const
 
 export const webhooksWorkerBaseUrls = {
