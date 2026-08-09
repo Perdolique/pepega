@@ -18,5 +18,5 @@ export default defineEventHandler(async (event) => {
     redirectUri
   })
 
-  void sendRedirect(event, redirectUrl)
+  return sendRedirect(event, redirectUrl)
 })
