@@ -90,8 +90,8 @@ async function handleChallengeRequest(event: H3Event<EventHandlerRequest>) {
     .where(
       and(
         eq(tables.webhooks.subscriptionId, subscriptionId),
-        eq(tables.webhooks.type, 'stream.online' as EventSubscriptionType),
-        eq(tables.webhooks.status, 'pending' as WebhookStatus),
+        eq(tables.webhooks.type, 'stream.online'),
+        eq(tables.webhooks.status, 'pending'),
         isNotNull(tables.webhooks.secretHash),
         eq(tables.streamers.broadcasterId, broadcasterId)
       )
@@ -348,7 +348,7 @@ async function handleNotificationRequest(event: H3Event<EventHandlerRequest>) {
 
 async function handleRevocationRequest(event: H3Event<EventHandlerRequest>) {
   const headers = getHeaders(event)
-  const body = (await readBody(event)) as unknown
+  const body: unknown = await readBody(event)
 
   // TODO: Implement the revocation request handling
   logger.warn('Revocation request received, but not implemented yet', {

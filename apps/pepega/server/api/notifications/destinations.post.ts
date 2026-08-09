@@ -1,6 +1,5 @@
 import { and, eq, sql } from 'drizzle-orm'
 import * as v from 'valibot'
-import type { TelegramDestinationConfig } from '@pepega/database/types'
 import type { NotificationDestinationModel } from '~~/shared/models/notifications'
 import { limits } from '~~/constants'
 import { tables } from '~~/server/utils/database'
@@ -78,7 +77,7 @@ export default defineEventHandler(async (event) : Promise<NotificationDestinatio
       notificationId: sql`(SELECT id FROM ${streamerNotification})`,
       message,
       telegramChannelId: sql`(SELECT id FROM ${telegramChannel})`,
-      config: { type: 'telegram' } as TelegramDestinationConfig,
+      config: { type: 'telegram' },
       providerId: sql`(SELECT id FROM ${telegramProvider})`
     })
     .returning({

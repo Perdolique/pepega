@@ -212,8 +212,7 @@ export function decodeStateData(state: unknown) {
     }
 
     const stateString = atob(state)
-    const data = JSON.parse(stateString) as unknown
-    const stateData = v.parse(stateDataSchema, data)
+    const stateData = v.parse(stateDataSchema, JSON.parse(stateString))
 
     return stateData
   } catch {
