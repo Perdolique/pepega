@@ -2,8 +2,8 @@
 
 ## Development
 
-- `pnpm` is the main package manager.
-- This is a monorepo managed with `pnpm` workspaces.
+- Use `vp` for package manager commands.
+- This is a monorepo managed with pnpm workspaces.
 
 ## Commit message instructions
 
