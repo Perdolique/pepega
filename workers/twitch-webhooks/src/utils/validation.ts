@@ -1,7 +1,7 @@
-import type { EventMessageType } from '@pepega/twitch/models/event-sub';
-import * as v from 'valibot';
-import logger from '../logger';
-import type { EventHandlerRequest, H3Event } from 'h3';
+import { EventMessageType } from '@pepega/twitch/models/event-sub'
+import * as v from 'valibot'
+import logger from '../logger'
+import { EventHandlerRequest, H3Event } from 'h3'
 
 // TODO: move under validation directory
 
@@ -16,53 +16,51 @@ const envSchema = v.object({
   encryptionKey: v.string(),
   // LOCAL_DATABASE
   localDatabase: v.pipe(
-    v.optional(v.string()),
+    v.optional(
+      v.string()
+    ),
 
-    v.transform((value) => typeof value === 'string'),
-  ),
-});
+    v.transform((value) => typeof value === 'string')
+  )
+})
 
 // TODO: move to common package
 // PEPEGA_DEBUG="1"
-const envDebugSchema = v.literal('1');
+const envDebugSchema = v.literal('1')
 
 const eventMessageTypeSchema = v.picklist([
   'notification',
   'webhook_callback_verification',
-  'revocation',
-] as const satisfies readonly EventMessageType[]);
+  'revocation'
+] as const satisfies readonly EventMessageType[])
 
 const twitchEventSubVerificationHeadersSchema = v.pipe(
   v.object({
     'twitch-eventsub-message-id': v.string(),
     'twitch-eventsub-message-timestamp': v.string(),
-    'twitch-eventsub-message-signature': v.string(),
+    'twitch-eventsub-message-signature': v.string()
   }),
 
-  v.transform((headers) => {
-    return {
-      messageId: headers['twitch-eventsub-message-id'],
-      messageTimestamp: headers['twitch-eventsub-message-timestamp'],
-      messageSignature: headers['twitch-eventsub-message-signature'],
-    };
-  }),
-);
+  v.transform((headers) => ({
+    messageId: headers['twitch-eventsub-message-id'],
+    messageTimestamp: headers['twitch-eventsub-message-timestamp'],
+    messageSignature: headers['twitch-eventsub-message-signature']
+  }))
+)
 
-function getValidatedRequiredEnv(
-  event: H3Event<EventHandlerRequest>,
-): v.InferOutput<typeof envSchema> {
+export function getValidatedRequiredEnv(event: H3Event<EventHandlerRequest>) : v.InferOutput<typeof envSchema> {
   const testData = {
     twitchClientId: event.context.cloudflare.env.TWITCH_CLIENT_ID,
     twitchAppSecret: event.context.cloudflare.env.TWITCH_APP_SECRET,
     databaseUrl: event.context.cloudflare.env.DATABASE_URL,
     localDatabase: event.context.cloudflare.env.LOCAL_DATABASE,
-    encryptionKey: event.context.cloudflare.env.ENCRYPTION_KEY,
-  } satisfies v.InferInput<typeof envSchema>;
+    encryptionKey: event.context.cloudflare.env.ENCRYPTION_KEY
+  } satisfies v.InferInput<typeof envSchema>
 
-  const { success, output, issues } = v.safeParse(envSchema, testData);
+  const { success, output, issues } = v.safeParse(envSchema, testData)
 
   if (success === false) {
-    const safeIssues = [];
+    const safeIssues = []
 
     for (const issue of issues) {
       if (issue.path !== undefined) {
@@ -71,38 +69,31 @@ function getValidatedRequiredEnv(
             message: issue.message,
             key: path.key,
             expected: issue.expected,
-            received: issue.received,
-          });
+            received: issue.received
+          })
         }
       }
     }
 
-    logger.error('Invalid environment variables:', safeIssues);
+    logger.error('Invalid environment variables:', safeIssues)
 
-    throw new Error('Invalid environment variables');
+    throw new Error('Invalid environment variables')
   }
 
-  return output;
+  return output
 }
 
-function validateEventMessageType(value: unknown) {
-  return v.parse(eventMessageTypeSchema, value);
+export function validateEventMessageType(value: unknown) {
+  return v.parse(eventMessageTypeSchema, value)
 }
 
 // TODO: Move to Twitch module
-function validateEventVerificationHeaders(headers: unknown) {
-  return v.parse(twitchEventSubVerificationHeadersSchema, headers);
+export function validateEventVerificationHeaders(headers: unknown) {
+  return v.parse(twitchEventSubVerificationHeadersSchema, headers)
 }
 
-function getValidatedDebug(event: H3Event<EventHandlerRequest>): boolean {
-  const { success } = v.safeParse(envDebugSchema, event.context.cloudflare.env.PEPEGA_DEBUG);
+export function getValidatedDebug(event: H3Event<EventHandlerRequest>) : boolean {
+  const { success } = v.safeParse(envDebugSchema, event.context.cloudflare.env.PEPEGA_DEBUG)
 
-  return success;
+  return success
 }
-
-export {
-  getValidatedRequiredEnv,
-  validateEventMessageType,
-  validateEventVerificationHeaders,
-  getValidatedDebug,
-};

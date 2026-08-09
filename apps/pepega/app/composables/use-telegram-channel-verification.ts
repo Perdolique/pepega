@@ -1,18 +1,16 @@
-import { $fetch } from 'ofetch';
+import { $fetch } from 'ofetch'
 
 interface SendCodeParams {
-  code: string;
-  channelId: string;
+  code: string
+  channelId: string
 }
 
-function useTelegramChannelVerification() {
-  async function sendCode({ channelId }: SendCodeParams) {
-    await $fetch<void>(`/api/telegram/channel/${channelId}/send-code`, {
-      method: 'POST',
-    });
+export default function useTelegramChannelVerification() {
+  function sendCode({ channelId } : SendCodeParams) {
+    return $fetch(`/api/telegram/channel/${channelId}/send-code`, {
+      method: 'POST'
+    })
   }
 
-  return { sendCode };
+  return { sendCode }
 }
-
-export { useTelegramChannelVerification };

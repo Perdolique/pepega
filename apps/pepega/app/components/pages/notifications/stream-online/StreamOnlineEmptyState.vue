@@ -9,12 +9,12 @@
 </template>
 
 <script lang="ts" setup>
-import { useInitNotifications } from '~/composables/mutations/notifications';
-import EmptyState from '~/components/pages/EmptyState.vue';
+  import { useInitNotifications } from '~/composables/mutations/notifications'
+  import EmptyState from '~/components/pages/EmptyState.vue'
 
-const { initNotifications, isLoading: isInitializing } = useInitNotifications();
+  const { initNotifications, isLoading: isInitializing } = useInitNotifications()
 
-function onAction() {
-  initNotifications('stream.online');
-}
+  function onAction() {
+    initNotifications('stream.online')
+  }
 </script>

@@ -1,11 +1,10 @@
-import * as v from 'valibot';
-
-import type {
+import * as v from 'valibot'
+import {
   EventSubscriptionStatus,
   EventSubscriptionType,
   StreamType,
-  TransportMethod,
-} from '@pepega/twitch/models/event-sub';
+  TransportMethod
+} from '@pepega/twitch/models/event-sub'
 
 const eventSubscriptionStatusSchema = v.picklist([
   'enabled',
@@ -23,30 +22,30 @@ const eventSubscriptionStatusSchema = v.picklist([
   'websocket_connection_unused',
   'websocket_internal_error',
   'websocket_network_timeout',
-  'websocket_network_error',
-] as const satisfies readonly EventSubscriptionStatus[]);
+  'websocket_network_error'
+] as const satisfies readonly EventSubscriptionStatus[])
 
 const transportMethodSchema = v.picklist([
   'webhook',
-  'websocket',
-] as const satisfies readonly TransportMethod[]);
+  'websocket'
+] as const satisfies readonly TransportMethod[])
 
 const streamTypeSchema = v.picklist([
   'live',
   'playlist',
   'watch_party',
   'premiere',
-  'rerun',
-] as const satisfies readonly StreamType[]);
+  'rerun'
+] as const satisfies readonly StreamType[])
 
 const conditionSchema = v.object({
-  broadcaster_user_id: v.string(),
-});
+  broadcaster_user_id: v.string()
+})
 
 const transportSchema = v.object({
   method: transportMethodSchema,
-  callback: v.string(),
-});
+  callback: v.string()
+})
 
 const subscriptionSchema = v.object({
   id: v.string(),
@@ -56,8 +55,8 @@ const subscriptionSchema = v.object({
   cost: v.number(),
   condition: conditionSchema,
   transport: transportSchema,
-  created_at: v.string(),
-});
+  created_at: v.string()
+})
 
 const eventSchema = v.object({
   id: v.string(),
@@ -65,10 +64,10 @@ const eventSchema = v.object({
   broadcaster_user_login: v.string(),
   broadcaster_user_name: v.string(),
   type: streamTypeSchema,
-  started_at: v.string(),
-});
+  started_at: v.string()
+})
 
 export const streamOnlineNotificationSchema = v.object({
   subscription: subscriptionSchema,
-  event: eventSchema,
-});
+  event: eventSchema
+})

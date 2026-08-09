@@ -1,7 +1,7 @@
-import { defineMutation, useMutation, useQueryCache } from '@pinia/colada';
-import { $fetch } from 'ofetch';
-import { destinationKeys } from '~/composables/keys/notification/destinations';
-import type { NotificationDestinationModel } from '~~/shared/models/notifications';
+import { destinationKeys } from '~/composables/keys/notification/destinations'
+import type { NotificationDestinationModel } from '~~/shared/models/notifications'
+import { defineMutation, useMutation, useQueryCache } from '@pinia/colada'
+import { $fetch } from 'ofetch'
 
 interface CreateTelegramNotificationParams {
   notificationId: number;
@@ -13,44 +13,39 @@ interface CreateTelegramNotificationParams {
  * Composable to create a specific notification for a given event type and destination.
  */
 export const useCreateTelegramNotification = defineMutation(() => {
-  const cache = useQueryCache();
+  const cache = useQueryCache()
 
   const { mutate, ...mutation } = useMutation({
-    async mutation({
-      telegramChannelId,
-      message,
-      notificationId,
-    }: CreateTelegramNotificationParams) {
+    mutation({ telegramChannelId, message, notificationId } : CreateTelegramNotificationParams) {
       return $fetch<NotificationDestinationModel>('/api/notifications/destinations', {
         method: 'POST',
 
         body: {
           notificationId,
           message,
-          telegramChannelId,
-        },
-      });
+          telegramChannelId
+        }
+      })
     },
 
     onSuccess(data, { notificationId }) {
-      const existingDestinations =
-        cache.getQueryData<NotificationDestinationModel[]>(
-          destinationKeys.byNotificationId(notificationId),
-        ) ?? [];
+      const existingDestinations = cache.getQueryData<NotificationDestinationModel[]>(
+        destinationKeys.byNotificationId(notificationId)
+      ) || []
 
-      cache.setQueryData<NotificationDestinationModel[]>(
-        destinationKeys.byNotificationId(notificationId),
-        [...existingDestinations, data],
-      );
-    },
-  });
+      cache.setQueryData<NotificationDestinationModel[]>(destinationKeys.byNotificationId(notificationId), [
+        ...existingDestinations,
+        data
+      ])
+    }
+  })
 
-  function createNotification(params: CreateTelegramNotificationParams) {
-    mutate(params);
+  function createNotification(params : CreateTelegramNotificationParams) {
+    return mutate(params)
   }
 
   return {
     createNotification,
-    ...mutation,
-  };
-});
+    ...mutation
+  }
+})

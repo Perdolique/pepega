@@ -11,11 +11,11 @@ services:
     command: -c max_connections=1000
     restart: unless-stopped
     ports:
-      - '5432:5432'
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U pepega']
+      test: [ 'CMD-SHELL', 'pg_isready -U pepega' ]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -43,7 +43,7 @@ services:
       LOG_TRAFFIC: true
     restart: unless-stopped
     ports:
-      - '5433:80'
+      - "5433:80"
     depends_on:
       postgres:
         condition: service_healthy

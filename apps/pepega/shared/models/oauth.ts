@@ -1,10 +1,9 @@
-import type { User as TwitchUser } from '@pepega/twitch/models/general';
+import type { User as TwitchUser } from '@pepega/twitch/models/general'
 
-type OAuthProvider = 'twitch';
+export type OAuthProvider = 'twitch'
 
-interface OAuthUser<P extends OAuthProvider = OAuthProvider> {
+export type OAuthUser<P extends OAuthProvider = OAuthProvider> = {
   provider: P;
-  user: P extends 'twitch' ? TwitchUser : never;
+  user:
+    P extends 'twitch' ? TwitchUser : never;
 }
-
-export type { OAuthProvider, OAuthUser };

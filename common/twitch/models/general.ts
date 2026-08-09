@@ -1,4 +1,4 @@
-interface AppTokenResponse {
+export interface AppTokenResponse {
   readonly access_token: string;
   readonly expires_in: number;
   readonly token_type: string;
@@ -8,7 +8,7 @@ interface Pagination {
   cursor: string;
 }
 
-interface PaginatedResponse<T> {
+export interface PaginatedResponse<T> {
   data: T[];
   pagination: Pagination;
   total: number;
@@ -16,7 +16,7 @@ interface PaginatedResponse<T> {
   max_total_cost: number;
 }
 
-interface User {
+export interface User {
   readonly id: string;
   readonly login: string;
   readonly display_name: string;
@@ -40,7 +40,7 @@ interface Users {
   readonly data: User[];
 }
 
-type UsersResponse = Users | UsersError;
+export type UsersResponse = Users | UsersError;
 
 interface OAuthToken {
   readonly access_token: string;
@@ -55,6 +55,4 @@ interface OAuthTokenError {
   readonly message: string;
 }
 
-type OAuthTokenResponse = OAuthToken | OAuthTokenError;
-
-export type { AppTokenResponse, PaginatedResponse, User, UsersResponse, OAuthTokenResponse };
+export type OAuthTokenResponse = OAuthToken | OAuthTokenError;

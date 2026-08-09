@@ -8,61 +8,51 @@
   "main": "src/app.ts",
   "compatibility_date": "2026-07-18",
 
-  "compatibility_flags": ["nodejs_compat"],
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
 
   "observability": {
-    "enabled": true,
+    "enabled": true
   },
 
-  "routes": [
-    {
-      "pattern": "pooque-staging.pepega.app",
-      "custom_domain": true,
-    },
-  ],
+  "routes": [{
+    "pattern": "pooque-staging.pepega.app",
+    "custom_domain": true
+  }],
 
-  "kv_namespaces": [
-    {
-      "binding": "KV",
-      "id": "b331c1aeb9134b578548914dbf9adacc",
-    },
-  ],
+  "kv_namespaces": [{
+    "binding": "KV",
+    "id": "b331c1aeb9134b578548914dbf9adacc"
+  }],
 
   "placement": {
-    "mode": "smart",
+    "mode": "smart"
   },
 
   "env": {
     "staging": {
-      "routes": [
-        {
-          "pattern": "pooque-staging.pepega.app",
-          "custom_domain": true,
-        },
-      ],
+      "routes": [{
+        "pattern": "pooque-staging.pepega.app",
+        "custom_domain": true
+      }],
 
-      "kv_namespaces": [
-        {
-          "binding": "KV",
-          "id": "b331c1aeb9134b578548914dbf9adacc",
-        },
-      ],
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "b331c1aeb9134b578548914dbf9adacc"
+      }]
     },
 
     "production": {
-      "routes": [
-        {
-          "pattern": "pooque.pepega.app",
-          "custom_domain": true,
-        },
-      ],
+      "routes": [{
+        "pattern": "pooque.pepega.app",
+        "custom_domain": true
+      }],
 
-      "kv_namespaces": [
-        {
-          "binding": "KV",
-          "id": "f891dd5cc6414ad2a480b05014b371cc",
-        },
-      ],
-    },
-  },
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "f891dd5cc6414ad2a480b05014b371cc"
+      }]
+    }
+  }
 }

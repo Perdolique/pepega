@@ -1,20 +1,25 @@
-import { tables } from '~~/server/utils/database';
-import { defineEventHandler } from 'h3';
-import { eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm'
+import { tables } from '~~/server/utils/database'
+import { defineEventHandler } from 'h3'
 
 export default defineEventHandler(async (event) => {
-  const { userId, db } = event.context;
+  const { userId, db } = event.context
 
   const result = await db
     .select({
       id: tables.webhooks.id,
       status: tables.webhooks.status,
       type: tables.webhooks.type,
-      createdAt: tables.webhooks.createdAt,
+      createdAt: tables.webhooks.createdAt
     })
     .from(tables.webhooks)
-    .innerJoin(tables.streamers, eq(tables.streamers.id, tables.webhooks.streamerId))
-    .where(eq(tables.streamers.userId, userId));
+    .innerJoin(
+      tables.streamers,
+      eq(tables.streamers.id, tables.webhooks.streamerId)
+    )
+    .where(
+      eq(tables.streamers.userId, userId)
+    )
 
-  return result;
-});
+  return result
+})

@@ -1,5 +1,5 @@
-import { createLogger } from '@pepega/utils/logger';
+import { createLogger } from '@pepega/utils/logger'
 
-const logger = createLogger('TWITCH WEBHOOKS');
+const logger = createLogger('TWITCH WEBHOOKS')
 
-export default logger;
+export default logger

@@ -7,20 +7,18 @@
 </template>
 
 <script setup lang="ts">
-import { useHead } from '#imports';
-import CustomToaster from '@/components/toaster/CustomToaster.vue';
+  import CustomToaster from '@/components/toaster/CustomToaster.vue';
+  import { useHead } from '#imports';
 
-useHead({
-  link: [
-    {
+  useHead({
+    link: [{
       rel: 'icon',
       type: 'image/png',
-      href: '/favicon.png',
-    },
-  ],
-});
+      href: '/favicon.png'
+    }]
+  })
 </script>
 
 <style>
-@import '~/assets/styles/base.css';
+  @import '~/assets/styles/base.css';
 </style>

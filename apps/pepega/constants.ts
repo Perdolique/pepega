@@ -1,32 +1,24 @@
-const sessionCookieName = 'pepeger';
+export const sessionCookieName = 'pepeger'
 
 // Admin check interval in milliseconds
-const adminCheckInterval = 60 * 60 * 1000;
+export const adminCheckInterval = 60 * 60 * 1000
 
-const publicApiPaths = ['/api/oauth/twitch'] as const;
+export const publicApiPaths = [
+  '/api/oauth/twitch'
+] as const
 
-const webhooksWorkerBaseUrls = {
+export const webhooksWorkerBaseUrls = {
   development: 'http://localhost:8788',
   staging: 'https://pooque-staging.pepega.app',
-  production: 'https://pooque.pepega.app',
-} as const;
+  production: 'https://pooque.pepega.app'
+} as const
 
-const kvStorageName = 'kv';
+export const kvStorageName = 'kv'
 
-const kvStorageKeys = {
+export const kvStorageKeys = {
   twitchAppAccessToken: 'twitchAppAccessToken',
-};
+}
 
-const limits = {
-  notificationMessageLength: 500,
-};
-
-export {
-  sessionCookieName,
-  adminCheckInterval,
-  publicApiPaths,
-  webhooksWorkerBaseUrls,
-  kvStorageName,
-  kvStorageKeys,
-  limits,
-};
+export const limits = {
+  notificationMessageLength: 500
+}

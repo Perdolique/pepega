@@ -1,50 +1,60 @@
 <template>
   <div :class="$style.component">
-    <Icon name="streamline-emojis:pig-face" size="2.5em" />
+    <Icon
+      name="streamline-emojis:pig-face"
+      size="2.5em"
+    />
 
     <h1>Streamers Only</h1>
 
     <div :class="$style.note">
-      <div>You need to be a streamer to manage notifications.</div>
+      <div>
+        You need to be a streamer to manage notifications.
+      </div>
 
-      <div>Join our community! 🔥</div>
+      <div>
+        Join our community! 🔥
+      </div>
     </div>
 
-    <SimpleButton :disabled="isCreating" @click="onStreamerClick">
+    <SimpleButton
+      :disabled="isCreating"
+      @click="onStreamerClick"
+    >
       Become a Streamer 🎯
     </SimpleButton>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
-import { useUserStore } from '~/stores/user';
-import SimpleButton from '~/components/SimpleButton.vue';
+  import { useUserStore } from '~/stores/user'
+  import SimpleButton from '~/components/SimpleButton.vue'
+  import { ref } from 'vue'
 
-const isCreating = ref(false);
-const userStore = useUserStore();
+  const isCreating = ref(false)
+  const userStore = useUserStore()
 
-async function onStreamerClick() {
-  isCreating.value = true;
+  async function onStreamerClick() {
+    isCreating.value = true
 
-  await userStore.setStreamer(true);
+    await userStore.setStreamer(true)
 
-  isCreating.value = false;
-}
+    isCreating.value = false
+  }
 </script>
 
 <style module>
-.component {
-  display: grid;
-  justify-items: center;
-  row-gap: var(--spacing-16);
-  text-align: center;
-  text-wrap: balance;
-}
+  .component {
+    display: grid;
+    justify-items: center;
+    row-gap: var(--spacing-16);
+    text-align: center;
+    text-wrap: balance;
+  }
 
-.note {
-  display: grid;
-  row-gap: var(--spacing-8);
-  color: var(--color-secondary);
-}
+  .note {
+    display: grid;
+    row-gap: var(--spacing-8);
+    color: var(--color-secondary);
+  }
 </style>

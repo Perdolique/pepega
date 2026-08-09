@@ -1,21 +1,19 @@
-import { $fetch } from 'ofetch';
-import { defineQueryOptions } from '@pinia/colada';
-import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications';
-import { notificationKeys } from '~/composables/keys/notifications';
+import { defineQueryOptions } from '@pinia/colada'
+import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications'
+import { notificationKeys } from '~/composables/keys/notifications'
+import { $fetch } from 'ofetch'
 
-export const getNotificationByType = defineQueryOptions((eventType: NotificationEventType) => {
-  return {
-    key: notificationKeys.byEventType(eventType),
-    enabled: import.meta.client,
+export const getNotificationByType = defineQueryOptions((eventType: NotificationEventType) => ({
+  key: notificationKeys.byEventType(eventType),
+  enabled: import.meta.client,
 
-    async query() {
-      return $fetch<NotificationModel>('/api/notifications', {
-        method: 'GET',
+  query() {
+    return $fetch<NotificationModel>('/api/notifications', {
+      method: 'GET',
 
-        query: {
-          type: eventType,
-        },
-      });
-    },
-  };
-});
+      query: {
+        type: eventType
+      }
+    })
+  }
+}))

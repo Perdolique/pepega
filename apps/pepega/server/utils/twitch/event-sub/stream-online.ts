@@ -1,5 +1,5 @@
-import logger from '~~/server/utils/logger';
-import { $fetch, FetchError } from 'ofetch';
+import { $fetch, FetchError } from 'ofetch'
+import logger from '~~/server/utils/logger'
 
 interface SubscribeWebhookParams {
   broadcasterUserId: string;
@@ -58,51 +58,48 @@ interface SubscribeWebhookResponse {
  * * [`stream.online` subscription type](https://dev.twitch.tv/docs/eventsub/eventsub-subscription-types/#streamonline)
  */
 export async function subscribeWebhook(params: SubscribeWebhookParams) {
-  const { broadcasterUserId, callbackUrl, secret, appAccessToken } = params;
+  const { broadcasterUserId, callbackUrl, secret, appAccessToken } = params
 
   try {
-    const response = await $fetch<SubscribeWebhookResponse>(
-      'https://api.twitch.tv/helix/eventsub/subscriptions',
-      {
-        method: 'POST',
+    const response = await $fetch<SubscribeWebhookResponse>('https://api.twitch.tv/helix/eventsub/subscriptions', {
+      method: 'POST',
 
-        headers: {
-          Authorization: `Bearer ${appAccessToken}`,
-          'Client-ID': params.clientId,
+      headers: {
+        Authorization: `Bearer ${appAccessToken}`,
+        'Client-ID': params.clientId
+      },
+
+      body: {
+        type: 'stream.online',
+        version: '1',
+
+        condition: {
+          broadcaster_user_id: broadcasterUserId
         },
 
-        body: {
-          type: 'stream.online',
-          version: '1',
-
-          condition: {
-            broadcaster_user_id: broadcasterUserId,
-          },
-
-          transport: {
-            method: 'webhook',
-            callback: callbackUrl,
-            secret,
-          },
-        } satisfies SubscribeWebhookRequestBody,
-      },
-    );
+        transport: {
+          method: 'webhook',
+          callback: callbackUrl,
+          secret
+        }
+      } satisfies SubscribeWebhookRequestBody
+    })
 
     logger.info(`Webhook registered successfully`, {
       broadcasterUserId,
       callbackUrl,
-      'responseData[0]': response.data[0],
-    });
+      'responseData[0]': response.data[0]
+    })
 
-    return { data: response };
+    return { data: response }
   } catch (error) {
-    logger.error('Failed to create EventSub subscription', error);
+    logger.error('Failed to create EventSub subscription', error)
 
     if (error instanceof FetchError) {
-      return { error };
+      return { error }
     }
 
     // TODO: Handle error
-    throw new Error('Failed to create EventSub subscription', { cause: error });
+    throw new Error('Failed to create EventSub subscription')
   }
 }

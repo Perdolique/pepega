@@ -1,98 +1,103 @@
-import { createHash } from 'node:crypto';
-import { basename } from 'node:path';
-import type { NuxtOptions } from 'nuxt/schema';
-import { kvStorageName } from './constants';
+import { createHash, type BinaryLike } from 'node:crypto'
+import { basename } from 'node:path'
+import { kvStorageName } from './constants'
+import type { NuxtOptions } from 'nuxt/schema'
 
-type ComponentType = 'page' | 'layout' | 'component';
+type ComponentType = 'page' | 'layout' | 'component'
 type TypeScriptCompilerOptions = NonNullable<
   NuxtOptions['typescript']['tsConfig']['compilerOptions']
->;
+>
 
 const projectTypeScriptCompilerOptions = {
   noFallthroughCasesInSwitch: true,
   noImplicitReturns: true,
   noUnusedLocals: true,
-  noUnusedParameters: true,
-} satisfies TypeScriptCompilerOptions;
+  noUnusedParameters: true
+} satisfies TypeScriptCompilerOptions
 
-function getComponentType(filePath: string): ComponentType {
+function getComponentType(filePath: string) : ComponentType {
   if (filePath.includes('/app/pages/')) {
-    return 'page';
+    return 'page'
   } else if (filePath.includes('/app/layouts/')) {
-    return 'layout';
+    return 'layout'
+  } else {
+    return 'component'
   }
-  return 'component';
 }
 
-function getComponentName(componentName: string, componentType: ComponentType): string {
+function getComponentName(componentName: string, componentType: ComponentType) : string {
   if (componentType === 'component') {
-    return componentName;
+    return componentName
   }
 
-  return `${componentType}-${componentName}`;
+  return `${componentType}-${componentName}`
 }
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2026-07-18',
 
-  modules: ['@nuxt/fonts', '@nuxt/icon', '@pinia/nuxt', '@pinia/colada-nuxt'],
+  modules: [
+    '@nuxt/fonts',
+    '@nuxt/icon',
+    '@pinia/nuxt',
+    '@pinia/colada-nuxt'
+  ],
 
   experimental: {
     viewTransition: true,
-
     /**
      * FIXME: Disable once Nuxt modules stop relying on Nitro auto-imports.
      *
      * https://github.com/nuxt/nuxt/issues/34142
      */
-    nitroAutoImports: true,
+    nitroAutoImports: true
   },
 
   future: {
-    compatibilityVersion: 5,
+    compatibilityVersion: 5
   },
 
   typescript: {
     tsConfig: {
       compilerOptions: {
-        ...projectTypeScriptCompilerOptions,
-      },
+        ...projectTypeScriptCompilerOptions
+      }
     },
 
     sharedTsConfig: {
       compilerOptions: {
-        ...projectTypeScriptCompilerOptions,
-      },
+        ...projectTypeScriptCompilerOptions
+      }
     },
 
     nodeTsConfig: {
       compilerOptions: {
-        ...projectTypeScriptCompilerOptions,
-      },
-    },
+        ...projectTypeScriptCompilerOptions
+      }
+    }
   },
 
   runtimeConfig: {
     public: {
-      telegramBotName: '@pepega_app_test_bot',
-    },
+      telegramBotName: '@pepega_app_test_bot'
+    }
   },
 
   // Disable all autoimports (except components)
   imports: {
-    autoImport: false,
+    autoImport: false
   },
 
   devtools: {
-    enabled: true,
+    enabled: true
   },
 
   // Disable autoimport for components
   components: [],
 
   devServer: {
-    port: 4000,
+    port: 4000
   },
 
   nitro: {
@@ -101,48 +106,53 @@ export default defineNuxtConfig({
     typescript: {
       tsConfig: {
         compilerOptions: {
-          ...projectTypeScriptCompilerOptions,
-        },
-      },
+          ...projectTypeScriptCompilerOptions
+        }
+      }
     },
 
     cloudflare: {
-      deployConfig: false,
+      deployConfig: false
     },
 
     storage: {
       [kvStorageName]: {
         driver: 'cloudflare-kv-binding',
-        binding: 'KV',
-      },
-    },
+        binding: 'KV'
+      }
+    }
   },
 
   icon: {
     clientBundle: {
-      scan: true,
-    },
+      scan: true
+    }
   },
 
   pinia: {
-    storesDirs: [],
+    storesDirs: []
   },
 
   vite: {
     css: {
       modules: {
-        generateScopedName(className, filename, data): string {
-          const hash = createHash('sha256').update(data).digest('hex').slice(0, 6);
+        generateScopedName(className: string, filename: string, data: BinaryLike) : string {
+          const hash = createHash('sha256')
+            .update(data)
+            .digest('hex')
+            .slice(0, 6);
 
-          const filePath = filename.replace(/\.vue(?:\?.+?)?$/u, '').replaceAll(/\[|\]/gu, '');
+          const filePath = filename
+            .replace(/\.vue(?:\?.+?)?$/u, '')
+            .replace(/\[|\]/gu, '');
 
           const baseName = basename(filePath);
           const componentType = getComponentType(filePath);
           const componentName = getComponentName(baseName, componentType);
 
           return `${componentName}_${className}_${hash}`;
-        },
-      },
-    },
-  },
-});
+        }
+      }
+    }
+  }
+})

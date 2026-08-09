@@ -10,12 +10,12 @@
   "bugs": {
     "url": "https://github.com/Perdolique/pepega-workers/issues"
   },
-  "license": "ISC",
-  "author": "Pier Dolique (Perdoloque)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Perdolique/pepega-workers.git"
   },
+  "license": "ISC",
+  "author": "Pier Dolique (Perdoloque)",
   "type": "module",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "test:unit:ci": "vitest run",
     "update:all": "taze -r -l -I"
   },
+  "packageManager": "pnpm@11.20.0",
   "devDependencies": {
     "eslint-config-greenpie": "17.5.0",
     "husky": "9.1.7",
@@ -43,6 +44,5 @@
     "taze": "20.0.0",
     "typescript": "catalog:",
     "vitest": "4.1.10"
-  },
-  "packageManager": "pnpm@11.20.0"
+  }
 }

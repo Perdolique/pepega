@@ -1,35 +1,38 @@
-import { createDatabaseWebsocket, tables } from '~~/server/utils/database';
-import { createError, defineEventHandler, readValidatedBody } from 'h3';
-import logger from '~~/server/utils/logger';
-import * as v from 'valibot';
-import { count, eq, sql } from 'drizzle-orm';
-import { configKeys } from '@pepega/database/constants';
-import type { TelegramChannelModel } from '~~/shared/models/telegram-channels';
-import { checkAdmin } from '~~/server/utils/admin';
+import * as v from 'valibot'
+import { count, eq, sql } from 'drizzle-orm'
+import { configKeys } from '@pepega/database/constants'
+import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
+import { checkAdmin } from '~~/server/utils/admin'
+import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
+import { createError, defineEventHandler, readValidatedBody } from 'h3'
+import logger from '~~/server/utils/logger'
 
 const bodySchema = v.object({
   // TODO: I have no idea how it should be validated ¯\(ツ)/¯
-  chatId: v.pipe(v.string(), v.regex(/^[a-zA-Z][a-zA-Z0-9_]{4,31}$/u)),
-});
+  chatId: v.pipe(
+    v.string(),
+    v.regex(/^[a-zA-Z][a-zA-Z0-9_]{4,31}$/u)
+  )
+})
 
 function bodyValidator(body: unknown) {
-  return v.parse(bodySchema, body);
+  return v.parse(bodySchema, body)
 }
 
-function throwCreateChannelError(logMessage: string, logContext: Record<string, unknown>): never {
-  logger.error(logMessage, logContext);
+function throwCreateChannelError(logMessage: string, logContext: Record<string, unknown>) : never {
+  logger.error(logMessage, logContext)
 
   throw createError({
     statusCode: 500,
-    message: 'Failed to create telegram channel',
-  });
+    message: 'Failed to create telegram channel'
+  })
 }
 
-export default defineEventHandler(async (event): Promise<TelegramChannelModel> => {
-  const { chatId } = await readValidatedBody(event, bodyValidator);
-  const { db, userId } = event.context;
-  const isAdmin = await checkAdmin(event);
-  const dbWebSocket = createDatabaseWebsocket();
+export default defineEventHandler(async (event) : Promise<TelegramChannelModel> => {
+  const { chatId } = await readValidatedBody(event, bodyValidator)
+  const { db, userId } = event.context
+  const isAdmin = await checkAdmin(event)
+  const dbWebSocket = createDatabaseWebsocket()
 
   // For admins, we don't check the limit
 
@@ -38,19 +41,19 @@ export default defineEventHandler(async (event): Promise<TelegramChannelModel> =
       .insert(tables.telegramChannels)
       .values({
         userId,
-        chatId,
+        chatId
       })
       .onConflictDoNothing()
-      .returning();
+      .returning()
 
     if (insertedChannel === undefined) {
       throw createError({
         statusCode: 500,
-        message: 'Failed to insert telegram channel',
-      });
+        message: 'Failed to insert telegram channel'
+      })
     }
 
-    return insertedChannel;
+    return insertedChannel
   }
 
   // For regular users, we check the limit
@@ -60,60 +63,62 @@ export default defineEventHandler(async (event): Promise<TelegramChannelModel> =
     const config = await transaction.query.config.findFirst({
       columns: {},
       where: {
-        key: configKeys.maxTelegramChannelsPerUser,
+        key: configKeys.maxTelegramChannelsPerUser
       },
       extras: {
-        value: sql<number>`CAST(${tables.config.value} AS INTEGER)`.as('value'),
-      },
-    });
+        value: sql<number>`CAST(${tables.config.value} AS INTEGER)`.as('value')
+      }
+    })
 
     if (config === undefined) {
       throwCreateChannelError('Failed to get telegram channels config', {
         userId,
-        chatId,
-      });
+        chatId
+      })
     }
 
     // 2. Get the number of telegram channels for the user
     const [countResult] = await transaction
       .select({
-        count: count(),
+        count: count()
       })
       .from(tables.telegramChannels)
-      .where(eq(tables.telegramChannels.userId, userId));
+      .where(
+        eq(tables.telegramChannels.userId, userId)
+      )
 
     if (countResult === undefined) {
       throwCreateChannelError('Failed to get telegram channels count', {
         userId,
-        chatId,
-      });
+        chatId
+      })
     }
 
     if (countResult.count >= config.value) {
       throw createError({
         statusCode: 403,
-        message: 'Max telegram channels reached',
-      });
+        message: 'Max telegram channels reached'
+      })
     }
 
     const [insertedChannel] = await transaction
       .insert(tables.telegramChannels)
       .values({
         userId,
-        chatId,
+        chatId
       })
       .onConflictDoNothing()
-      .returning();
+      .returning()
 
     if (insertedChannel === undefined) {
       throw createError({
         statusCode: 500,
-        message: 'Failed to insert telegram channel',
-      });
+        message: 'Failed to insert telegram channel'
+      })
     }
 
-    return insertedChannel;
-  });
+    return insertedChannel
+  })
 
-  return result;
-});
+  return result
+})

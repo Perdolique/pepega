@@ -1,13 +1,11 @@
-type NotificationProviderType = 'telegram';
+export type NotificationProviderType = 'telegram'
 
 /**
  * Notification configuration types 🔥
  * Polymorphic types for different providers
  */
-interface TelegramDestinationConfig {
+export interface TelegramDestinationConfig {
   type: 'telegram';
 }
 
-type NotificationDestinationConfig = TelegramDestinationConfig;
-
-export type { NotificationProviderType, TelegramDestinationConfig, NotificationDestinationConfig };
+export type NotificationDestinationConfig = TelegramDestinationConfig

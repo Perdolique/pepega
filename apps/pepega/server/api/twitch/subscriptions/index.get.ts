@@ -1,10 +1,10 @@
-import { validateAdmin } from '~~/server/utils/admin';
-import { getValidatedEncryptionKey, getValidatedTwitchClientId } from '~~/server/utils/validation';
-import { createError, defineEventHandler } from 'h3';
-import logger from '~~/server/utils/logger';
-import { getSubscriptions } from '@pepega/twitch/subscriptions';
-import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth';
-import type { SubscriptionModel } from '#shared/models/twitch';
+import { getSubscriptions } from '@pepega/twitch/subscriptions'
+import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
+import type { SubscriptionModel } from '#shared/models/twitch'
+import { validateAdmin } from '~~/server/utils/admin'
+import { getValidatedEncryptionKey, getValidatedTwitchClientId } from '~~/server/utils/validation'
+import { createError, defineEventHandler } from 'h3'
+import logger from '~~/server/utils/logger'
 
 // FIXME: (2025-07-26) `nuxt typecheck` command fails without this explicit type definition
 interface Streamer {
@@ -14,64 +14,64 @@ interface Streamer {
 }
 
 export default defineEventHandler(async (event) => {
-  const { db } = event.context;
+  const { db } = event.context
 
-  await validateAdmin(event);
+  await validateAdmin(event)
 
-  const encryptionKey = getValidatedEncryptionKey();
-  const appAccessToken = await obtainTwitchAppToken(encryptionKey);
-  const clientId = getValidatedTwitchClientId();
-  const result: SubscriptionModel[] = [];
+  const encryptionKey = getValidatedEncryptionKey()
+  const appAccessToken = await obtainTwitchAppToken(encryptionKey)
+  const clientId = getValidatedTwitchClientId()
+  const result : SubscriptionModel[] = []
 
   if (appAccessToken === null) {
-    logger.error('App access token not found');
+    logger.error('App access token not found')
 
     throw createError({
-      statusCode: 400,
-    });
+      statusCode: 400
+    })
   }
 
   try {
     const subscriptions = await getSubscriptions({
       token: appAccessToken,
-      clientId,
-    });
+      clientId
+    })
 
-    const broadcasterIds = subscriptions.data.map(({ condition }) => condition.broadcaster_user_id);
+    const broadcasterIds = subscriptions.data.map(({ condition }) => condition.broadcaster_user_id)
 
-    const streamers: Streamer[] = await db.query.streamers.findMany({
+    const streamers : Streamer[] = await db.query.streamers.findMany({
       columns: {
         broadcasterId: true,
         displayName: true,
-        login: true,
+        login: true
       },
 
       where: {
         broadcasterId: {
-          in: broadcasterIds,
-        },
-      },
-    });
+          in: broadcasterIds
+        }
+      }
+    })
 
-    const streamersList = streamers.map((streamer) => [streamer.broadcasterId, streamer] as const);
-    const streamersMap = new Map(streamersList);
+    const streamersList = streamers.map((streamer) => [streamer.broadcasterId, streamer] as const)
+    const streamersMap = new Map(streamersList)
 
     for (const subscription of subscriptions.data) {
-      const streamer = streamersMap.get(subscription.condition.broadcaster_user_id);
-      const streamerName = streamer?.displayName ?? null;
-      const streamerLogin = streamer?.login ?? null;
+      const streamer = streamersMap.get(subscription.condition.broadcaster_user_id)
+      const streamerName = streamer?.displayName ?? null
+      const streamerLogin = streamer?.login ?? null
 
       result.push({
         streamerName,
         streamerLogin,
         broadcasterId: subscription.condition.broadcaster_user_id,
         id: subscription.id,
-        type: subscription.type,
-      });
+        type: subscription.type
+      })
     }
   } catch (error) {
-    logger.warn('Error fetching subscriptions:', error);
+    logger.warn('Error fetching subscriptions:', error)
   }
 
-  return result;
-});
+  return result
+})

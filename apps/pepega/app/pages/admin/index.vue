@@ -24,26 +24,26 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import PageBase from '~/components/PageBase.vue';
-import SimpleButton from '~/components/SimpleButton.vue';
-import SubscriptionCard from '~/components/SubscriptionCard.vue';
-import { useTwitchSubscriptionsStore } from '~/stores/twitch-subscriptions';
+  import PageBase from '~/components/PageBase.vue'
+  import SimpleButton from '~/components/SimpleButton.vue'
+  import SubscriptionCard from '~/components/SubscriptionCard.vue'
+  import { useTwitchSubscriptionsStore } from '~/stores/twitch-subscriptions'
+  import { computed } from 'vue'
 
-const twitchSubscriptionsStore = useTwitchSubscriptionsStore();
+  const twitchSubscriptionsStore = useTwitchSubscriptionsStore()
 
-const fetchButtonText = computed(() => {
-  if (twitchSubscriptionsStore.isFetching) {
-    return 'Fetching subscriptions...';
-  }
+  const fetchButtonText = computed(() => {
+    if (twitchSubscriptionsStore.isFetching) {
+      return 'Fetching subscriptions...'
+    }
 
-  return 'Fetch subscriptions';
-});
+    return 'Fetch subscriptions'
+  })
 </script>
 
 <style module>
-.page {
-  display: grid;
-  row-gap: var(--spacing-16);
-}
+  .page {
+    display: grid;
+    row-gap: var(--spacing-16);
+  }
 </style>

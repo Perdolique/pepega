@@ -1,8 +1,8 @@
 {
   "name": "@pepega/pepega",
   "version": "0.0.1",
-  "private": true,
   "type": "module",
+  "private": true,
   "scripts": {
     "dev": "nuxt dev",
     "build": "nuxt build",

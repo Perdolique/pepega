@@ -1,10 +1,10 @@
-import { type H3Event, getRequestURL } from 'h3';
+import { H3Event, getRequestURL } from 'h3'
 
-export function getTwitchRedirectUri(event: H3Event): string {
-  const url = getRequestURL(event);
-  const twitchRedirectUrl = new URL(url.origin);
+export function getTwitchRedirectUri(event: H3Event) : string {
+  const url = getRequestURL(event)
+  const twitchRedirectUrl = new URL(url.origin)
 
-  twitchRedirectUrl.pathname = '/auth/twitch';
+  twitchRedirectUrl.pathname = '/auth/twitch'
 
-  return twitchRedirectUrl.toString();
+  return twitchRedirectUrl.toString()
 }

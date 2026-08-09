@@ -6,7 +6,7 @@
   "upload_source_maps": true,
 
   "dev": {
-    "port": 5000,
+    "port": 5000
   },
 
   "observability": {
@@ -14,31 +14,29 @@
       "enabled": true,
       "head_sampling_rate": 1,
       "persist": true,
-      "invocation_logs": true,
+      "invocation_logs": true
     },
 
     "traces": {
       "enabled": true,
       "head_sampling_rate": 1,
-      "persist": true,
-    },
+      "persist": true
+    }
   },
 
   "placement": {
-    "mode": "smart",
+    "mode": "smart"
   },
 
   "assets": {
-    "directory": ".output/public",
+    "directory": ".output/public"
   },
 
-  "kv_namespaces": [
-    {
-      "binding": "KV",
-      "id": "b331c1aeb9134b578548914dbf9adacc",
-      "remote": true,
-    },
-  ],
+  "kv_namespaces": [{
+    "binding": "KV",
+    "id": "b331c1aeb9134b578548914dbf9adacc",
+    "remote": true
+  }],
 
   "env": {
     "staging": {
@@ -49,15 +47,13 @@
       "vars": {
         "WEBHOOK_BASE_URL": "https://pooque-staging.pepega.app/",
         "PEPEGA_DEBUG": "1",
-        "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot",
+        "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot"
       },
 
-      "kv_namespaces": [
-        {
-          "binding": "KV",
-          "id": "b331c1aeb9134b578548914dbf9adacc",
-        },
-      ],
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "b331c1aeb9134b578548914dbf9adacc"
+      }]
     },
 
     "production": {
@@ -67,22 +63,18 @@
 
       "vars": {
         "WEBHOOK_BASE_URL": "https://pooque.pepega.app/",
-        "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot",
+        "NUXT_PUBLIC_TELEGRAM_BOT_NAME": "@pepega_app_test_bot"
       },
 
-      "kv_namespaces": [
-        {
-          "binding": "KV",
-          "id": "f891dd5cc6414ad2a480b05014b371cc",
-        },
-      ],
+      "kv_namespaces": [{
+        "binding": "KV",
+        "id": "f891dd5cc6414ad2a480b05014b371cc"
+      }],
 
-      "routes": [
-        {
-          "pattern": "pepega.app",
-          "custom_domain": true,
-        },
-      ],
-    },
-  },
+      "routes": [{
+        "pattern": "pepega.app",
+        "custom_domain": true
+      }]
+    }
+  }
 }
