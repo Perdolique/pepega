@@ -19,11 +19,11 @@
     "db:kit": "drizzle-kit"
   },
   "dependencies": {
-    "@neondatabase/serverless": "1.0.2",
+    "@neondatabase/serverless": "1.1.0",
     "@types/ws": "8.18.1",
-    "drizzle-kit": "0.31.8",
+    "drizzle-kit": "0.31.10",
     "drizzle-orm": "catalog:",
     "tsx": "catalog:",
-    "ws": "8.19.0"
+    "ws": "8.21.3"
   }
 }
