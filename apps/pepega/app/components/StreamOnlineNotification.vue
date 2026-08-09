@@ -77,7 +77,7 @@
       }
     }
 
-    return undefined
+    return
   })
 
   const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active')

@@ -94,7 +94,7 @@ export const useWebhooksStore = defineStore('webhooks', () => {
       // TODO: Handle error properly
     }
 
-    return undefined
+    return
   }
 
   function replaceWebhooks(newWebhooks: WebhookModel[]) {
