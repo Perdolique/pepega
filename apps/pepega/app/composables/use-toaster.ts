@@ -1,3 +1,5 @@
+import { useState } from '#imports';
+
 export interface Toast {
   readonly id: string;
   readonly message: string;
@@ -12,11 +14,7 @@ const defaultDuration = 5000;
 export default function useToaster() {
   const toasts = useState<Toast[]>('toaster', () => []);
 
-  function addToast({
-    message,
-    duration = defaultDuration,
-    title
-  } : ToastParams) {
+  function addToast({ message, duration = defaultDuration, title }: ToastParams) {
     // Skip SSR rendering
     if (import.meta.server) {
       return;
@@ -28,14 +26,14 @@ export default function useToaster() {
       id,
       message,
       title,
-      duration
+      duration,
     });
   }
 
   function removeToast(id: string) {
-    const foundIndex = toasts.value.findIndex(toast => toast.id === id);
+    const foundIndex = toasts.value.findIndex((toast) => toast.id === id);
 
-    if (foundIndex >= 0) {
+    if (foundIndex !== -1) {
       toasts.value.splice(foundIndex, 1);
     }
   }
@@ -43,6 +41,6 @@ export default function useToaster() {
   return {
     toasts,
     addToast,
-    removeToast
-  }
+    removeToast,
+  };
 }

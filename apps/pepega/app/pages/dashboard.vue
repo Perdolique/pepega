@@ -8,13 +8,12 @@
 </template>
 
 <script setup lang="ts">
-  import PageBase from '~/components/PageBase.vue';
+import PageBase from '~/components/PageBase.vue';
 </script>
 
 <style module>
-  .content {
-    text-align: center;
-    font-size: 64px;
-  }
+.content {
+  text-align: center;
+  font-size: 64px;
+}
 </style>
-

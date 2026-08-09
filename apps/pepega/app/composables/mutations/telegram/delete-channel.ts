@@ -1,44 +1,46 @@
-import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
-import { telegramQueryKeys } from '../../keys/telegram'
+import { defineMutation, useMutation, useQueryCache } from '@pinia/colada';
+import { $fetch } from 'ofetch';
+import type { TelegramChannelModel } from '~~/shared/models/telegram-channels';
+import { telegramQueryKeys } from '~/composables/keys/telegram';
 
 export const useDeleteTelegramChannel = defineMutation(() => {
-  const queryCache = useQueryCache()
+  const queryCache = useQueryCache();
 
   return useMutation({
-    mutation(channelId: number) {
+    async mutation(channelId: number) {
       return $fetch<unknown>(`/api/telegram/channel/${channelId}`, {
-        method: 'DELETE'
-      })
+        method: 'DELETE',
+      });
     },
 
-    async onMutate(channelId: number) {
-      const channelsKey = telegramQueryKeys.channels()
-      const previousChannels = queryCache.getQueryData<TelegramChannelModel[]>(channelsKey)
-      const filteredChannels = previousChannels?.filter((channel) => channel.id !== channelId)
+    onMutate(channelId: number) {
+      const channelsKey = telegramQueryKeys.channels();
+      const previousChannels = queryCache.getQueryData<TelegramChannelModel[]>(channelsKey);
+      const filteredChannels = previousChannels?.filter((channel) => channel.id !== channelId);
 
-      queryCache.setQueryData(channelsKey, filteredChannels)
+      queryCache.setQueryData(channelsKey, filteredChannels);
 
       queryCache.cancelQueries({
-        key: channelsKey
-      })
+        key: channelsKey,
+      });
 
-      return { previousChannels }
+      return { previousChannels };
     },
 
-    onError(error, channelId, { previousChannels }) {
-      const channelsKey = telegramQueryKeys.channels()
+    onError(_error, _channelId, { previousChannels }) {
+      const channelsKey = telegramQueryKeys.channels();
 
-      queryCache.setQueryData(channelsKey, previousChannels)
+      queryCache.setQueryData(channelsKey, previousChannels);
     },
 
-    onSettled() {
-      const channelsKey = telegramQueryKeys.channels()
+    async onSettled() {
+      const channelsKey = telegramQueryKeys.channels();
 
       const invalidateOptions = {
-        key: channelsKey
-      }
+        key: channelsKey,
+      };
 
-      return queryCache.invalidateQueries(invalidateOptions)
-    }
-  })
-})
+      return queryCache.invalidateQueries(invalidateOptions);
+    },
+  });
+});

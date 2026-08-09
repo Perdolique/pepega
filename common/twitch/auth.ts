@@ -1,7 +1,7 @@
-import * as v from 'valibot'
-import { ofetch } from 'ofetch'
-import type { AppTokenResponse, OAuthTokenResponse, User, UsersResponse } from './models/general'
-import logger from './logger'
+import * as v from 'valibot';
+import { ofetch } from 'ofetch';
+import type { AppTokenResponse, OAuthTokenResponse, User, UsersResponse } from './models/general';
+import logger from './logger';
 
 interface VerifyEventMessageParams {
   messageId: string;
@@ -37,86 +37,89 @@ interface AuthUrlParams {
 }
 
 const stateDataSchema = v.object({
-  redirectTo: v.string()
-})
+  redirectTo: v.string(),
+});
 
 /**
  * Performs a cryptographically secure comparison of two Uint8Array buffers
  * using XOR operation to prevent timing attacks
  */
-function safeCompare(leftBuffer: Uint8Array, rightBuffer: Uint8Array) : boolean {
+function safeCompare(leftBuffer: Uint8Array, rightBuffer: Uint8Array): boolean {
   if (leftBuffer.length !== rightBuffer.length) {
-    return false
+    return false;
   }
 
   let differenceAccumulator = 0;
-  for (let index = 0; index < leftBuffer.length; index++) {
-    const leftByte = leftBuffer[index] === undefined ? 0 : leftBuffer[index]
-    const rightByte = rightBuffer[index] === undefined ? 0 : rightBuffer[index]
+  for (let index = 0; index < leftBuffer.length; index += 1) {
+    const leftByte = leftBuffer[index] ?? 0;
+    const rightByte = rightBuffer[index] ?? 0;
 
     if (leftByte !== undefined && rightByte !== undefined) {
       // XOR operation will result in 0 only if bits are identical
-      differenceAccumulator |= leftByte ^ rightByte
+      differenceAccumulator |= leftByte ^ rightByte;
     } else {
-      differenceAccumulator++;
+      differenceAccumulator += 1;
     }
   }
 
-  return differenceAccumulator === 0
+  return differenceAccumulator === 0;
 }
 
-export async function verifyEventMessage(params: VerifyEventMessageParams) {
-  const encoder = new TextEncoder()
-  const testString = `${params.messageId}${params.messageTimestamp}${params.bodyString}`
-  const keyData = encoder.encode(params.secret)
-  const messageData = encoder.encode(testString)
+async function verifyEventMessage(params: VerifyEventMessageParams) {
+  const encoder = new TextEncoder();
+  const testString = `${params.messageId}${params.messageTimestamp}${params.bodyString}`;
+  const keyData = encoder.encode(params.secret);
+  const messageData = encoder.encode(testString);
 
   const hmacKey = await crypto.subtle.importKey(
     'raw',
     keyData,
     {
       name: 'HMAC',
-      hash: 'SHA-256'
+      hash: 'SHA-256',
     },
     false,
-    ['sign']
-  )
+    ['sign'],
+  );
 
-  const calculatedSignature = await crypto.subtle.sign('HMAC', hmacKey, messageData)
+  const calculatedSignature = await crypto.subtle.sign('HMAC', hmacKey, messageData);
 
   // Convert the signature to hex and add sha256= prefix to match Twitch format
-  const calculatedSignatureHex = `sha256=${Array.from(new Uint8Array(calculatedSignature))
-    .map(b => b.toString(16).padStart(2, '0'))
-    .join('')}`
+  const calculatedSignatureHex = `sha256=${[...new Uint8Array(calculatedSignature)]
+    .map((byte) => byte.toString(16).padStart(2, '0'))
+    .join('')}`;
 
   // Convert both signatures to Uint8Array for comparison
-  const calculatedBuffer = encoder.encode(calculatedSignatureHex)
-  const signatureBuffer = encoder.encode(params.messageSignature)
+  const calculatedBuffer = encoder.encode(calculatedSignatureHex);
+  const signatureBuffer = encoder.encode(params.messageSignature);
 
   return safeCompare(calculatedBuffer, signatureBuffer);
 }
 
-export async function getAppAccessToken({ clientId, clientSecret }: AppAccessTokenParams) : Promise<AppTokenResponse | null> {
+async function getAppAccessToken({
+  clientId,
+  clientSecret,
+}: AppAccessTokenParams): Promise<AppTokenResponse | null> {
   try {
     const response = await ofetch<AppTokenResponse>('https://id.twitch.tv/oauth2/token', {
       method: 'POST',
 
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
 
       body: {
         client_id: clientId,
         client_secret: clientSecret,
-        grant_type: 'client_credentials'
-      }
-    })
+        grant_type: 'client_credentials',
+      },
+    });
 
-    return response
+    return response;
   } catch (error) {
-    logger.error('Failed to get app access token', error)
+    logger.error('Failed to get app access token', error);
 
-    return null
+    return null;
   }
 }
 
@@ -125,26 +128,26 @@ export async function getAppAccessToken({ clientId, clientSecret }: AppAccessTok
  *
  * @see https://dev.twitch.tv/docs/api/reference/#get-users
  */
-export async function getUserInfo({ clientId, accessToken } : UserInfoParams) : Promise<User[] | null> {
+async function getUserInfo({ clientId, accessToken }: UserInfoParams): Promise<User[] | null> {
   try {
     const response = await ofetch<UsersResponse>('https://api.twitch.tv/helix/users', {
       headers: {
         Authorization: `Bearer ${accessToken}`,
-        'Client-ID': clientId
-      }
-    })
+        'Client-ID': clientId,
+      },
+    });
 
     if ('error' in response) {
-      return null
+      return null;
     }
 
-    return response.data
+    return response.data;
   } catch (error) {
-    logger.error('Failed to get Twitch user info', error)
+    logger.error('Failed to get Twitch user info', error);
 
     // TODO: handle errors properly
 
-    return null
+    return null;
   }
 }
 
@@ -153,20 +156,15 @@ export async function getUserInfo({ clientId, accessToken } : UserInfoParams) : 
  *
  * @see https://dev.twitch.tv/docs/authentication/getting-tokens-oauth/#oauth-authorization-code-flow
  */
-export async function getOAuthToken(params: OAuthTokenParams) : Promise<string | null> {
-  const {
-    code,
-    clientId,
-    clientSecret,
-    redirectUri
-  } = params
+async function getOAuthToken(params: OAuthTokenParams): Promise<string | null> {
+  const { code, clientId, clientSecret, redirectUri } = params;
 
   try {
     const response = await ofetch<OAuthTokenResponse>('https://id.twitch.tv/oauth2/token', {
       method: 'POST',
 
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
 
       body: {
@@ -174,21 +172,21 @@ export async function getOAuthToken(params: OAuthTokenParams) : Promise<string |
         client_id: clientId,
         client_secret: clientSecret,
         grant_type: 'authorization_code',
-        redirect_uri: redirectUri
-      }
-    })
+        redirect_uri: redirectUri,
+      },
+    });
 
     if ('status' in response) {
-      logger.error('Failed to get OAuth token:', response)
+      logger.error('Failed to get OAuth token:', response);
 
-      throw new Error(response.message)
+      throw new Error(response.message);
     }
 
-    return response.access_token
+    return response.access_token;
   } catch (error) {
-    logger.error('Failed to get OAuth token', error)
+    logger.error('Failed to get OAuth token', error);
 
-    return null
+    return null;
   }
 }
 
@@ -198,26 +196,25 @@ export async function getOAuthToken(params: OAuthTokenParams) : Promise<string |
  * @param data - Data to be passed to the state parameter. This data will be sent back to the redirect URI after authentication as is.
  * @returns Base64 encoded string of the state data
  */
-export function encodeStateData(data: Record<string, string>) : string {
-  const stateString = JSON.stringify(data)
+function encodeStateData(data: Record<string, string>): string {
+  const stateString = JSON.stringify(data);
 
-  return btoa(stateString)
+  return btoa(stateString);
 }
 
-
-export function decodeStateData(state: unknown) {
+function decodeStateData(state: unknown) {
   try {
     if (typeof state !== 'string') {
-      return null
+      return null;
     }
 
-    const stateString = atob(state)
-    const data = JSON.parse(stateString)
-    const stateData = v.parse(stateDataSchema, data)
+    const stateString = atob(state);
+    const data = JSON.parse(stateString) as unknown;
+    const stateData = v.parse(stateDataSchema, data);
 
-    return stateData
-  } catch (error) {
-    return null
+    return stateData;
+  } catch {
+    return null;
   }
 }
 
@@ -227,21 +224,31 @@ export function decodeStateData(state: unknown) {
  * @param stateData - Data to be passed to the state parameter. This data will be sent back to the redirect URI after authentication as is.
  * @returns The URL to redirect the user to
  */
-export function getAuthUrl({ stateData, clientId, redirectUri } : AuthUrlParams) : string {
-  const authUrl = new URL('https://id.twitch.tv/oauth2/authorize')
+function getAuthUrl({ stateData, clientId, redirectUri }: AuthUrlParams): string {
+  const authUrl = new URL('https://id.twitch.tv/oauth2/authorize');
 
   // TODO: Add `state` to prevent CSRF attacks
   // https://github.com/Perdolique/pepega/issues/28
 
-  authUrl.searchParams.set('client_id', clientId)
-  authUrl.searchParams.set('redirect_uri', redirectUri)
-  authUrl.searchParams.set('response_type', 'code')
+  authUrl.searchParams.set('client_id', clientId);
+  authUrl.searchParams.set('redirect_uri', redirectUri);
+  authUrl.searchParams.set('response_type', 'code');
 
   if (stateData !== undefined) {
-    const state = encodeStateData(stateData)
+    const state = encodeStateData(stateData);
 
-    authUrl.searchParams.set('state', state)
+    authUrl.searchParams.set('state', state);
   }
 
-  return authUrl.toString()
+  return authUrl.toString();
 }
+
+export {
+  verifyEventMessage,
+  getAppAccessToken,
+  getUserInfo,
+  getOAuthToken,
+  encodeStateData,
+  decodeStateData,
+  getAuthUrl,
+};

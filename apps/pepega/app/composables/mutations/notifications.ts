@@ -1,64 +1,68 @@
-import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications'
-import { notificationKeys } from '../keys/notifications'
+import { defineMutation, useMutation, useQueryCache } from '@pinia/colada';
+import { $fetch } from 'ofetch';
+import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications';
+import { notificationKeys } from '~/composables/keys/notifications';
 
 /**
  *  Composable to initialize notifications for a specific event type.
  */
-export const useInitNotifications = defineMutation(() => {
-  const cache = useQueryCache()
+const useInitNotifications = defineMutation(() => {
+  const cache = useQueryCache();
 
   const { mutate, ...mutation } = useMutation({
-    mutation(eventType: NotificationEventType) {
+    async mutation(eventType: NotificationEventType) {
       return $fetch<NotificationModel>('/api/notifications', {
         method: 'POST',
-        body: { eventType }
-      })
+        body: { eventType },
+      });
     },
 
     onSuccess(data, eventType) {
-      const { id, isActive } = data
+      const { id, isActive } = data;
 
       cache.setQueryData<NotificationModel>(notificationKeys.byEventType(eventType), {
         id,
-        isActive
-      })
-    }
-  })
+        isActive,
+      });
+    },
+  });
 
   function initNotifications(eventType: NotificationEventType) {
-    return mutate(eventType)
+    mutate(eventType);
   }
 
   return {
     initNotifications,
-    ...mutation
-  }
-})
+    ...mutation,
+  };
+});
 
 /**
  * Composable to delete a notification for a specific event type.
  */
-export const useDeleteNotification = defineMutation(() => {
-  const cache = useQueryCache()
+const useDeleteNotification = defineMutation(() => {
+  const cache = useQueryCache();
 
   const { mutate, ...mutation } = useMutation({
-    mutation(eventType: NotificationEventType) {
-      return $fetch<void>(`/api/notifications/${eventType}`, {
-        method: 'DELETE'
-      })
+    async mutation(eventType: NotificationEventType) {
+      await $fetch<void>(`/api/notifications/${eventType}`, {
+        method: 'DELETE',
+      });
     },
 
-    onSuccess(data, eventType) {
-      cache.setQueryData(notificationKeys.byEventType(eventType), undefined)
-    }
-  })
+    onSuccess(_data, eventType) {
+      cache.setQueryData(notificationKeys.byEventType(eventType), undefined);
+    },
+  });
 
   function deleteNotification(eventType: NotificationEventType) {
-    return mutate(eventType)
+    mutate(eventType);
   }
 
   return {
     deleteNotification,
-    ...mutation
-  }
-})
+    ...mutation,
+  };
+});
+
+export { useInitNotifications, useDeleteNotification };

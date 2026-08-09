@@ -4,6 +4,7 @@
 
 - Use `vp` for package manager commands.
 - This is a monorepo managed with pnpm workspaces.
+- Run `vp run lint:markdown`, `vp run lint:oxlint`, `vp run test:typecheck`, `vp run test:unit:ci`, and `vp run build` before publishing changes.
 
 ## Commit message instructions
 

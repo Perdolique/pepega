@@ -1,5 +1,5 @@
-import { createLogger } from '@pepega/utils/logger'
+import { createLogger } from '@pepega/utils/logger';
 
-const logger = createLogger('PEPEGA')
+const logger = createLogger('PEPEGA');
 
-export default logger
+export default logger;

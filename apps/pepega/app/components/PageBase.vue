@@ -7,23 +7,25 @@
 </template>
 
 <script setup lang="ts">
-  interface Props {
-    title: string;
-  }
+import { useHead } from '#imports';
 
-  const { title } = defineProps<Props>()
+interface Props {
+  title: string;
+}
 
-  useHead({
-    title
-  })
+const { title } = defineProps<Props>();
+
+useHead({
+  title,
+});
 </script>
 
 <style module>
-  .page {
-    height: 100%;
-    display: grid;
-    row-gap: var(--spacing-24);
-    grid-template-rows: auto 1fr;
-    align-items: start;
-  }
+.page {
+  height: 100%;
+  display: grid;
+  row-gap: var(--spacing-24);
+  grid-template-rows: auto 1fr;
+  align-items: start;
+}
 </style>

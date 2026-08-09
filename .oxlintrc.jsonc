@@ -1,0 +1,204 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+
+  "extends": ["./node_modules/eslint-config-greenpie/configs/oxlintrc.jsonc"],
+
+  "ignorePatterns": [
+    "apps/pepega/.nuxt/",
+    "apps/pepega/.output/",
+    "common/database/migrations/",
+    "workers/twitch-webhooks/worker-configuration.d.ts",
+  ],
+
+  "options": {
+    "typeAware": true,
+    "typeCheck": true,
+    "reportUnusedDisableDirectives": "error",
+  },
+
+  "rules": {
+    "typescript/no-unnecessary-type-arguments": "off",
+    "eslint/arrow-body-style": [
+      "error",
+      "as-needed",
+      {
+        "requireReturnForObjectLiteral": true,
+      },
+    ],
+    "eslint/no-magic-numbers": "off",
+    "unicorn/max-nested-calls": "off",
+    "eslint/id-length": [
+      "error",
+      {
+        "exceptions": ["e", "i", "P", "T", "U", "v"],
+      },
+    ],
+    "eslint/init-declarations": "off",
+    "eslint/max-lines": "off",
+    "eslint/no-await-in-loop": "off",
+    "eslint/no-bitwise": "off",
+    "eslint/no-inline-comments": "off",
+    "eslint/no-shadow": "off",
+    "eslint/no-useless-assignment": "off",
+    "eslint/no-useless-return": "off",
+    "eslint/prefer-destructuring": "off",
+    "eslint/prefer-named-capture-group": "off",
+    "eslint/require-unicode-regexp": "off",
+    "import/exports-last": "off",
+    "oxc/no-barrel-file": "off",
+    "promise/always-return": "off",
+    "promise/catch-or-return": "off",
+    "promise/prefer-await-to-callbacks": "off",
+    "promise/prefer-await-to-then": "off",
+    "typescript/no-invalid-void-type": "off",
+    "typescript/no-unnecessary-condition": "off",
+    "typescript/prefer-optional-chain": "off",
+    "typescript/strict-void-return": "off",
+    "typescript/strict-boolean-expressions": "off",
+    "unicorn/consistent-function-scoping": "off",
+    "unicorn/no-array-callback-reference": "off",
+    "unicorn/no-lonely-if": "off",
+    "unicorn/number-literal-case": "off",
+    "unicorn/prefer-native-coercion-functions": "off",
+    "unicorn/prefer-ternary": "off",
+    "vue/require-prop-types": "off",
+    "vitest/no-conditional-in-test": "off",
+    "vitest/require-to-throw-message": "off",
+    "eslint/no-console": "off",
+    "node/no-process-env": [
+      "error",
+      {
+        "allowedVariables": [
+          "DATABASE_URL",
+          "ENCRYPTION_KEY",
+          "LOCAL_DATABASE",
+          "NEON_WEBSOCKET_PROXY_ENABLED",
+          "OAUTH_TWITCH_CLIENT_ID",
+          "OAUTH_TWITCH_CLIENT_SECRET",
+          "PEPEGA_DEBUG",
+          "SESSION_SECRET",
+          "TELEGRAM_BOT_TOKEN",
+          "WEBHOOK_BASE_URL",
+        ],
+      },
+    ],
+    "import/no-namespace": [
+      "error",
+      {
+        "ignore": ["valibot", "**/schema"],
+      },
+    ],
+  },
+
+  "overrides": [
+    {
+      "files": ["apps/pepega/nuxt.config.ts"],
+      "globals": {
+        "defineNuxtConfig": "readonly",
+      },
+    },
+    {
+      "files": ["apps/pepega/app/composables/use-toaster.ts"],
+      "rules": {
+        "import/no-default-export": "off",
+      },
+    },
+    {
+      "files": ["workers/twitch-webhooks/src/utils/**/*.ts"],
+      "rules": {
+        "import/no-relative-parent-imports": "off",
+      },
+    },
+    {
+      "files": [
+        "apps/pepega/nuxt.config.ts",
+        "common/database/drizzle.config.ts",
+        "apps/pepega/app/middleware/**/*.ts",
+        "apps/pepega/server/middleware/**/*.ts",
+        "apps/pepega/server/api/**/*.ts",
+      ],
+      "rules": {
+        "import/no-default-export": "off",
+      },
+    },
+    {
+      "files": ["**/*.vue"],
+      "env": {
+        "browser": true,
+      },
+      "rules": {
+        "vitest/require-hook": "off",
+      },
+    },
+    {
+      "files": [
+        "apps/pepega/app/app.vue",
+        "apps/pepega/app/layouts/**/*.vue",
+        "apps/pepega/app/pages/**/*.vue",
+      ],
+      "rules": {
+        "unicorn/filename-case": "off",
+      },
+      "globals": {
+        "console": "readonly",
+      },
+    },
+    {
+      "files": [
+        "apps/pepega/nuxt.config.ts",
+        "apps/pepega/server/**/*.ts",
+        "common/database/**/*.ts",
+        "vitest.config.ts",
+      ],
+      "env": {
+        "node": true,
+      },
+    },
+    {
+      "files": [
+        "apps/pepega/server/**/*.ts",
+        "common/twitch/**/*.ts",
+        "common/utils/**/*.ts",
+        "workers/twitch-webhooks/**/*.ts",
+      ],
+      "env": {
+        "worker": true,
+      },
+    },
+    {
+      "files": ["apps/pepega/app/**/*.ts", "apps/pepega/shared/**/*.ts"],
+      "env": {
+        "browser": true,
+      },
+    },
+    {
+      "files": [
+        "apps/pepega/server/utils/logger.ts",
+        "common/twitch/logger.ts",
+        "workers/twitch-webhooks/src/app.ts",
+        "workers/twitch-webhooks/src/logger.ts",
+        "workers/twitch-webhooks/src/online.ts",
+      ],
+      "rules": {
+        "import/no-default-export": "off",
+      },
+    },
+    {
+      "files": ["apps/pepega/server/api/**/*.ts"],
+      "rules": {
+        "unicorn/filename-case": "off",
+      },
+    },
+    {
+      "files": ["**/__tests__/**/*.ts"],
+      "rules": {
+        "eslint/max-lines": "off",
+        "import/no-namespace": "off",
+        "import/no-relative-parent-imports": "off",
+        "vitest/require-mock-type-parameters": "off",
+        "vitest/no-conditional-in-test": "off",
+        "vitest/require-to-throw-message": "off",
+      },
+    },
+  ],
+}

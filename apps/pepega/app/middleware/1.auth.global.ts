@@ -1,20 +1,21 @@
+import { defineNuxtRouteMiddleware, navigateTo } from '#imports';
 import { useUserStore } from '~/stores/user';
 import { shouldSkipAuth } from '~/utils/router';
 
 export default defineNuxtRouteMiddleware(async (to) => {
   if (shouldSkipAuth(to)) {
-    return
+    return;
   }
 
-  const userStore = useUserStore()
+  const userStore = useUserStore();
 
   if (userStore.isAuthenticated && to.path === '/login') {
-    const redirectTo = to.query.redirectTo?.toString() || '/dashboard'
+    const redirectTo = to.query.redirectTo?.toString() ?? '/dashboard';
 
     return navigateTo({
       path: redirectTo,
-      replace: true
-    })
+      replace: true,
+    });
   }
 
   if (userStore.isAuthenticated === false && to.path !== '/login') {
@@ -23,8 +24,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
       replace: true,
 
       query: {
-        redirectTo: to.fullPath
-      }
-    })
+        redirectTo: to.fullPath,
+      },
+    });
   }
-})
+});

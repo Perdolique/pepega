@@ -1,34 +1,32 @@
-import type { H3Event, EventHandlerRequest, H3EventContext } from 'h3'
-import { parseISO, differenceInMilliseconds } from 'date-fns'
-import { and, eq } from 'drizzle-orm'
-import { adminCheckInterval } from '~~/constants'
+import { useAppSession } from '~~/server/utils/session';
+import { createError, type H3Event, type EventHandlerRequest, type H3EventContext } from 'h3';
+import { parseISO, differenceInMilliseconds } from 'date-fns';
+import { adminCheckInterval } from '~~/constants';
 
 interface CheckAdminOption {
   readonly force?: boolean;
 }
 
 function shouldCheckAdmin(lastCheck: string) {
-  const lastCheckDate = parseISO(lastCheck)
-  const now = new Date()
-  const diff = differenceInMilliseconds(now, lastCheckDate)
+  const lastCheckDate = parseISO(lastCheck);
+  const now = new Date();
+  const diff = differenceInMilliseconds(now, lastCheckDate);
 
-  return diff > adminCheckInterval
+  return diff > adminCheckInterval;
 }
 
 async function isUserAdmin(db: H3EventContext['db'], userId: string) {
-  const result = await db.query.users
-    .findFirst({
-      columns: {
-        id: true
-      },
+  const result = await db.query.users.findFirst({
+    columns: {
+      id: true,
+    },
 
-      where: and(
-        eq(tables.users.id, userId),
-        eq(tables.users.isAdmin, true)
-      )
-    })
+    where: {
+      AND: [{ id: userId }, { isAdmin: true }],
+    },
+  });
 
-  return result?.id !== undefined
+  return result?.id !== undefined;
 }
 
 /**
@@ -43,45 +41,40 @@ async function isUserAdmin(db: H3EventContext['db'], userId: string) {
  * const isAdmin = await checkAdmin(event)
  * ```
  */
-export async function checkAdmin(
+async function checkAdmin(
   event: H3Event<EventHandlerRequest>,
-  { force = false } : CheckAdminOption = {}
+  { force = false }: CheckAdminOption = {},
 ) {
-  const session = await useAppSession(event)
-  const { userId, isAdmin = false, lastAdminCheck } = session.data
+  const session = await useAppSession(event);
+  const { userId, isAdmin, lastAdminCheck } = session.data;
 
   if (userId === null) {
-    return false
+    return false;
   }
 
-  if (
-    force ||
-    lastAdminCheck === undefined ||
-    shouldCheckAdmin(lastAdminCheck)
-  ) {
-    const userIsAdmin = await isUserAdmin(event.context.db, userId)
+  if (force || lastAdminCheck === undefined || shouldCheckAdmin(lastAdminCheck)) {
+    const userIsAdmin = await isUserAdmin(event.context.db, userId);
 
     await session.update({
       isAdmin: userIsAdmin,
-      lastAdminCheck: new Date().toISOString()
-    })
+      lastAdminCheck: new Date().toISOString(),
+    });
 
-    return userIsAdmin
+    return userIsAdmin;
   }
 
-  return isAdmin
+  return isAdmin;
 }
 
-export async function validateAdmin(
-  event: H3Event<EventHandlerRequest>,
-  options: CheckAdminOption = {}
-) {
-  const isAdmin = await checkAdmin(event, options)
+async function validateAdmin(event: H3Event<EventHandlerRequest>, options: CheckAdminOption = {}) {
+  const isAdmin = await checkAdmin(event, options);
 
   if (isAdmin === false) {
     throw createError({
       statusCode: 403,
-      message: 'You do not have permission to perform this action'
-    })
+      message: 'You do not have permission to perform this action',
+    });
   }
 }
+
+export { checkAdmin, validateAdmin };

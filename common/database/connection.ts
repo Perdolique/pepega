@@ -1,26 +1,26 @@
-import { drizzle as drizzleNeon } from 'drizzle-orm/neon-http'
-import { drizzle as drizzleServerless } from 'drizzle-orm/neon-serverless'
-import { neon, neonConfig, Pool } from '@neondatabase/serverless'
-import ws from 'ws'
-import * as schema from './schema'
+import { drizzle as drizzleNeon } from 'drizzle-orm/neon-http';
+import { drizzle as drizzleServerless } from 'drizzle-orm/neon-serverless';
+import { neon, neonConfig, Pool } from '@neondatabase/serverless';
+import ws from 'ws';
+import { relations } from './relations';
 
-export const tables = schema
+export * as tables from './schema';
 
-export function createDrizzle(databaseUrl: string, isLocalDatabase = false) {
+function createDrizzle(databaseUrl: string, isLocalDatabase = false) {
   if (isLocalDatabase) {
     // Check docker-compose.yml for the details
-    neonConfig.fetchEndpoint = 'http://db.localtest.me:4444/sql'
+    neonConfig.fetchEndpoint = 'http://db.localtest.me:4444/sql';
   }
 
-  const db = neon(databaseUrl)
+  const db = neon(databaseUrl);
 
   const drizzleDb = drizzleNeon({
     client: db,
-    schema,
-    logger: isLocalDatabase
-  })
+    relations,
+    logger: isLocalDatabase,
+  });
 
-  return drizzleDb
+  return drizzleDb;
 }
 
 /**
@@ -30,25 +30,27 @@ export function createDrizzle(databaseUrl: string, isLocalDatabase = false) {
  * @see {@link https://orm.drizzle.team/docs/get-started-postgresql#neon-postgres}
  * @see {@link https://github.com/neondatabase/serverless?tab=readme-ov-file#sessions-transactions-and-node-postgres-compatibility}
  */
-export function createDrizzleWebsocket(databaseUrl: string, isLocalDatabase = false) {
-  neonConfig.webSocketConstructor = ws
+function createDrizzleWebsocket(databaseUrl: string, isLocalDatabase = false) {
+  neonConfig.webSocketConstructor = ws;
 
   if (isLocalDatabase) {
-    neonConfig.wsProxy = (host) => `${host}:5433/v1`
+    neonConfig.wsProxy = (host) => `${host}:5433/v1`;
     neonConfig.useSecureWebSocket = false;
     neonConfig.pipelineTLS = false;
     neonConfig.pipelineConnect = false;
   }
 
   const pool = new Pool({
-    connectionString: databaseUrl
-  })
+    connectionString: databaseUrl,
+  });
 
   const drizzleDb = drizzleServerless({
     client: pool,
-    schema,
-    logger: isLocalDatabase
-  })
+    relations,
+    logger: isLocalDatabase,
+  });
 
-  return drizzleDb
+  return drizzleDb;
 }
+
+export { createDrizzle, createDrizzleWebsocket };

@@ -1,10 +1,10 @@
-@import "modern-normalize/modern-normalize.css" layer;
+@import 'modern-normalize/modern-normalize.css' layer;
 
 :root {
   color-scheme: light dark;
 
   /* Typography */
-  font-family: "Inter", sans-serif;
+  font-family: 'Inter', sans-serif;
   --font-size-12: 0.75rem;
   --font-size-14: 0.875rem;
   --font-size-16: 1rem;
@@ -14,7 +14,6 @@
   --font-weight-normal: 400;
   --font-weight-medium: 500;
   --font-weight-bold: 700;
-
 
   /* Spacing */
   --spacing-4: 0.25rem;
@@ -86,7 +85,6 @@
     color-mix(in oklch, var(--chip-color-border), white 80%),
     color-mix(in oklch, var(--chip-color-border), black 20%)
   );
-
 
   /* Borders */
   --border-radius-8: 0.5rem;
@@ -163,7 +161,12 @@
   }
 
   /* Reset headings */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
     margin: 0;
   }
 

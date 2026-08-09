@@ -1,11 +1,11 @@
-import { createApp, toWebHandler } from 'h3'
+import { createApp, toWebHandler } from 'h3';
 
-const app = createApp()
-const webHandler = toWebHandler(app)
+const app = createApp();
+const webHandler = toWebHandler(app);
 
-app.use('/online', () => import('./online'), {
-  lazy: true
-})
+app.use('/online', async () => import('./online'), {
+  lazy: true,
+});
 
 /**
  * Bind resources to your worker in `wrangler.json`. After adding bindings, a type definition for the
@@ -19,17 +19,17 @@ export default {
     return webHandler(request, {
       cloudflare: {
         env,
-        ctx
-      }
-    })
-  }
-} satisfies ExportedHandler<Env>
+        ctx,
+      },
+    });
+  },
+} satisfies ExportedHandler<Env>;
 
 declare module 'h3' {
   interface H3EventContext {
     cloudflare: {
-      env: Env
-      ctx: ExecutionContext
-    }
+      env: Env;
+      ctx: ExecutionContext;
+    };
   }
 }

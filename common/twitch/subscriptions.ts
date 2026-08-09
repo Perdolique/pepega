@@ -1,6 +1,10 @@
-import { ofetch } from 'ofetch'
+import { ofetch } from 'ofetch';
 import type { PaginatedResponse } from './models/general';
-import type { EventSubscription, EventSubscriptionStatus, EventSubscriptionType } from './models/event-sub';
+import type {
+  EventSubscription,
+  EventSubscriptionStatus,
+  EventSubscriptionType,
+} from './models/event-sub';
 
 interface GetSubscriptionsStatusFilters {
   status?: EventSubscriptionStatus[];
@@ -32,30 +36,35 @@ interface DeleteSubscriptionParams {
  *
  * [Twitch API Reference](https://dev.twitch.tv/docs/eventsub/manage-subscriptions/#getting-the-list-of-events-you-subscribe-to)
  */
-export async function getSubscriptions({ token, clientId, filters = {} } : GetSubscriptionsParams) {
-  return await ofetch<PaginatedResponse<EventSubscription>>('https://api.twitch.tv/helix/eventsub/subscriptions', {
-    params: {
-      ...filters
-    },
+async function getSubscriptions({ token, clientId, filters = {} }: GetSubscriptionsParams) {
+  return ofetch<PaginatedResponse<EventSubscription>>(
+    'https://api.twitch.tv/helix/eventsub/subscriptions',
+    {
+      query: {
+        ...filters,
+      },
 
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Client-Id': clientId,
-    }
-  })
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Client-Id': clientId,
+      },
+    },
+  );
 }
 
-export async function deleteSubscription({ token, clientId, id } : DeleteSubscriptionParams) {
-  return await ofetch<unknown>('https://api.twitch.tv/helix/eventsub/subscriptions', {
+async function deleteSubscription({ token, clientId, id }: DeleteSubscriptionParams) {
+  return ofetch<unknown>('https://api.twitch.tv/helix/eventsub/subscriptions', {
     method: 'DELETE',
 
-    params: {
-      id
+    query: {
+      id,
     },
 
     headers: {
       Authorization: `Bearer ${token}`,
       'Client-Id': clientId,
-    }
-  })
+    },
+  });
 }
+
+export { getSubscriptions, deleteSubscription };

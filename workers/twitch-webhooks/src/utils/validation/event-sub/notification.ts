@@ -1,14 +1,13 @@
-import * as v from 'valibot'
-import { UnionToTuple } from '@pepega/utils/types'
+import * as v from 'valibot';
 
-import {
+import type {
   EventSubscriptionStatus,
   EventSubscriptionType,
   StreamType,
-  TransportMethod
-} from '@pepega/twitch/models/event-sub'
+  TransportMethod,
+} from '@pepega/twitch/models/event-sub';
 
-const eventSubscriptionStatusSchema = v.picklist<UnionToTuple<EventSubscriptionStatus>>([
+const eventSubscriptionStatusSchema = v.picklist([
   'enabled',
   'webhook_callback_verification_pending',
   'webhook_callback_verification_failed',
@@ -24,30 +23,30 @@ const eventSubscriptionStatusSchema = v.picklist<UnionToTuple<EventSubscriptionS
   'websocket_connection_unused',
   'websocket_internal_error',
   'websocket_network_timeout',
-  'websocket_network_error'
-])
+  'websocket_network_error',
+] as const satisfies readonly EventSubscriptionStatus[]);
 
-const transportMethodSchema = v.picklist<UnionToTuple<TransportMethod>>([
+const transportMethodSchema = v.picklist([
   'webhook',
-  'websocket'
-])
+  'websocket',
+] as const satisfies readonly TransportMethod[]);
 
-const streamTypeSchema = v.picklist<UnionToTuple<StreamType>>([
+const streamTypeSchema = v.picklist([
   'live',
   'playlist',
   'watch_party',
   'premiere',
-  'rerun'
-])
+  'rerun',
+] as const satisfies readonly StreamType[]);
 
 const conditionSchema = v.object({
-  broadcaster_user_id: v.string()
-})
+  broadcaster_user_id: v.string(),
+});
 
 const transportSchema = v.object({
   method: transportMethodSchema,
-  callback: v.string()
-})
+  callback: v.string(),
+});
 
 const subscriptionSchema = v.object({
   id: v.string(),
@@ -57,8 +56,8 @@ const subscriptionSchema = v.object({
   cost: v.number(),
   condition: conditionSchema,
   transport: transportSchema,
-  created_at: v.string()
-})
+  created_at: v.string(),
+});
 
 const eventSchema = v.object({
   id: v.string(),
@@ -66,10 +65,10 @@ const eventSchema = v.object({
   broadcaster_user_login: v.string(),
   broadcaster_user_name: v.string(),
   type: streamTypeSchema,
-  started_at: v.string()
-})
+  started_at: v.string(),
+});
 
 export const streamOnlineNotificationSchema = v.object({
   subscription: subscriptionSchema,
-  event: eventSchema
-})
+  event: eventSchema,
+});

@@ -1,30 +1,29 @@
-import { and, eq, sql } from 'drizzle-orm'
-import * as v from 'valibot'
-import { notificationEventTypeSchema } from '~~/server/utils/validation'
+import { tables } from '~~/server/utils/database';
+import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3';
+import { and, eq, sql } from 'drizzle-orm';
+import * as v from 'valibot';
+import { notificationEventTypeSchema } from '~~/server/utils/validation';
 
 const routeParamsSchema = v.object({
-  eventType: notificationEventTypeSchema
-})
+  eventType: notificationEventTypeSchema,
+});
 
 function validateRouterParams(params: unknown) {
-  return v.parse(routeParamsSchema, params)
+  return v.parse(routeParamsSchema, params);
 }
 
-export default defineEventHandler(async (event) : Promise<void> => {
-  const { eventType } = await getValidatedRouterParams(event, validateRouterParams)
-  const { userId, db } = event.context
+export default defineEventHandler(async (event): Promise<void> => {
+  const { eventType } = await getValidatedRouterParams(event, validateRouterParams);
+  const { userId, db } = event.context;
 
-  const streamer = db
-    .$with('streamer')
-    .as(
-      db.select({
-        id: tables.streamers.id
+  const streamer = db.$with('streamer').as(
+    db
+      .select({
+        id: tables.streamers.id,
       })
       .from(tables.streamers)
-      .where(
-        eq(tables.streamers.userId, userId)
-      )
-    )
+      .where(eq(tables.streamers.userId, userId)),
+  );
 
   const deleted = await db
     .with(streamer)
@@ -32,19 +31,19 @@ export default defineEventHandler(async (event) : Promise<void> => {
     .where(
       and(
         eq(tables.notifications.eventType, eventType),
-        eq(tables.notifications.streamerId, sql`(SELECT id FROM ${streamer})`)
-      )
+        eq(tables.notifications.streamerId, sql`(SELECT id FROM ${streamer})`),
+      ),
     )
     .returning({
-      id: tables.notifications.id
-    })
+      id: tables.notifications.id,
+    });
 
   if (deleted.length === 0) {
     throw createError({
       statusCode: 404,
-      statusMessage: 'Notification not found'
-    })
+      statusMessage: 'Notification not found',
+    });
   }
 
-  sendNoContent(event)
-})
+  sendNoContent(event);
+});

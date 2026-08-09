@@ -5,20 +5,22 @@
 </template>
 
 <script lang="ts" setup>
-  definePageMeta({
-    title: 'Pepega',
-    skipAuth: true
-  });
+import { definePageMeta, useHead } from '#imports';
 
-  useHead({
-    title: 'Pepega'
-  });
+definePageMeta({
+  title: 'Pepega',
+  skipAuth: true,
+});
+
+useHead({
+  title: 'Pepega',
+});
 </script>
 
 <style module>
-  .component {
-    display: grid;
-    place-items: center;
-    height: 100%;
-  }
+.component {
+  display: grid;
+  place-items: center;
+  height: 100%;
+}
 </style>

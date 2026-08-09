@@ -1,15 +1,18 @@
-import type { NeonHttpDatabase } from 'drizzle-orm/neon-http'
+import { createDatabase } from '~~/server/utils/database';
+import { defineEventHandler } from 'h3';
+
+type Database = ReturnType<typeof createDatabase>;
 
 declare module 'h3' {
   interface H3EventContext {
-    db: NeonHttpDatabase<typeof tables>
+    db: Database;
   }
 }
 
-export default defineEventHandler(async ({ context }) => {
+export default defineEventHandler(({ context }) => {
   if (context.db === undefined) {
-    const drizzleDb = createDatabase()
+    const drizzleDb = createDatabase();
 
-    context.db = drizzleDb
+    context.db = drizzleDb;
   }
-})
+});
