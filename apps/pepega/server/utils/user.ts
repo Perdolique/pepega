@@ -15,7 +15,7 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
   const session = await useAppSession(event)
   const { userId } = session.data
 
-  if (userId === null) {
+  if (typeof userId !== 'string') {
     return defaultUser
   }
 

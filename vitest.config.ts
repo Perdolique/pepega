@@ -6,9 +6,9 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('apps/pepega/app', import.meta.url)),
-      '@@': import.meta.dirname,
+      '@@': fileURLToPath(new URL('apps/pepega', import.meta.url)),
       '~': fileURLToPath(new URL('apps/pepega/app', import.meta.url)),
-      '~~': import.meta.dirname,
+      '~~': fileURLToPath(new URL('apps/pepega', import.meta.url)),
       '#shared': fileURLToPath(new URL('apps/pepega/shared', import.meta.url)),
     },
   },
