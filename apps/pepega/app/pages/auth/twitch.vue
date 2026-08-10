@@ -1,125 +1,159 @@
 <template>
-  <div :class="$style.component">
-    <div :class="$style.content">
-      <div :class="$style.progress">
-        <div
-          v-if="isFailed"
-          :class="$style.icon"
+  <section :class="$style.component">
+    <div
+      v-if="isFailed"
+      :class="$style.status"
+    >
+      <Icon
+        :class="$style.failureIcon"
+        name="tabler:plug-connected-x"
+        aria-hidden="true"
+      />
+      <h1>Twitch did not connect</h1>
+      <p>{{ failureMessage }}</p>
+
+      <div :class="$style.actions">
+        <UiButton
+          variant="twitch"
+          @click="startNewAuthorization"
         >
-          💀
-        </div>
-
-        <FidgetSpinner
-          v-else
-          size="32px"
-        />
+          Try again
+        </UiButton>
+        <UiButtonLink
+          to="/"
+          variant="ghost"
+        >
+          Back home
+        </UiButtonLink>
       </div>
-
-      <div v-if="isFailed">
-        Failed to connect <strong>Twitch</strong>
-      </div>
-
-      <div v-else>
-        Connecting <strong>Twitch</strong>...
-      </div>
-
-      <!-- TODO: style this link -->
-      <NuxtLink
-        v-if="isFailed"
-        to="/"
-      >
-        Return to Home
-      </NuxtLink>
     </div>
-  </div>
+
+    <div
+      v-else
+      :class="$style.status"
+      role="status"
+      aria-live="polite"
+    >
+      <span
+        :class="$style.spinner"
+        aria-hidden="true"
+      />
+      <h1>Connecting Twitch</h1>
+      <p>Checking your authorization…</p>
+    </div>
+  </section>
 </template>
 
-<script lang="ts" setup>
-  import { decodeStateData } from '@pepega/twitch/auth'
+<script setup lang="ts">
+  import UiButton from '~/components/ui/UiButton.vue'
+  import UiButtonLink from '~/components/ui/UiButtonLink.vue'
+  import {
+    getOAuthRedirectTo,
+    getTwitchAuthorizationPath
+  } from '~/utils/router'
   import { useUserStore } from '~/stores/user'
-  import FidgetSpinner from '~/components/FidgetSpinner.vue'
-  import { onBeforeMount, ref } from 'vue'
-  import { $fetch, definePageMeta, navigateTo, useHead, useRoute } from '#imports'
+  import { onMounted, ref } from 'vue'
+  import {
+    $fetch,
+    definePageMeta,
+    navigateTo,
+    useHead,
+    useRoute
+  } from '#imports'
+
+  const defaultFailureMessage = 'Authorization could not be completed. Try again.'
 
   definePageMeta({
-    layout: false,
+    layout: 'public',
     skipAuth: true
   })
 
-  useHead({
-    title: 'Connecting Twitch...'
-  })
+  useHead({ title: 'Connecting Twitch — Pepega' })
 
-  const isFailed = ref(false)
   const route = useRoute()
   const userStore = useUserStore()
+  const isFailed = ref(false)
+  const failureMessage = ref(defaultFailureMessage)
+  const redirectTo = getOAuthRedirectTo(route.query.state)
+  const code = typeof route.query.code === 'string' ? route.query.code : ''
 
-  async function handleConnect() {
+  function startNewAuthorization() {
+    const authorizationPath = getTwitchAuthorizationPath(redirectTo)
+
+    window.location.assign(authorizationPath)
+  }
+
+  async function completeAuthorization() {
+    if (code.length === 0) {
+      failureMessage.value = 'Twitch did not return an authorization code.'
+      isFailed.value = true
+      return
+    }
+
     try {
       const result = await $fetch('/api/oauth/twitch', {
         method: 'POST',
-
-        body: {
-          code: route.query.code
-        }
+        body: { code }
       })
-
-      if (result === undefined) {
-        throw new Error('Failed to connect Twitch')
-      }
 
       userStore.updateUser(result)
-
       userStore.hasData = true
 
-      const { state } = route.query
-      const decodedState = decodeStateData(state)
-
-      if (decodedState === null) {
-        await navigateTo('/dashboard', {
-          replace: true
-        })
-
-        return
-      }
-
-      await navigateTo(decodedState.redirectTo, {
-        replace: true
-      })
+      await navigateTo(redirectTo, { replace: true })
     } catch (error) {
+      console.error('Failed to connect Twitch', error)
       isFailed.value = true
     }
   }
 
-  onBeforeMount(() => {
-    handleConnect()
-  })
+  onMounted(completeAuthorization)
 </script>
 
 <style module>
   .component {
-    height: 100vh;
-    display: flex;
-    padding: var(--spacing-24);
-  }
-
-  .content {
-    margin: auto;
+    inline-size: min(100%, 34rem);
+    min-block-size: 18rem;
     display: grid;
-    row-gap: var(--spacing-16);
-    justify-items: center;
-    text-wrap: balance;
-  }
-
-  .progress {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
   }
 
-  .icon {
-    font-size: 32px;
+  .status {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-md);
+  }
+
+  .status h1 {
+    font-size: clamp(2rem, 7vw, 2.75rem);
+  }
+
+  .status p {
+    color: var(--color-ink-secondary);
+  }
+
+  .failureIcon {
+    color: var(--color-danger);
+    font-size: 3rem;
+  }
+
+  .spinner {
+    inline-size: 3rem;
+    block-size: 3rem;
+    border: 0.3rem solid var(--color-surface-muted);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  .actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(1turn);
+    }
   }
 </style>

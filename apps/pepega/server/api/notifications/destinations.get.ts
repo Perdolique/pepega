@@ -21,7 +21,9 @@ export default defineEventHandler(async (event) : Promise<NotificationDestinatio
     .select({
       id: tables.notificationDestinations.id,
       config: tables.notificationDestinations.config,
-      isActive: tables.notificationDestinations.isActive
+      isActive: tables.notificationDestinations.isActive,
+      message: tables.notificationDestinations.message,
+      telegramChannelId: tables.notificationDestinations.telegramChannelId
     })
     .from(tables.notificationDestinations)
     .innerJoin(

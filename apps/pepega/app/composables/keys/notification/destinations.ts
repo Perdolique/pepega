@@ -1,7 +1,7 @@
 export const destinationKeys = {
   root: ['notification-destinations'],
 
-  byNotificationId: (notificationId: number) => [
+  byNotificationId: (notificationId: number | undefined) => [
     ...destinationKeys.root,
     { notificationId }
   ]

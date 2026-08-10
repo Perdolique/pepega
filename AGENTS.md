@@ -6,6 +6,10 @@
 - This is a monorepo managed with pnpm workspaces.
 - Run `vp run lint:markdown`, `vp run lint:oxlint`, `vp run test:typecheck`, `vp run test:unit:ci`, and `vp run build` before publishing changes.
 
+## Design
+
+- Before implementing or reviewing new or explicitly redesigned user-facing UI, read and follow the root [`DESIGN.md`](./DESIGN.md).
+
 ## Commit message instructions
 
 When writing commit messages, follow these guidelines:

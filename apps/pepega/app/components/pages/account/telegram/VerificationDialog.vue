@@ -1,56 +1,75 @@
 <template>
-  <ModalDialog
+  <UiDialog
     v-model="isOpen"
-    title="Verify Telegram Channel"
+    title="Verify Telegram channel"
+    :description="`Connect @${chatId} to Pepega in two steps.`"
   >
     <div :class="$style.component">
-      <div>
-        1. To verify your channel, please add the bot <strong>{{ runtimeConfig.public.telegramBotName }}</strong> to your channel <a :href="chatUrl" target="_blank" rel="noopener noreferrer">@{{ chatId }}</a>.
-      </div>
+      <ol :class="$style.steps">
+        <li>
+          <span>1</span>
+          <div>
+            Add <strong>{{ runtimeConfig.public.telegramBotName }}</strong> to
+            <a
+              :href="chatUrl"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              @{{ chatId }}
+            </a>.
+          </div>
+        </li>
+        <li>
+          <span>2</span>
+          <div>Send a code, then enter the six digits below.</div>
+        </li>
+      </ol>
 
-      <div>
-        2. After adding the bot, click the button below to send a verification code to the bot.
-      </div>
-
-      <SimpleButton
-        :disabled="isCodeSent"
-        @click="onSendCodeClick"
+      <UiButton
+        variant="secondary"
+        :disabled="isSendingCode"
+        @click="sendCode"
       >
-        Send code
-      </SimpleButton>
+        {{ sendCodeLabel }}
+      </UiButton>
 
-      <div :class="$style.verificationControls">
-        <TextInput
-          :model-value="code"
-          :disabled="isVerificationDisabled"
-          @input="onCodeUpdate"
-          ref="codeInput"
+      <UiField
+        label="Verification code"
+        for-id="verification-code"
+        helper="Six digits from the Telegram message."
+        :error="error"
+      >
+        <UiTextInput
+          id="verification-code"
+          v-model="code"
           inputmode="numeric"
-          pattern="[0-9]*"
-          placeholder="000000"
-          name="verificationCode"
+          pattern="[0-9]{6}"
+          maxlength="6"
+          autocomplete="one-time-code"
+          :disabled="isCodeInputDisabled"
+          @input="normalizeCode"
         />
+      </UiField>
 
-        <SimpleButton
-          :disabled="isVerifyButtonDisabled"
-          @click="onVerifyClick"
-        >
-          Verify
-        </SimpleButton>
-      </div>
+      <UiButton
+        :disabled="isVerifyDisabled"
+        @click="verifyChannel"
+      >
+        {{ isVerifying ? 'Verifying…' : 'Verify channel' }}
+      </UiButton>
     </div>
-  </ModalDialog>
+  </UiDialog>
 </template>
-
-<script lang="ts" setup>
-  import { FetchError } from 'ofetch'
+<script setup lang="ts">
   import { getTelegramChannels } from '~/composables/queries/telegram/channels'
   import useToaster from '~/composables/use-toaster'
-  import ModalDialog from '~/components/dialogs/ModalDialog.vue'
-  import SimpleButton from '~/components/SimpleButton.vue'
-  import TextInput from '~/components/TextInput.vue'
-  import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
+  import UiButton from '~/components/ui/UiButton.vue'
+  import UiDialog from '~/components/ui/UiDialog.vue'
+  import UiField from '~/components/ui/UiField.vue'
+  import UiTextInput from '~/components/ui/UiTextInput.vue'
   import { useQuery } from '@pinia/colada'
+  import { FetchError } from 'ofetch'
+  import { computed, ref, watch } from 'vue'
   import { $fetch, useRuntimeConfig } from '#imports'
 
   interface Props {
@@ -58,133 +77,148 @@
     chatId: string;
   }
 
-  const { channelId, chatId } = defineProps<Props>();
+  const { channelId, chatId } = defineProps<Props>()
+  const isOpen = defineModel<boolean>({ required: true })
   const code = ref('')
-  const chatUrl = computed(() => `https://t.me/${chatId}`)
-  const { addToast } = useToaster()
-  const codeInput = useTemplateRef('codeInput')
-  const isCodeSent = ref(false)
-  const isVerificationSent = ref(false)
-  const { refetch: refetchChannels } = useQuery(getTelegramChannels)
+  const codeWasSent = ref(false)
+  const isSendingCode = ref(false)
+  const isVerifying = ref(false)
+  const error = ref('')
   const runtimeConfig = useRuntimeConfig()
+  const { refetch } = useQuery(getTelegramChannels)
+  const { addToast } = useToaster()
+  const chatUrl = computed(() => `https://t.me/${chatId}`)
+  const sendCodeLabel = computed(() => {
+    if (isSendingCode.value) {
+      return 'Sending…'
+    }
 
-  const isOpen = defineModel<boolean>({
-    required: true
+    return codeWasSent.value ? 'Send another code' : 'Send code'
   })
-
-  const isVerificationDisabled = computed(
-    () => isCodeSent.value === false || isVerificationSent.value
+  const isCodeInputDisabled = computed(
+    () => codeWasSent.value === false || isVerifying.value
+  )
+  const isVerifyDisabled = computed(
+    () => codeWasSent.value === false
+      || code.value.length !== 6
+      || isVerifying.value
   )
 
-  const isVerifyButtonDisabled = computed(
-    () => isVerificationDisabled.value || code.value.length === 0
-  )
+  function getMessage(fetchError: unknown, fallback: string) {
+    if (fetchError instanceof FetchError && typeof fetchError.data?.message === 'string') {
+      return fetchError.data.message
+    }
 
-  async function onSendCodeClick() {
-    isCodeSent.value = true
+    return fallback
+  }
+
+  function normalizeCode(event: Event) {
+    if (!(event.target instanceof HTMLInputElement)) {
+      return
+    }
+
+    const numericCode = event.target.value.replace(/\D/gu, '').slice(0, 6)
+
+    code.value = numericCode
+    event.target.value = numericCode
+  }
+
+  async function sendCode() {
+    isSendingCode.value = true
+    error.value = ''
 
     try {
       await $fetch(`/api/telegram/channel/${channelId}/send-code`, {
         method: 'POST'
       })
 
+      codeWasSent.value = true
       addToast({
-        message: 'Verification code sent successfully! Please check your channel.',
         title: 'Code sent',
-        duration: 5000
+        message: 'Check the Telegram channel for the six-digit code.',
+        tone: 'success'
       })
-    } catch (error) {
-      let message = 'An error occurred while sending the code.'
-
-      if (error instanceof FetchError) {
-        message = error.data?.message ?? 'An error occurred while sending the code.'
-      }
-
-      addToast({
-        message,
-        title: 'Failed to send code',
-        duration: 5000
-      })
+    } catch (fetchError) {
+      console.error('Failed to send Telegram verification code', fetchError)
+      error.value = getMessage(
+        fetchError,
+        'The code could not be sent. Check the bot and try again.'
+      )
+    } finally {
+      isSendingCode.value = false
     }
   }
 
-  async function onVerifyClick() {
-    isVerificationSent.value = true
+  async function verifyChannel() {
+    isVerifying.value = true
+    error.value = ''
 
     try {
       await $fetch(`/api/telegram/channel/${channelId}/verify`, {
         method: 'POST',
-
-        body: {
-          code: code.value
-        }
+        body: { code: code.value }
       })
 
+      await refetch()
       addToast({
-        message: 'Channel verified successfully! 🎉',
-        title: 'Verification complete',
-        duration: 5000
+        title: 'Channel verified',
+        message: `@${chatId} is ready for Telegram integrations.`,
+        tone: 'success'
       })
-
-      // TODO: Refetch only relevant channel
-      refetchChannels()
-
       isOpen.value = false
-    } catch (error) {
-      let message = 'Verification failed. Please check your code and try again.'
-
-      if (error instanceof FetchError) {
-        message = error.data?.message ?? 'Verification failed. Please check your code and try again.'
-      }
-
-      addToast({
-        message,
-        title: 'Verification failed',
-        duration: 5000
-      })
+    } catch (fetchError) {
+      console.error('Failed to verify Telegram channel', fetchError)
+      error.value = getMessage(
+        fetchError,
+        'That code was not accepted. Check it and try again.'
+      )
     } finally {
-      isVerificationSent.value = false
-      code.value = ''
+      isVerifying.value = false
     }
   }
 
-  function onCodeUpdate(event: Event) {
-    if (event.target instanceof HTMLInputElement) {
-      const value = event.target.value.replace(/\D/ug, '')
-
-      event.target.value = value
-
-      code.value = value
-    }
-  }
-
-  watch(isCodeSent, (isSent) => {
-    if (isSent) {
-      nextTick(() => {
-        codeInput.value?.focus()
-      })
-    }
-  })
-
-  // Reset dialog state when opened
-  watch(isOpen, (isOpen) => {
-    if (isOpen) {
-      isCodeSent.value = false
-      isVerificationSent.value = false
+  watch(isOpen, (open) => {
+    if (open) {
       code.value = ''
+      codeWasSent.value = false
+      error.value = ''
     }
   })
 </script>
-
 <style module>
   .component {
     display: grid;
-    row-gap: var(--spacing-16);
+    gap: var(--space-lg);
   }
 
-  .verificationControls {
-    display: flex;
-    gap: var(--spacing-8);
-    align-items: center;
+  .component > button {
+    justify-self: start;
+  }
+
+  .steps {
+    display: grid;
+    gap: var(--space-md);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .steps li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    align-items: start;
+    gap: var(--space-sm);
+  }
+
+  .steps li > span {
+    inline-size: 2rem;
+    block-size: 2rem;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: var(--color-sun);
+    color: var(--color-on-sun);
+    font-family: var(--font-display);
+    font-weight: 800;
   }
 </style>

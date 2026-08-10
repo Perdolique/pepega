@@ -80,10 +80,23 @@ export default defineEventHandler(async (event) : Promise<NotificationDestinatio
       config: { type: 'telegram' },
       providerId: sql`(SELECT id FROM ${telegramProvider})`
     })
+    .onConflictDoUpdate({
+      target: [
+        tables.notificationDestinations.notificationId,
+        tables.notificationDestinations.providerId
+      ],
+
+      set: {
+        message: sql`excluded."message"`,
+        telegramChannelId: sql`excluded."telegramChannelId"`
+      }
+    })
     .returning({
       id: tables.notificationDestinations.id,
       isActive: tables.notificationDestinations.isActive,
-      config: tables.notificationDestinations.config
+      config: tables.notificationDestinations.config,
+      message: tables.notificationDestinations.message,
+      telegramChannelId: tables.notificationDestinations.telegramChannelId
     })
 
   if (destination === undefined) {

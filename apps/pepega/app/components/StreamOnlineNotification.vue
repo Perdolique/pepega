@@ -1,260 +1,269 @@
 <template>
-  <BaseCard :class="$style.card">
-    <div :class="$style.header">
-      <div :class="$style.title">
-        Stream online
-      </div>
-
-      <span :class="[$style.status, status]">
-        {{ status }}
+  <section :class="$style.component">
+    <div :class="$style.copy">
+      <strong>Stream online</strong>
+      <span>
+        {{ statusLabel }}<template v-if="isStale"> · Status may be out of date</template>
       </span>
+      <p
+        v-if="actionError"
+        :class="$style.error"
+        role="alert"
+      >
+        {{ actionError }}
+      </p>
     </div>
 
-    <div :class="$style.description">
-      Get notified when your stream goes live
-    </div>
-
-    <div :class="$style.buttons">
-      <SimpleButton
-        v-if="hasRemoveButton"
-        :class="$style.button"
-        :disabled="isRemoveDisabled"
-        @click="onRemoveClick"
+    <div :class="$style.actions">
+      <UiButton
+        v-if="showEnableAction"
+        :disabled="isWorking"
+        @click="enableWebhook"
       >
-        {{ removeButtonLabel }}
-      </SimpleButton>
+        {{ isWorking ? 'Connecting…' : primaryActionLabel }}
+      </UiButton>
 
-      <SimpleButton
-        v-if="hasCreateButton"
-        :class="$style.button"
-        :disabled="isCreating"
-        @click="onCreateClick"
-      >
-        {{ createButtonLabel }}
-      </SimpleButton>
-
-      <!-- TODO: move to settings -->
-      <SimpleButton
-        v-if="webhook"
-        :class="$style.button"
-        :disabled="isRegisterDisabled"
-        @click="onRegisterClick"
-      >
-        Register
-      </SimpleButton>
-
-      <LinkButton
+      <UiButtonLink
+        v-else-if="status === 'active'"
         to="/settings/notifications/stream-online"
-        icon-name="tabler:settings"
+        variant="secondary"
       >
         Settings
-      </LinkButton>
+      </UiButtonLink>
+
+      <span
+        v-else
+        :class="$style.connecting"
+        role="status"
+      >
+        Connecting
+      </span>
+
+      <DropdownMenuRoot v-if="canRemove">
+        <DropdownMenuTrigger as-child>
+          <UiIconButton
+            icon="tabler:dots"
+            label="Stream online actions"
+          />
+        </DropdownMenuTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuContent
+            :class="$style.menu"
+            :side-offset="8"
+            align="end"
+          >
+            <DropdownMenuItem
+              :class="$style.dangerItem"
+              @select="isConfirmOpen = true"
+            >
+              <Icon
+                name="tabler:trash"
+                aria-hidden="true"
+              />
+              Remove webhook
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenuPortal>
+      </DropdownMenuRoot>
     </div>
-  </BaseCard>
+
+    <UiConfirmDialog
+      v-model="isConfirmOpen"
+      title="Remove stream webhook?"
+      confirm-label="Remove webhook"
+      @confirm="removeWebhook"
+    >
+      This removes the Twitch subscription used for live alerts. Notification
+      settings remain saved.
+    </UiConfirmDialog>
+  </section>
 </template>
 
 <script setup lang="ts">
+  import type { WebhookModel, WebhookStatus } from '~~/shared/models/webhooks'
+  import UiButton from './ui/UiButton.vue'
+  import UiButtonLink from './ui/UiButtonLink.vue'
+  import UiConfirmDialog from './ui/UiConfirmDialog.vue'
+  import UiIconButton from './ui/UiIconButton.vue'
+  import { useUserStore } from '~/stores/user'
+  import { useWebhooksStore } from '~/stores/webhooks'
   import { useTimeoutPoll } from '@vueuse/core'
-  import type { WebhookStatus } from '~~/shared/models/webhooks'
-  import { useWebhooksStore } from '~/stores/webhooks';
-  import { useUserStore } from '~/stores/user';
-  import SimpleButton from '~/components/SimpleButton.vue'
-  import BaseCard from '~/components/BaseCard.vue'
-  import LinkButton from '~/components/LinkButton.vue';
-  import { computed, ref, watch } from 'vue';
+  import {
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuRoot,
+    DropdownMenuTrigger
+  } from 'reka-ui'
+  import { computed, ref, watch } from 'vue'
 
-  const statusPollingInterval = 5000
-  const isCreating = ref(false)
-  const isRemoving = ref(false)
-  const isRegistering = ref(false)
+  const statusLabels: Record<WebhookStatus, string> = {
+    active: 'Enabled',
+    failed: 'Needs attention',
+    not_active: 'Disabled',
+    pending: 'Connecting',
+    revoked: 'Needs attention'
+  }
+
   const webhooksStore = useWebhooksStore()
   const userStore = useUserStore()
+  const isWorking = ref(false)
+  const isConfirmOpen = ref(false)
+  const isStale = ref(false)
+  const actionError = ref('')
+  const webhook = computed(
+    () => [...webhooksStore.webhooks.values()].find(
+      item => item.type === 'stream.online'
+    )
+  )
+  const status = computed<WebhookStatus>(
+    () => webhook.value?.status ?? 'not_active'
+  )
+  const statusLabel = computed(() => statusLabels[status.value])
+  const showEnableAction = computed(() => status.value !== 'active' && status.value !== 'pending')
+  const primaryActionLabel = computed(
+    () => status.value === 'failed' || status.value === 'revoked' || isStale.value
+      ? 'Retry'
+      : 'Enable'
+  )
+  const canRemove = computed(
+    () => webhook.value !== undefined && userStore.isAdmin
+  )
 
-  const webhook = computed(() => {
-    for (const webhook of webhooksStore.webhooks.values()) {
-      if (webhook.type === 'stream.online') {
-        return webhook
-      }
-    }
+  const { pause, resume } = useTimeoutPoll(async () => {
+    const currentWebhook = webhook.value
 
-    return
-  })
-
-  const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active')
-  const hasRemoveButton = computed(() => webhook.value !== undefined && userStore.isAdmin)
-  const hasCreateButton = computed(() => webhook.value === undefined)
-
-  const { pause: stopStatusPolling, resume: startStatusPolling } = useTimeoutPoll(async () => {
-    if (webhook.value?.status === 'pending') {
-      await webhooksStore.fetchWebhook(webhook.value.id)
-    }
-  }, statusPollingInterval, {
-    immediate: false
-  })
-
-  const isRegisterDisabled = computed(() => {
-    if (isRegistering.value || webhook.value === undefined) {
-      return true
-    }
-
-    if (webhook.value.status === 'active' || webhook.value.status === 'pending') {
-      return true
-    }
-
-    return false
-  })
-
-  const isRemoveDisabled = computed(() => isRemoving.value || isRegistering.value)
-
-  const createButtonLabel = computed(() => {
-    if (isCreating.value) {
-      return 'Creating...'
-    }
-
-    return 'Create'
-  })
-
-  const removeButtonLabel = computed(() => {
-    if (isRemoving.value) {
-      return 'Removing...'
-    }
-
-    return 'Remove'
-  })
-
-  async function onCreateClick() {
-    if (isCreating.value) {
+    if (currentWebhook?.status !== 'pending') {
       return
     }
 
-    isCreating.value = true
+    const refreshedWebhook = await webhooksStore.fetchWebhook(currentWebhook.id)
+    isStale.value = refreshedWebhook === undefined
+  }, 5000, { immediate: false })
 
-    await webhooksStore.createWebhook('stream.online')
+  async function registerWebhook(currentWebhook: WebhookModel) {
+    const success = await webhooksStore.registerWebhook(currentWebhook)
 
-    isCreating.value = false
+    if (success === false) {
+      actionError.value = 'Twitch could not enable this notification. Try again.'
+    }
   }
 
-  async function onRemoveClick() {
-    if (isRemoving.value || webhook.value === undefined) {
+  async function enableWebhook() {
+    isWorking.value = true
+    isStale.value = false
+    actionError.value = ''
+
+    const existingWebhook = webhook.value
+    const creationResult = existingWebhook
+      ?? await webhooksStore.createWebhook('stream.online')
+
+    if ('error' in creationResult) {
+      actionError.value = 'The notification could not be enabled. Try again.'
+      isWorking.value = false
       return
     }
 
-    isRemoving.value = true
-
-    // TODO: delete webhook from subscriptions store
-    await webhooksStore.deleteWebhook(webhook.value.id)
-
-    isRemoving.value = false
+    await registerWebhook(creationResult)
+    isWorking.value = false
   }
 
-  async function onRegisterClick() {
-    if (isRegistering.value || webhook.value === undefined) {
+  async function removeWebhook() {
+    const currentWebhook = webhook.value
+
+    if (currentWebhook === undefined) {
       return
     }
 
-    isRegistering.value = true
+    actionError.value = ''
 
-    await webhooksStore.registerWebhook(webhook.value)
+    const success = await webhooksStore.deleteWebhook(currentWebhook.id)
 
-    isRegistering.value = false
+    if (success === false) {
+      actionError.value = 'The webhook could not be removed. Try again.'
+    }
+
   }
 
-  watch(status, (newStatus) => {
-    // Do not start polling on the server
+  watch(status, (value) => {
     if (import.meta.server) {
       return
     }
 
-    if (newStatus === 'pending') {
-      startStatusPolling()
+    if (value === 'pending') {
+      resume()
     } else {
-      stopStatusPolling()
+      pause()
     }
-  }, {
-    immediate: true
-  })
+  }, { immediate: true })
 </script>
 
 <style module>
-  .card {
-    /* Status Colors */
-    --status-active: light-dark(oklch(65% 0.2 142), oklch(70% 0.2 142));
-    --status-pending: light-dark(oklch(65% 0.2 80), oklch(70% 0.2 80));
-    --status-failed: light-dark(oklch(65% 0.2 30), oklch(70% 0.2 30));
-    --status-revoked: light-dark(oklch(65% 0.1 0), oklch(70% 0.1 0));
-    --status-not-active: light-dark(oklch(50% 0 0), oklch(70% 0 0));
-
-    display: grid;
-    row-gap: var(--spacing-12);
-  }
-
-  .header {
+  .component {
     display: flex;
+    align-items: center;
     justify-content: space-between;
-    align-items: start;
+    gap: var(--space-lg);
+    padding-block: var(--space-md);
+    border-block: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
   }
 
-  .title {
-    font-size: var(--font-size-20);
-    font-weight: var(--font-weight-medium);
-
-    @container (width > 375px) {
-      font-size: var(--font-size-24);
-    }
+  .copy strong,
+  .copy span {
+    display: block;
   }
 
-  .status {
-    font-size: var(--font-size-12);
-    font-weight: var(--font-weight-medium);
-    padding: var(--spacing-4) var(--spacing-8);
-    border-radius: var(--border-radius-8);
-    text-transform: uppercase;
-
-    @container (width > 375px) {
-      font-size: var(--font-size-14);
-    }
-
-    &:global(.active) {
-      color: var(--status-active);
-      background-color: color-mix(in oklch, var(--status-active), transparent 80%);
-    }
-
-    &:global(.pending) {
-      color: var(--status-pending);
-      background-color: color-mix(in oklch, var(--status-pending), transparent 80%);
-    }
-
-    &:global(.failed) {
-      color: var(--status-failed);
-      background-color: color-mix(in oklch, var(--status-failed), transparent 80%);
-    }
-
-    &:global(.revoked) {
-      color: var(--status-revoked);
-      background-color: color-mix(in oklch, var(--status-revoked), transparent 80%);
-    }
-
-    &:global(.not_active) {
-      color: var(--status-not-active);
-      background-color: color-mix(in oklch, var(--status-not-active), transparent 80%);
-    }
+  .copy strong {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
   }
 
-  .description {
-    font-size: var(--font-size-14);
-    color: var(--color-secondary);
-
-    @container (width > 375px) {
-      font-size: var(--font-size-16);
-    }
+  .copy span,
+  .connecting {
+    color: var(--color-ink-secondary);
   }
 
-  .buttons {
+  .error {
+    margin-block-start: var(--space-xs);
+    color: var(--color-danger);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+  }
+
+  .actions {
     display: flex;
-    column-gap: var(--spacing-8);
+    align-items: center;
+    gap: var(--space-xs);
   }
 
-  .button {
-    justify-self: start;
+  .menu {
+    z-index: 70;
+    min-inline-size: 12rem;
+    padding: var(--space-xs);
+    border: 1px solid color-mix(in srgb, var(--color-ink) 28%, transparent);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+  }
+
+  .dangerItem {
+    min-block-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-inline: var(--space-sm);
+    border-radius: var(--radius-cell);
+    color: var(--color-danger);
+    outline: none;
+  }
+
+  .dangerItem[data-highlighted] {
+    background: var(--color-surface-muted);
+  }
+
+  @media (max-width: 32rem) {
+    .component {
+      align-items: flex-start;
+      flex-direction: column;
+    }
   }
 </style>

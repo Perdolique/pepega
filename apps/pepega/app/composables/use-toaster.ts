@@ -1,9 +1,11 @@
+import type { ToastTone } from '~/types/ui'
 import { useState } from '#imports'
 
 export interface Toast {
   readonly id: string;
   readonly message: string;
   readonly title?: string;
+  readonly tone?: ToastTone;
   readonly duration?: number | null;
 }
 
@@ -17,7 +19,8 @@ export default function useToaster() {
   function addToast({
     message,
     duration = defaultDuration,
-    title
+    title,
+    tone
   } : ToastParams) {
     // Skip SSR rendering
     if (import.meta.server) {
@@ -30,7 +33,8 @@ export default function useToaster() {
       id,
       message,
       title,
-      duration
+      duration,
+      tone
     });
   }
 

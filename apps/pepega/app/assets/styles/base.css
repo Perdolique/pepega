@@ -1,197 +1,83 @@
-@import "modern-normalize/modern-normalize.css" layer;
+@import "modern-normalize/modern-normalize.css" layer(reset);
 
-:root {
-  color-scheme: light dark;
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
 
-  /* Typography */
-  font-family: "Inter", sans-serif;
-  --font-size-12: 0.75rem;
-  --font-size-14: 0.875rem;
-  --font-size-16: 1rem;
-  --font-size-20: 1.25rem;
-  --font-size-24: 1.5rem;
-  --font-size-32: 2rem;
-  --font-weight-normal: 400;
-  --font-weight-medium: 500;
-  --font-weight-bold: 700;
+  html {
+    min-width: 320px;
+    background: var(--color-paper);
+  }
 
-
-  /* Spacing */
-  --spacing-4: 0.25rem;
-  --spacing-8: 0.5rem;
-  --spacing-12: 0.75rem;
-  --spacing-16: 1rem;
-  --spacing-20: 1.25rem;
-  --spacing-24: 1.5rem;
-  --spacing-32: 2rem;
-  --spacing-36: 2.25rem;
-  --spacing-48: 3rem;
-
-  /* Brand colors */
-  --color-twitch-purple: rgb(145, 70, 255);
-  --color-twitch-purple-hover: color-mix(in oklch, var(--color-twitch-purple), black 10%);
-  --color-telegram-blue: oklch(67% 0.14 236.45);
-
-  /* Colors */
-  --color-background: light-dark(oklch(97% 0 0), oklch(15% 0 0));
-  --color-primary: light-dark(oklch(85% 0 0), oklch(40% 0 0));
-  --color-secondary: light-dark(oklch(50% 0 0), oklch(70% 0 0));
-  --color-text: light-dark(oklch(10% 0 0), oklch(95% 0 0));
-  --color-border: light-dark(oklch(92% 0 0), oklch(25% 0 0));
-  --color-green: light-dark(oklch(57% 0.12 135.74), oklch(57% 0.12 135.74));
-  --color-hover: light-dark(oklch(90% 0 0), oklch(30% 0 0));
-  --color-active: light-dark(oklch(85% 0 0), oklch(40% 0 0));
-  --color-alert: light-dark(oklch(50% 0.25 30), oklch(80% 0.25 30));
-
-  /* Buttons */
-  /* Common button styles */
-  --button-height: 48px;
-  --button-border-radius: var(--border-radius-12);
-  --button-padding-x: var(--spacing-24);
-  --button-gap: var(--spacing-8);
-  --button-disabled-opacity: 0.5;
-  --button-transition: var(--transition-fast);
-  --button-outline-offset: 3px;
-  --button-icon-size: var(--font-size-20);
-
-  /* Primary button */
-  --button-primary-color-bg: light-dark(oklch(30% 0.02 250), oklch(40% 0 0));
-  --button-primary-color-text: light-dark(oklch(98% 0 0), oklch(100% 0 0));
-  --button-primary-color-hover: light-dark(oklch(40% 0.02 250), oklch(45% 0 0));
-  --button-primary-color-active: light-dark(oklch(20% 0.04 250), oklch(50% 0 0));
-
-  /* Secondary button */
-  --button-secondary-color-bg: light-dark(oklch(90% 0.01 230), oklch(32% 0.01 230));
-  --button-secondary-color-text: light-dark(oklch(10% 0 0), oklch(95% 0 0));
-  --button-secondary-color-hover: light-dark(oklch(85% 0.02 230), oklch(38% 0.01 230));
-  --button-secondary-color-active: light-dark(oklch(80% 0.03 230), oklch(45% 0.01 230));
-
-  /* Inputs (Text, Textarea, etc.) */
-  --input-height: var(--spacing-48);
-  --input-padding-horizontal: var(--spacing-16);
-  --input-font-size: var(--font-size-16);
-  --input-color-text: var(--color-text);
-  --input-color-background: light-dark(oklch(97% 0 0), oklch(20% 0 0));
-  --input-border-radius: var(--border-radius-16);
-  --input-color-border: var(--color-border);
-  --input-color-placeholder: light-dark(oklch(60% 0 0), oklch(60% 0 0));
-  --input-color-focus: var(--color-primary);
-
-  /* Chip */
-  --chip-height: var(--spacing-36);
-  --chip-border-radius: var(--chip-height);
-  --chip-color-border: light-dark(oklch(75% 0.14 236.45), oklch(50% 0.14 236.45));
-  --chip-color-bg: light-dark(oklch(100% 0 0), oklch(40% 0 0));
-  --chip-color-bg-active: light-dark(
-    color-mix(in oklch, var(--chip-color-border), white 80%),
-    color-mix(in oklch, var(--chip-color-border), black 20%)
-  );
-
-
-  /* Borders */
-  --border-radius-8: 0.5rem;
-  --border-radius-12: 0.75rem;
-  --border-radius-16: 1rem;
-  --border-radius-24: 1.5rem;
-
-  /* Shadows */
-  --shadow-1: 0 4px 16px light-dark(rgb(0 0 0 / 20%), rgb(255 255 255 / 10%));
-
-  /* Dialog styles */
-  --dialog-color-background: light-dark(oklch(93% 0 0), oklch(15% 0 0));
-  --dialog-padding: var(--spacing-24);
-  --dialog-color-border: var(--color-border);
-  --dialog-border-radius: var(--border-radius-24);
-  --dialog-min-width: 320px;
-
-  /* Transitions */
-  /* TODO: add "duration" context to the name */
-  --transition-fast: 0.15s;
-  --transition-normal: 0.3s;
-  --theme-easing: ease-out;
-  --easing-fast-out-slow-in: cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* Breakpoints */
-  --breakpoint-tablet: 768px;
-
-  /* Overlays */
-  --overlay-color-background: oklch(0 0 0 / 50%);
-  --overlay-backdrop-filter: blur(4px);
-
-  /* Outline */
-  --outline: 2px solid var(--color-text);
-}
-
-@layer {
   body {
-    background-color: var(--color-background);
-    color: var(--color-text);
-    transition:
-      background-color var(--transition-fast) var(--theme-easing),
-      color var(--transition-fast) var(--theme-easing);
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: 1.5;
   }
 
-  /* Disable tap highlight color */
-  * {
-    -webkit-tap-highlight-color: transparent;
+  button,
+  input,
+  textarea {
+    font: inherit;
   }
 
-  /* Reset button default styles */
   button {
-    appearance: none;
-    border: none;
-    background: none;
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  [href] {
     cursor: pointer;
-
-    &:disabled {
-      cursor: not-allowed;
-    }
   }
 
-  /* Reset dialog default styles */
-  dialog {
-    padding: 0;
-    border: none;
-    background: none;
-    color: var(--text);
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
   }
 
-  /* Reset "a" default styles */
   a {
     color: inherit;
     text-underline-offset: 0.2em;
   }
 
-  /* Reset headings */
-  h1, h2, h3, h4, h5, h6 {
+  h1,
+  h2,
+  h3,
+  p {
     margin: 0;
   }
 
-  /* Headings */
-  h1 {
-    font-size: var(--font-size-24);
-    font-weight: var(--font-weight-bold);
-
-    @media (min-width: 768px) {
-      font-size: var(--font-size-32);
-    }
-  }
-
-  h2 {
-    font-size: var(--font-size-20);
-    font-weight: var(--font-weight-medium);
-
-    @media (min-width: 768px) {
-      font-size: var(--font-size-24);
-    }
-  }
-
+  h1,
+  h2,
   h3 {
-    font-size: var(--font-size-16);
-    font-weight: var(--font-weight-medium);
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
 
-    @media (min-width: 768px) {
-      font-size: var(--font-size-20);
-    }
+  :focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-sun);
+    color: var(--color-on-sun);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
   }
 }

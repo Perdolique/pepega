@@ -9,13 +9,24 @@ interface CreateTelegramNotificationParams {
   telegramChannelId: number;
 }
 
+export function replaceTelegramDestination(
+  destinations: NotificationDestinationModel[],
+  savedDestination: NotificationDestinationModel
+) : NotificationDestinationModel[] {
+  const otherDestinations = destinations.filter(
+    destination => destination.config.type !== 'telegram'
+  )
+
+  return [...otherDestinations, savedDestination]
+}
+
 /**
  * Composable to create a specific notification for a given event type and destination.
  */
 export const useCreateTelegramNotification = defineMutation(() => {
   const cache = useQueryCache()
 
-  const { mutate, ...mutation } = useMutation({
+  const { mutate, mutateAsync, ...mutation } = useMutation({
     mutation({ telegramChannelId, message, notificationId } : CreateTelegramNotificationParams) {
       return $fetch<NotificationDestinationModel>('/api/notifications/destinations', {
         method: 'POST',
@@ -33,10 +44,12 @@ export const useCreateTelegramNotification = defineMutation(() => {
         destinationKeys.byNotificationId(notificationId)
       ) || []
 
-      cache.setQueryData<NotificationDestinationModel[]>(destinationKeys.byNotificationId(notificationId), [
-        ...existingDestinations,
-        data
-      ])
+      const updatedDestinations = replaceTelegramDestination(existingDestinations, data)
+
+      cache.setQueryData<NotificationDestinationModel[]>(
+        destinationKeys.byNotificationId(notificationId),
+        updatedDestinations
+      )
     }
   })
 
@@ -44,8 +57,13 @@ export const useCreateTelegramNotification = defineMutation(() => {
     return mutate(params)
   }
 
+  function createNotificationAsync(params : CreateTelegramNotificationParams) {
+    return mutateAsync(params)
+  }
+
   return {
     createNotification,
+    createNotificationAsync,
     ...mutation
   }
 })

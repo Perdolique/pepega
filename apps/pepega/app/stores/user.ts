@@ -3,18 +3,25 @@ import { computed, ref } from 'vue'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 import { $fetch } from 'ofetch'
 import { useFetch } from '#imports'
+import { createLogger } from '@pepega/utils/logger'
+
+const logger = createLogger('PEPEGA')
 
 export const useUserStore = defineStore('user', () => {
   const hasData = ref(false)
   const userId = ref<string | null>(null)
   const isAdmin = ref(false)
   const isStreamer = ref(false)
+  const displayName = ref<string | null>(null)
+  const login = ref<string | null>(null)
   const isAuthenticated = computed(() => userId.value !== null)
 
   function updateUser(user: UserModel) {
     userId.value = user.id
     isAdmin.value = user.isAdmin
     isStreamer.value = user.isStreamer
+    displayName.value = user.displayName
+    login.value = user.login
   }
 
   async function fetchUser() {
@@ -35,7 +42,9 @@ export const useUserStore = defineStore('user', () => {
     updateUser({
       id: null,
       isAdmin: false,
-      isStreamer: false
+      isStreamer: false,
+      displayName: null,
+      login: null
     })
   }
 
@@ -50,18 +59,22 @@ export const useUserStore = defineStore('user', () => {
       })
 
       updateUser(response)
-    } catch {
-      // TODO: Handle error
+      return true
+    } catch (error) {
+      logger.error('Failed to update streamer mode', error)
+      return false
     }
   }
 
   return {
     fetchUser,
+    displayName,
     hasData,
     isAdmin,
     isAuthenticated,
     isStreamer,
     logout,
+    login,
     setStreamer,
     updateUser,
     userId
