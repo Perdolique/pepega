@@ -9,6 +9,17 @@ interface CreateTelegramNotificationParams {
   telegramChannelId: number;
 }
 
+export function replaceTelegramDestination(
+  destinations: NotificationDestinationModel[],
+  savedDestination: NotificationDestinationModel
+) : NotificationDestinationModel[] {
+  const otherDestinations = destinations.filter(
+    destination => destination.config.type !== 'telegram'
+  )
+
+  return [...otherDestinations, savedDestination]
+}
+
 /**
  * Composable to create a specific notification for a given event type and destination.
  */
@@ -33,10 +44,12 @@ export const useCreateTelegramNotification = defineMutation(() => {
         destinationKeys.byNotificationId(notificationId)
       ) || []
 
-      cache.setQueryData<NotificationDestinationModel[]>(destinationKeys.byNotificationId(notificationId), [
-        ...existingDestinations,
-        data
-      ])
+      const updatedDestinations = replaceTelegramDestination(existingDestinations, data)
+
+      cache.setQueryData<NotificationDestinationModel[]>(
+        destinationKeys.byNotificationId(notificationId),
+        updatedDestinations
+      )
     }
   })
 

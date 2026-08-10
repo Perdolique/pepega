@@ -9,7 +9,7 @@
 <script setup lang="ts">
   import UiToastViewport from '~/components/ui/UiToastViewport.vue'
   import { useTheme } from '~/composables/use-theme'
-  import { useHead } from '#imports';
+  import { useHead } from '#imports'
 
   const { theme } = useTheme()
 

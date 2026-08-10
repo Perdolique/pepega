@@ -13,4 +13,6 @@ export interface NotificationDestinationModel {
   id: number;
   config: TelegramDestinationConfig;
   isActive: boolean;
+  message: string;
+  telegramChannelId: number | null;
 }

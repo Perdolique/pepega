@@ -9,7 +9,7 @@ import { $fetch } from 'ofetch'
 export const useInitNotifications = defineMutation(() => {
   const cache = useQueryCache()
 
-  const { mutate, ...mutation } = useMutation({
+  const { mutateAsync, ...mutation } = useMutation({
     mutation(eventType: NotificationEventType) {
       return $fetch<NotificationModel>('/api/notifications', {
         method: 'POST',
@@ -28,7 +28,7 @@ export const useInitNotifications = defineMutation(() => {
   })
 
   function initNotifications(eventType: NotificationEventType) {
-    return mutate(eventType)
+    return mutateAsync(eventType)
   }
 
   return {
@@ -43,7 +43,7 @@ export const useInitNotifications = defineMutation(() => {
 export const useDeleteNotification = defineMutation(() => {
   const cache = useQueryCache()
 
-  const { mutate, ...mutation } = useMutation({
+  const { mutateAsync, ...mutation } = useMutation({
     mutation(eventType: NotificationEventType) {
       return $fetch<void>(`/api/notifications/${eventType}`, {
         method: 'DELETE'
@@ -56,7 +56,7 @@ export const useDeleteNotification = defineMutation(() => {
   })
 
   function deleteNotification(eventType: NotificationEventType) {
-    return mutate(eventType)
+    return mutateAsync(eventType)
   }
 
   return {

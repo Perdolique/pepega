@@ -19,7 +19,8 @@ export default function useToaster() {
   function addToast({
     message,
     duration = defaultDuration,
-    title
+    title,
+    tone
   } : ToastParams) {
     // Skip SSR rendering
     if (import.meta.server) {
@@ -32,7 +33,8 @@ export default function useToaster() {
       id,
       message,
       title,
-      duration
+      duration,
+      tone
     });
   }
 

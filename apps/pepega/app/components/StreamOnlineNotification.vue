@@ -1,29 +1,269 @@
-<template><UiPanel :class="$style.component"><header :class="$style.header"><div><p :class="$style.kicker">TWITCH EVENT</p><h2>Stream online</h2></div><UiStatusBadge :tone="statusTone">{{ statusLabel }}</UiStatusBadge></header><p :class="$style.description">Send a Telegram notification when your Twitch channel goes live.</p><p v-if="actionError" :class="$style.error" role="alert">{{ actionError }}</p><div :class="$style.actions"><UiButton v-if="webhook === undefined" :disabled="isCreating" @click="createWebhook">{{ isCreating ? 'Creating…' : 'Create webhook' }}</UiButton><UiButton v-else-if="canRegister" :disabled="isRegistering" @click="registerWebhook">{{ isRegistering ? 'Registering…' : 'Register' }}</UiButton><UiButtonLink to="/settings/notifications/stream-online" :variant="webhook === undefined ? 'ghost' : 'secondary'" icon="tabler:settings">Settings</UiButtonLink><UiButton v-if="canRemove" variant="danger" :disabled="isRemoving" @click="isConfirmOpen = true">Remove</UiButton></div><UiConfirmDialog v-model="isConfirmOpen" title="Remove stream webhook?" confirm-label="Remove webhook" @confirm="removeWebhook">This removes the Twitch subscription used for live alerts. Notification settings will remain until you delete them separately.</UiConfirmDialog></UiPanel></template>
-<script setup lang="ts">
-  import { useTimeoutPoll } from '@vueuse/core'; import type { StatusTone } from '~/types/ui'; import type { WebhookStatus } from '~~/shared/models/webhooks'; import { useWebhooksStore } from '~/stores/webhooks'; import { useUserStore } from '~/stores/user'
-  import UiButton from './ui/UiButton.vue'; import UiButtonLink from './ui/UiButtonLink.vue'; import UiConfirmDialog from './ui/UiConfirmDialog.vue'; import UiPanel from './ui/UiPanel.vue'; import UiStatusBadge from './ui/UiStatusBadge.vue'; import { computed, ref, watch } from 'vue'
+<template>
+  <section :class="$style.component">
+    <div :class="$style.copy">
+      <strong>Stream online</strong>
+      <span>
+        {{ statusLabel }}<template v-if="isStale"> · Status may be out of date</template>
+      </span>
+      <p
+        v-if="actionError"
+        :class="$style.error"
+        role="alert"
+      >
+        {{ actionError }}
+      </p>
+    </div>
 
-  const webhooksStore = useWebhooksStore(); const userStore = useUserStore(); const isCreating = ref(false); const isRegistering = ref(false); const isRemoving = ref(false); const isConfirmOpen = ref(false); const actionError = ref('')
-  const webhook = computed(() => [...webhooksStore.webhooks.values()].find(item => item.type === 'stream.online')); const status = computed<WebhookStatus>(() => webhook.value?.status ?? 'not_active'); const canRegister = computed(() => webhook.value !== undefined && !['active', 'pending'].includes(webhook.value.status)); const canRemove = computed(() => webhook.value !== undefined && userStore.isAdmin)
-  const statusLabels: Record<WebhookStatus, string> = { active: 'Active', failed: 'Failed', not_active: 'Not active', pending: 'Pending', revoked: 'Revoked' }; const statusLabel = computed(() => statusLabels[status.value]); const statusTone = computed<StatusTone>(() => {
-    switch (status.value) {
-      case 'active': { return 'success' }
-      case 'pending': { return 'warning' }
-      case 'not_active': { return 'neutral' }
-      default: { return 'danger' }
+    <div :class="$style.actions">
+      <UiButton
+        v-if="showEnableAction"
+        :disabled="isWorking"
+        @click="enableWebhook"
+      >
+        {{ isWorking ? 'Connecting…' : primaryActionLabel }}
+      </UiButton>
+
+      <UiButtonLink
+        v-else-if="status === 'active'"
+        to="/settings/notifications/stream-online"
+        variant="secondary"
+      >
+        Settings
+      </UiButtonLink>
+
+      <span
+        v-else
+        :class="$style.connecting"
+        role="status"
+      >
+        Connecting
+      </span>
+
+      <DropdownMenuRoot v-if="canRemove">
+        <DropdownMenuTrigger as-child>
+          <UiIconButton
+            icon="tabler:dots"
+            label="Stream online actions"
+          />
+        </DropdownMenuTrigger>
+        <DropdownMenuPortal>
+          <DropdownMenuContent
+            :class="$style.menu"
+            :side-offset="8"
+            align="end"
+          >
+            <DropdownMenuItem
+              :class="$style.dangerItem"
+              @select="isConfirmOpen = true"
+            >
+              <Icon
+                name="tabler:trash"
+                aria-hidden="true"
+              />
+              Remove webhook
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenuPortal>
+      </DropdownMenuRoot>
+    </div>
+
+    <UiConfirmDialog
+      v-model="isConfirmOpen"
+      title="Remove stream webhook?"
+      confirm-label="Remove webhook"
+      @confirm="removeWebhook"
+    >
+      This removes the Twitch subscription used for live alerts. Notification
+      settings remain saved.
+    </UiConfirmDialog>
+  </section>
+</template>
+
+<script setup lang="ts">
+  import type { WebhookModel, WebhookStatus } from '~~/shared/models/webhooks'
+  import UiButton from './ui/UiButton.vue'
+  import UiButtonLink from './ui/UiButtonLink.vue'
+  import UiConfirmDialog from './ui/UiConfirmDialog.vue'
+  import UiIconButton from './ui/UiIconButton.vue'
+  import { useUserStore } from '~/stores/user'
+  import { useWebhooksStore } from '~/stores/webhooks'
+  import { useTimeoutPoll } from '@vueuse/core'
+  import {
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuPortal,
+    DropdownMenuRoot,
+    DropdownMenuTrigger
+  } from 'reka-ui'
+  import { computed, ref, watch } from 'vue'
+
+  const statusLabels: Record<WebhookStatus, string> = {
+    active: 'Enabled',
+    failed: 'Needs attention',
+    not_active: 'Disabled',
+    pending: 'Connecting',
+    revoked: 'Needs attention'
+  }
+
+  const webhooksStore = useWebhooksStore()
+  const userStore = useUserStore()
+  const isWorking = ref(false)
+  const isConfirmOpen = ref(false)
+  const isStale = ref(false)
+  const actionError = ref('')
+  const webhook = computed(
+    () => [...webhooksStore.webhooks.values()].find(
+      item => item.type === 'stream.online'
+    )
+  )
+  const status = computed<WebhookStatus>(
+    () => webhook.value?.status ?? 'not_active'
+  )
+  const statusLabel = computed(() => statusLabels[status.value])
+  const showEnableAction = computed(() => status.value !== 'active' && status.value !== 'pending')
+  const primaryActionLabel = computed(
+    () => status.value === 'failed' || status.value === 'revoked' || isStale.value
+      ? 'Retry'
+      : 'Enable'
+  )
+  const canRemove = computed(
+    () => webhook.value !== undefined && userStore.isAdmin
+  )
+
+  const { pause, resume } = useTimeoutPoll(async () => {
+    const currentWebhook = webhook.value
+
+    if (currentWebhook?.status !== 'pending') {
+      return
     }
-  })
-  const { pause, resume } = useTimeoutPoll(async () => { if (webhook.value?.status === 'pending') {await webhooksStore.fetchWebhook(webhook.value.id)} }, 5000, { immediate: false })
-  async function createWebhook() { isCreating.value = true; actionError.value = ''; const success = await webhooksStore.createWebhook('stream.online'); if (success === false) {actionError.value = 'The webhook could not be created. Try again.';} isCreating.value = false }
-  async function registerWebhook() { if (webhook.value === undefined) {return;} isRegistering.value = true; actionError.value = ''; const success = await webhooksStore.registerWebhook(webhook.value); if (success === false) {actionError.value = 'Twitch registration failed. Try again.';} isRegistering.value = false }
-  async function removeWebhook() { if (webhook.value === undefined) {return;} isRemoving.value = true; actionError.value = ''; const success = await webhooksStore.deleteWebhook(webhook.value.id); if (success === false) {actionError.value = 'The webhook could not be removed. Try again.';} isRemoving.value = false }
-  watch(status, value => { if (import.meta.server) {return;} if (value === 'pending') {resume();} else {pause()} }, { immediate: true })
+
+    const refreshedWebhook = await webhooksStore.fetchWebhook(currentWebhook.id)
+    isStale.value = refreshedWebhook === undefined
+  }, 5000, { immediate: false })
+
+  async function registerWebhook(currentWebhook: WebhookModel) {
+    const success = await webhooksStore.registerWebhook(currentWebhook)
+
+    if (success === false) {
+      actionError.value = 'Twitch could not enable this notification. Try again.'
+    }
+  }
+
+  async function enableWebhook() {
+    isWorking.value = true
+    isStale.value = false
+    actionError.value = ''
+
+    const existingWebhook = webhook.value
+    const creationResult = existingWebhook
+      ?? await webhooksStore.createWebhook('stream.online')
+
+    if ('error' in creationResult) {
+      actionError.value = 'The notification could not be enabled. Try again.'
+      isWorking.value = false
+      return
+    }
+
+    await registerWebhook(creationResult)
+    isWorking.value = false
+  }
+
+  async function removeWebhook() {
+    const currentWebhook = webhook.value
+
+    if (currentWebhook === undefined) {
+      return
+    }
+
+    actionError.value = ''
+
+    const success = await webhooksStore.deleteWebhook(currentWebhook.id)
+
+    if (success === false) {
+      actionError.value = 'The webhook could not be removed. Try again.'
+    }
+
+  }
+
+  watch(status, (value) => {
+    if (import.meta.server) {
+      return
+    }
+
+    if (value === 'pending') {
+      resume()
+    } else {
+      pause()
+    }
+  }, { immediate: true })
 </script>
+
 <style module>
-  .component { display: grid; gap: var(--space-md); }
-  .header { display: flex; justify-content: space-between; align-items: start; gap: var(--space-md); & h2 { font-size: 1.75rem; } }
-  .kicker { color: var(--color-ink-muted); font: 700 0.6875rem/1.4 var(--font-metadata); letter-spacing: 0.08em; }
-  .description { color: var(--color-ink-secondary); }
-  .error { color: var(--color-danger); font-weight: 700; }
-  .actions { display: flex; gap: var(--space-sm); flex-wrap: wrap; }
+  .component {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-lg);
+    padding-block: var(--space-md);
+    border-block: 1px solid color-mix(in srgb, var(--color-ink) 16%, transparent);
+  }
+
+  .copy strong,
+  .copy span {
+    display: block;
+  }
+
+  .copy strong {
+    font-family: var(--font-display);
+    font-size: 1.125rem;
+  }
+
+  .copy span,
+  .connecting {
+    color: var(--color-ink-secondary);
+  }
+
+  .error {
+    margin-block-start: var(--space-xs);
+    color: var(--color-danger);
+    font-size: var(--text-body-sm);
+    font-weight: 700;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+  }
+
+  .menu {
+    z-index: 70;
+    min-inline-size: 12rem;
+    padding: var(--space-xs);
+    border: 1px solid color-mix(in srgb, var(--color-ink) 28%, transparent);
+    border-radius: var(--radius-control);
+    background: var(--color-surface);
+  }
+
+  .dangerItem {
+    min-block-size: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    padding-inline: var(--space-sm);
+    border-radius: var(--radius-cell);
+    color: var(--color-danger);
+    outline: none;
+  }
+
+  .dangerItem[data-highlighted] {
+    background: var(--color-surface-muted);
+  }
+
+  @media (max-width: 32rem) {
+    .component {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+  }
 </style>

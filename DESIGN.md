@@ -1,7 +1,7 @@
 ---
 version: alpha
-name: Pepega Product Sticker System
-description: "A playful neo-brutalist product design system for streamers and viewers."
+name: Pepega Product Design
+description: "A warm, playful, and minimal interface for Twitch tools."
 colors:
   primary: "#ff5c2b"
   primary-hover: "#ff7045"
@@ -340,25 +340,22 @@ components:
     rounded: "{rounded.card}"
 ---
 
-# Pepega Product Sticker System
+# Pepega Product Design
 
 ## Purpose
 
-This document is the greenfield visual and interaction target for Pepega. It
-applies to public pages, the authenticated product, and stream overlays. The
-current demo UI is not a visual reference and does not constrain tokens,
-layout, themes, components, or responsive behavior.
+The project wiki defines what Pepega is, which tools it contains, and where the
+product is going. This document defines how those tools look and behave: visual
+hierarchy, layout, interaction, themes, responsiveness, and accessibility.
 
 Preserve working product behavior and domain requirements when redesigning an
 existing screen, but replace incidental demo styling instead of carrying it
 forward. Build repeated treatments into shared Vue components and semantic CSS
 custom properties. Do not reproduce this system with page-local literals.
 
-The system must support current product flows and broad future categories such
-as automation, requests, polls, channel currencies, rewards, moderation,
-analytics, goals, alerts, integrations, and viewer activity. These categories
-define reusable screen archetypes; they do not require speculative components
-for every possible feature.
+Design only for product flows that exist. Introduce shared patterns after real
+screens establish repetition rather than preparing speculative components for
+future tools.
 
 ## Product Principles
 
@@ -366,6 +363,12 @@ for every possible feature.
   while important actions and changing states remain immediately scannable.
 - **Operational first.** A streamer may use the product while live. Frequent
   actions, failures, queues, and statuses must be understandable at a glance.
+- **Progressive disclosure.** Show the next useful choice first. Keep advanced,
+  administrative, and destructive actions behind clearly labelled menus or
+  sections until they are needed.
+- **Minimal by default.** Prefer normal spacing, text, rows, and dividers over a
+  bordered container. A surface should group content only when the grouping
+  materially improves comprehension.
 - **One loud moment.** Give each view one dominant sticker, call to action, or
   featured result. Supporting controls and dense data should be calmer.
 - **Role-aware.** Make the current role, channel context, permissions, balance,
@@ -379,14 +382,12 @@ for every possible feature.
 
 ### Public and onboarding
 
-Public pages introduce Pepega with the most expressive version of the system:
-large display type, bold illustrations, featured sticker cards, and generous
-space. Login, permissions, connection status, and onboarding steps must still
-be direct and unambiguous.
+Public pages use one compact shared shell, a small mascot, concise copy, and one
+clear next action. Login, permissions, and connection status must be direct and
+unambiguous.
 
-Keep explanatory copy in a readable column of about `60ch`. Marketing sections
-may use asymmetric grids, but the primary call to action must remain visually
-dominant and reachable on narrow screens.
+Keep explanatory copy in a readable column of about `60ch`. The primary action
+must remain visually dominant and reachable on narrow screens.
 
 ### Authenticated product
 
@@ -394,9 +395,8 @@ The product shell is optimized for repeat use. It must scale from a small set of
 destinations to grouped areas for engagement, content, automation, insights,
 integrations, and settings without hard-coding those groups into every page.
 
-Use a persistent sidebar on wide screens. On compact screens, replace it with a
-top bar and a drawer or a small task-focused navigation set. The active channel
-or account context belongs in the shell and must not be silently inferred.
+Use a compact top bar on wide screens. On compact screens, keep the brand and a
+single menu containing navigation, account actions, and theme selection.
 
 Product pages use a hierarchy of page title, optional context and primary
 action, then sections. Dense settings, tables, and queues use quiet panels;
@@ -479,7 +479,7 @@ The system uses three layout ranges as composition guides, not device labels:
   primary actions where helpful, and drawers for secondary navigation.
 - **Medium:** from 768px. Use 24px gutters and two-column compositions only
   when both columns remain useful and readable.
-- **Wide:** from 1024px. Show the persistent product sidebar and allow dashboard
+- **Wide:** from 1024px. Show the complete product top bar and allow useful data
   grids. Cap the main product canvas near 1440px.
 
 Public content may use a centered 1180px canvas with a narrower reading column.
@@ -505,13 +505,12 @@ On compact screens, transform data instead of merely squeezing it:
 
 ## Elevation, Borders, and Shape
 
-The identity comes from thick ink outlines, rounded shapes, hard offset shadows,
-and a small amount of hand-placed irregularity.
+The identity comes from the warm palette, Baloo 2 headings, rounded controls,
+the Pepega mascot, and a small amount of deliberate graphic emphasis.
 
-- Featured stickers and interactive cards use a 2px ink outline with a
-  `4px 4px 0` hard shadow.
-- Primary controls use a 2px outline with a `3px 3px 0` hard shadow.
-- A single public hero or major result may use a `6px 6px 0` hard shadow.
+- Hard shadows and rotation are rare decorative accents. Use them for at most
+  one playful object in a region, never as the default treatment for sections,
+  navigation, forms, settings, or rows.
 - Quiet panels, dense table regions, and nested settings use a 1px or 2px
   outline without an offset shadow.
 - Dialogs and drawers use stronger separation than their contents; nested
@@ -532,18 +531,18 @@ text, dialogs, and entire page sections level.
 
 ## App Shell and Navigation
 
-The wide product shell has a 240px to 280px sidebar, a compact context header,
-and a flexible main canvas. The shell may become icon-only only when every item
-retains an accessible label and the navigation remains unambiguous.
+The wide product shell has a compact top bar and a flexible main canvas. Keep
+Dashboard, Notifications, and Account visible; place Admin, theme, and logout
+inside the user menu.
 
-Navigation supports grouped destinations, active state, badges, and collapsed
-groups. Use product orange for the active marker, not a fully orange sidebar.
+Navigation supports active state and badges when they carry real information.
+Use product orange sparingly for the active marker.
 Keep provider connection status and current channel context visually distinct
 from navigation destinations.
 
 The compact shell uses a top bar for identity, channel context, and menu access.
 A bottom navigation is appropriate only for three to five stable, high-frequency
-destinations; do not mirror a large desktop sidebar into a crowded bottom bar.
+destinations; do not mirror a large desktop navigation into a crowded bottom bar.
 
 Every page header contains the page title and may contain one primary action.
 Context switches, date ranges, and secondary actions follow the title rather
@@ -597,18 +596,10 @@ users could otherwise lose unsaved changes outside the viewport.
 
 ### Cards and panels
 
-Use three levels rather than applying the full sticker treatment everywhere:
-
-1. **Quiet panel:** outlined or subtly tinted, no offset shadow. Use for dense
-   settings, filters, table regions, and nested groups.
-2. **Standard sticker:** surface fill, 2px outline, and 4px hard shadow. Use for
-   independent objects, interactive cards, and short summaries.
-3. **Featured sticker:** featured fill, 20px radius, stronger shadow, and
-   optional slight rotation. Use once per region for a result, alert, goal, or
-   promoted action.
-
-Avoid more than two bordered layers. A collection of similar objects should
-usually be one panel containing rows, not a wall of equally loud stickers.
+Start with ordinary sections separated by whitespace or a divider. Add a quiet
+surface when several controls or values must read as one object. Reserve cards
+for independent objects whose boundary matters. Avoid more than one bordered
+layer and never build a wall of equally loud cards.
 Clickable cards need a clear title and interaction state; do not make arbitrary
 blank areas behave like hidden buttons.
 
@@ -786,8 +777,8 @@ only when the result would otherwise be easy to miss.
 
 - **Do** use semantic tokens and shared primitives instead of approximate colors
   or page-local recreations.
-- **Do** keep thick outlines, hard shadows, rounded display type, and monospace
-  metadata working together; their combination creates the identity.
+- **Do** keep the warm palette, rounded display type, body font, themes, and
+  monospace metadata consistent across every surface.
 - **Do** choose density according to the task: expressive for promotion and
   results, calm for settings, queues, and analytics.
 - **Do** design every data region for loading, empty, error, stale, and compact

@@ -14,6 +14,10 @@ interface Webhook {
   createdAt: string;
 }
 
+interface WebhookCreationError {
+  error: true;
+}
+
 const logger = createLogger('PEPEGA')
 
 function transformWebhookType(type: string) : EventSubscriptionType | null {
@@ -142,13 +146,13 @@ export const useWebhooksStore = defineStore('webhooks', () => {
 
       if (webhook !== null) {
         webhooks.value.set(webhook.id, webhook)
-        return true
+        return webhook
       }
     } catch (error) {
       logger.error('Failed to create webhook', error)
     }
 
-    return false
+    return { error: true } satisfies WebhookCreationError
   }
 
   async function deleteWebhook(webhookId: number) {

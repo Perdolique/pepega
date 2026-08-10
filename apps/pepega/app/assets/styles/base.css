@@ -1,20 +1,83 @@
 @import "modern-normalize/modern-normalize.css" layer(reset);
 
 @layer base {
-  *, *::before, *::after { box-sizing: border-box; }
-  html { min-width: 320px; background: var(--color-paper); }
-  body { margin: 0; background: var(--color-paper); color: var(--color-ink); font-family: var(--font-body); font-size: var(--text-body-md); line-height: 1.5; }
-  button, input, textarea { font: inherit; }
-  button { color: inherit; }
-  button:not(:disabled), [href] { cursor: pointer; }
-  button:disabled { cursor: not-allowed; opacity: 0.55; }
-  a { color: inherit; text-underline-offset: 0.2em; }
-  h1, h2, h3, p { margin: 0; }
-  h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; }
-  :focus-visible { outline: var(--focus-outline); outline-offset: 2px; }
-  ::selection { background: var(--color-sun); color: var(--color-on-sun); }
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-width: 320px;
+    background: var(--color-paper);
+  }
+
+  body {
+    margin: 0;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+    font-size: var(--text-body-md);
+    line-height: 1.5;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+
+  button {
+    color: inherit;
+  }
+
+  button:not(:disabled),
+  [href] {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+  }
+
+  a {
+    color: inherit;
+    text-underline-offset: 0.2em;
+  }
+
+  h1,
+  h2,
+  h3,
+  p {
+    margin: 0;
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+  }
+
+  :focus-visible {
+    outline: var(--focus-outline);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background: var(--color-sun);
+    color: var(--color-on-sun);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
 }

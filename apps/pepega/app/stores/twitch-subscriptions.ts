@@ -19,6 +19,8 @@ export const useTwitchSubscriptionsStore = defineStore('twitch-subscriptions', (
 
       const response = await $fetch<SubscriptionModel[]>('/api/twitch/subscriptions')
 
+      subscriptions.value.clear()
+
       for (const subscription of response) {
         subscriptions.value.set(subscription.id, subscription)
       }
