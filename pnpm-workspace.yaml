@@ -16,8 +16,8 @@ allowBuilds:
 catalog:
   drizzle-orm: 1.0.0-rc.4
   ofetch: 1.5.1
-  tsx: 4.23.9
-  typescript: 6.0.3
+  tsx: 4.23.12
+  typescript: 7.0.2
   valibot: 1.4.2
   wrangler: 4.120.0
 
