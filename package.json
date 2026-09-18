@@ -43,6 +43,6 @@
     "oxlint-tsgolint": "7.0.2001",
     "taze": "20.0.0",
     "typescript": "catalog:",
-    "vitest": "4.1.10"
+    "vitest": "5.0.1"
   }
 }
