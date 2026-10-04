@@ -1,4 +1,4 @@
-import { createHash, type BinaryLike } from 'node:crypto'
+import { createHash } from 'node:crypto'
 import { basename } from 'node:path'
 import { kvStorageName } from './constants'
 import type { NuxtOptions } from 'nuxt/schema'
@@ -136,7 +136,7 @@ export default defineNuxtConfig({
   vite: {
     css: {
       modules: {
-        generateScopedName(className: string, filename: string, data: BinaryLike) : string {
+        generateScopedName(className: string, filename: string, data: string) : string {
           const hash = createHash('sha256')
             .update(data)
             .digest('hex')

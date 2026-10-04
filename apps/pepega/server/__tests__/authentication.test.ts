@@ -2,7 +2,7 @@ import { once } from 'node:events'
 import { createServer, type Server } from 'node:http'
 import { promisify } from 'node:util'
 import { createApp, createRouter, defineEventHandler, toNodeListener } from 'h3'
-import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
 import logoutHandler from '../api/user/logout.post'
 import apiSessionCheck from '../middleware/1.api-session-check'
 import { checkAdmin } from '../utils/admin'
@@ -62,10 +62,6 @@ describe('authentication', () => {
     }
 
     url = new URL(`http://127.0.0.1:${address.port}`)
-  })
-
-  beforeEach(() => {
-    findFirstUser.mockClear()
   })
 
   afterAll(async () => {

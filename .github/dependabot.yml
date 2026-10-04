@@ -11,6 +11,13 @@ updates:
       interval: cron
       cronjob: "0 18 * * *"
       timezone: "Europe/Tallinn"
+    ignore:
+      # Vue type checking still requires the TypeScript 6 compiler.
+      - dependency-name: "typescript"
+        versions: ["7.x"]
+      # Update Drizzle packages manually to keep their prereleases aligned.
+      - dependency-name: "drizzle-kit"
+      - dependency-name: "drizzle-orm"
     groups:
       all-updates:
         applies-to: version-updates

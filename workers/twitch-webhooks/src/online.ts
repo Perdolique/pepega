@@ -1,13 +1,10 @@
 import {
-  defineEventHandler,
+  defineHandler,
   EventHandlerRequest,
   H3Event,
-  send,
-  getHeader,
-  createError,
-  getHeaders,
-  readRawBody,
-  sendNoContent,
+  assertMethod,
+  HTTPError,
+  noContent,
   readBody
 } from 'h3'
 
@@ -23,6 +20,9 @@ import logger from './logger'
 import { streamOnlineNotificationSchema } from './utils/validation/event-sub/notification'
 import { EventSubscriptionType, StreamOnlineNotification } from '@pepega/twitch/models/event-sub'
 import { sendTelegramNotification } from './utils/telegram'
+
+// Preserve a leading BOM in signed bodies, matching H3 1's UTF-8 decoding.
+const bodyDecoder = new TextDecoder('utf-8', { fatal: false, ignoreBOM: true })
 
 interface ProcessNotificationParams {
   event: H3Event<EventHandlerRequest>;
@@ -64,17 +64,19 @@ function challengeBodyValidator(body: unknown) {
  */
 async function handleChallengeRequest(event: H3Event<EventHandlerRequest>) {
   const { databaseUrl, localDatabase, encryptionKey } = getValidatedRequiredEnv(event)
-  const rawHeaders = getHeaders(event)
+  const rawHeaders = Object.fromEntries(event.req.headers)
   const { messageId, messageSignature, messageTimestamp } = validateEventVerificationHeaders(rawHeaders)
-  const rawBody = await readRawBody(event)
+  assertMethod(event, ['PATCH', 'POST', 'PUT', 'DELETE'])
   const debugMode = getValidatedDebug(event)
 
-  if (rawBody === undefined) {
-    logger.error('Raw body is undefined in the challenge request')
+  if (event.req.body === null) {
+    logger.error('Challenge request body is missing')
 
-    throw createError({ status: 403 })
+    throw new HTTPError({ status: 403 })
   }
 
+  const rawBodyBuffer = await event.req.arrayBuffer()
+  const rawBody = bodyDecoder.decode(rawBodyBuffer)
   const { challenge, subscriptionId, broadcasterId } = challengeBodyValidator(destr(rawBody))
   const db = createDrizzle(databaseUrl, localDatabase)
 
@@ -105,7 +107,7 @@ async function handleChallengeRequest(event: H3Event<EventHandlerRequest>) {
       })
     }
 
-    throw createError({
+    throw new HTTPError({
       status: 404
     })
   }
@@ -122,7 +124,7 @@ async function handleChallengeRequest(event: H3Event<EventHandlerRequest>) {
   })
 
   if (isVerified === false) {
-    throw createError({ status: 403 })
+    throw new HTTPError({ status: 403 })
   }
 
   // Update the webhook status
@@ -134,7 +136,9 @@ async function handleChallengeRequest(event: H3Event<EventHandlerRequest>) {
       eq(tables.webhooks.id, webhook.id)
     )
 
-  return send(event, challenge, 'text/plain')
+  event.res.headers.set('content-type', 'text/plain')
+
+  return challenge
 }
 
 async function processNotification({
@@ -174,9 +178,9 @@ async function processNotification({
       broadcasterId: notification.subscription.condition.broadcaster_user_id,
     })
 
-    throw createError({
+    throw new HTTPError({
       status: 404,
-      statusMessage: 'Webhook not found'
+      statusText: 'Webhook not found'
     })
   }
 
@@ -200,9 +204,9 @@ async function processNotification({
       rawBody
     })
 
-    throw createError({
+    throw new HTTPError({
       status: 403,
-      statusMessage: 'Invalid event message'
+      statusText: 'Invalid event message'
     })
   }
 
@@ -249,9 +253,9 @@ async function processNotification({
       eventType
     })
 
-    throw createError({
+    throw new HTTPError({
       status: 404,
-      statusMessage: 'No active notification destinations found'
+      statusText: 'No active notification destinations found'
     })
   }
 
@@ -276,13 +280,16 @@ async function processNotification({
  * Logic of this function:
  *
  * 1. Validate the request.
- * 2. - If the request is valid, return 200 (required by Twitch to respond as soon as possible).
+ * 2. - If the request is valid, return 204 to acknowledge it as soon as possible.
  *    - If the request is invalid, return error back to Twitch (check docs).
  * 3. Process the notification in the background with Cloudflare's `waitUntil()`.
  */
 async function handleNotificationRequest(event: H3Event<EventHandlerRequest>) {
-  const rawBody = await readRawBody(event)
-  const rawHeaders = getHeaders(event)
+  assertMethod(event, ['PATCH', 'POST', 'PUT', 'DELETE'])
+
+  const rawBodyBuffer = await event.req.arrayBuffer()
+  const rawBody = bodyDecoder.decode(rawBodyBuffer)
+  const rawHeaders = Object.fromEntries(event.req.headers)
   let destructuredBody
   let messageId
   let messageSignature
@@ -298,25 +305,21 @@ async function handleNotificationRequest(event: H3Event<EventHandlerRequest>) {
   } catch (error) {
     logger.error('Failed to validate the event verification headers:', error)
 
-    throw createError({
+    throw new HTTPError({
       status: 403,
-      statusMessage: 'Invalid event verification headers'
+      statusText: 'Invalid event verification headers'
     })
   }
 
   // Validate the request body
   try {
-    if (rawBody === undefined) {
-      throw new Error('Raw body is undefined')
-    }
-
     destructuredBody = safeDestr(rawBody)
   } catch (error) {
     logger.error('Failed to parse the notification body:', error)
 
-    throw createError({
+    throw new HTTPError({
       status: 400,
-      statusMessage: 'Invalid notification body'
+      statusText: 'Invalid notification body'
     })
   }
 
@@ -337,17 +340,19 @@ async function handleNotificationRequest(event: H3Event<EventHandlerRequest>) {
   } catch (error) {
     logger.error('Failed to validate the notification body:', error)
 
-    throw createError({
+    throw new HTTPError({
       status: 400,
-      statusMessage: 'Invalid notification body'
+      statusText: 'Invalid notification body'
     })
   }
 
-  sendNoContent(event)
+  return noContent()
 }
 
 async function handleRevocationRequest(event: H3Event<EventHandlerRequest>) {
-  const headers = getHeaders(event)
+  assertMethod(event, ['PATCH', 'POST', 'PUT', 'DELETE'])
+
+  const headers = Object.fromEntries(event.req.headers)
   const body: unknown = await readBody(event)
 
   // TODO: Implement the revocation request handling
@@ -356,11 +361,11 @@ async function handleRevocationRequest(event: H3Event<EventHandlerRequest>) {
     body
   })
 
-  return sendNoContent(event)
+  return noContent()
 }
 
-export default defineEventHandler(async (event) => {
-  const messageTypeHeader = getHeader(event, 'twitch-eventsub-message-type')
+export default defineHandler(async (event) => {
+  const messageTypeHeader = event.req.headers.get('twitch-eventsub-message-type')
   const messageType = validateEventMessageType(messageTypeHeader)
 
   if (messageType === 'notification') {
