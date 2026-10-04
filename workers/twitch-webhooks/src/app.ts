@@ -1,22 +1,24 @@
-import { createApp, toWebHandler } from 'h3'
+import { H3, defineLazyEventHandler } from 'h3'
 
-const app = createApp()
-const webHandler = toWebHandler(app)
+const app = new H3()
+const onlineHandler = defineLazyEventHandler(async () => {
+  const { default: handler } = await import('./online')
 
-app.use('/online', () => import('./online'), {
-  lazy: true
+  return handler
 })
 
+app.use('/online/**', onlineHandler)
+
 /**
- * Bind resources to your worker in `wrangler.json`. After adding bindings, a type definition for the
- * `Env` object can be regenerated with `npm run cf-typegen`.
+ * Bind resources to your worker in `wrangler.jsonc`. After adding bindings, a type definition for the
+ * `Env` object can be regenerated with `vp run cf-typegen`.
  *
  * Learn more at https://developers.cloudflare.com/workers/
  */
 
 export default {
   async fetch(request, env, ctx) {
-    return webHandler(request, {
+    return app.request(request, undefined, {
       cloudflare: {
         env,
         ctx
