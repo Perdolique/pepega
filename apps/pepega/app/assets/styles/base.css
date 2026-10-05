@@ -1,8 +1,6 @@
-@import "modern-normalize/modern-normalize.css" layer;
+/* Legacy appearance. The paper layout uses its own --ui- tokens. */
 
 :root {
-  color-scheme: light dark;
-
   /* Typography */
   font-family: "Inter", sans-serif;
   --font-size-12: 0.75rem;
@@ -131,40 +129,9 @@
       color var(--transition-fast) var(--theme-easing);
   }
 
-  /* Disable tap highlight color */
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Reset button default styles */
-  button {
-    appearance: none;
-    border: none;
-    background: none;
-    cursor: pointer;
-
-    &:disabled {
-      cursor: not-allowed;
-    }
-  }
-
-  /* Reset dialog default styles */
+  /* Legacy dialog color */
   dialog {
-    padding: 0;
-    border: none;
-    background: none;
     color: var(--text);
-  }
-
-  /* Reset "a" default styles */
-  a {
-    color: inherit;
-    text-underline-offset: 0.2em;
-  }
-
-  /* Reset headings */
-  h1, h2, h3, h4, h5, h6 {
-    margin: 0;
   }
 
   /* Headings */

@@ -1,31 +1,14 @@
 import { useUserStore } from '~/stores/user';
-import { shouldSkipAuth } from '~/utils/router';
+import { resolveAuthRedirect } from '~/utils/router';
 import { defineNuxtRouteMiddleware, navigateTo } from '#imports';
 
 export default defineNuxtRouteMiddleware(async (to) => {
-  if (shouldSkipAuth(to)) {
-    return
-  }
-
   const userStore = useUserStore()
+  const redirect = resolveAuthRedirect(to, userStore.isAuthenticated)
 
-  if (userStore.isAuthenticated && to.path === '/login') {
-    const redirectTo = to.query.redirectTo?.toString() || '/dashboard'
-
-    return navigateTo({
-      path: redirectTo,
+  if (redirect !== null) {
+    return navigateTo(redirect, {
       replace: true
-    })
-  }
-
-  if (userStore.isAuthenticated === false && to.path !== '/login') {
-    return navigateTo({
-      path: '/login',
-      replace: true,
-
-      query: {
-        redirectTo: to.fullPath
-      }
     })
   }
 })

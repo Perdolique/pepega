@@ -164,7 +164,7 @@ components:
 
 ## Overview
 
-**Design revision:** 1.0. **Research date:** 2026-10-04. **Rollout:** target specification; the application has not yet been redesigned.
+**Design revision:** 1.1. **Research date:** 2026-10-04. **Rollout:** the root sign-in page uses the new design; other screens remain on the legacy design during migration.
 
 This file defines the new visual identity and UI/UX rules for Pepega. Use it for the full redesign and for later changes to existing or new features. The old visual design is not a source for colors, layout, typography, or component appearance. Existing routes, data contracts, permissions, and useful behavior remain product requirements.
 
@@ -191,8 +191,9 @@ The initial inventory comes from repository commit `d3a1b65`. It records behavio
 
 | Surface | Current contract | Redesign goal |
 | --- | --- | --- |
-| `/` | Public entry page | Explain the supported service and offer Twitch sign-in or a return to the dashboard. |
-| `/login`, `/auth/twitch` | Twitch OAuth, loading, failure, return destination | Make the external sign-in step and recovery clear. Preserve the return destination. |
+| `/` | Guest sign-in; authenticated return destination or dashboard | Show the minimal Twitch sign-in panel in the paper layout. |
+| `/login` | Legacy entry redirects to `/` with its query and hash | Keep existing sign-in links working during migration. |
+| `/auth/twitch` | Twitch OAuth callback, loading, failure, return destination | Preserve the callback contract; migrate its appearance in a later step. |
 | `/dashboard` | Authenticated placeholder | Show a useful next setup action using existing account, channel, and notification data. |
 | `/account` | Viewer/streamer role; Telegram channel creation, verification, deletion | Make account state visible and channel setup easy to resume. |
 | `/notifications` | Streamer access; `stream.online` webhook creation and registration | Separate connection state from notification configuration. |
@@ -245,7 +246,7 @@ The reference's mobile metric labels reach 9px and graph cells reach 15px. Pepeg
 
 ### Semantic mapping
 
-Map the front matter to shared CSS custom properties. Components consume the role, not a light/dark branch. For example, `--color-surface` uses `colors.surface` in light mode and `colors.dark-surface` in dark mode.
+Map the front matter to shared CSS custom properties. Components consume the role, not a light/dark branch. The table names semantic roles. During migration the paper layout uses the `--ui-` prefix: `--color-surface` becomes `--ui-color-surface`, with `colors.surface` in light mode and `colors.dark-surface` in dark mode. Define these tokens only inside `[data-design-system="paper"]`.
 
 | CSS role | Light token | Dark token | Use |
 | --- | --- | --- | --- |
@@ -297,6 +298,8 @@ These ratios were calculated from the opaque sRGB tokens. Values below are round
 Do not lower an entire component's opacity to create a disabled state. Use `subtle`, `muted`, the normal outline, and no shadow. Keep muted copy off colored fills; use `on-fill` there. Recheck any overlay, gradient, or translucent text background in its rendered state.
 
 Support **System**, **Light**, and **Dark**. Start with the system preference and persist an explicit choice. Set `color-scheme` to match the active theme. Apply the same semantic variables before the first visible render so navigation does not flash the wrong theme. The theme control has a visible current value and an accessible name. It does not change layout or icon hit areas.
+
+The application stores this choice in the `pepega-theme` cookie and renders its `data-theme` attribute on `html` during SSR. An absent or invalid preference uses System. The choice applies to both designs through `color-scheme`; it does not replace the legacy palette with the new palette.
 
 ## Typography
 
@@ -373,8 +376,8 @@ These are target compositions. They do not claim that all required UI states alr
 
 | Page | Composition | Main action and boundaries |
 | --- | --- | --- |
-| Public home | Compact brand header → short service explanation → one paper hero → brief explanation of supported setup. | “Continue with Twitch”; authenticated users get “Open dashboard”. Use the existing Pepega identity, not the reference author's portrait. |
-| Sign-in and callback | Small centered panel → clear task title → provider action or connection state → recovery. | Start sign-in only from an explicit action. On callback failure, offer retry and return. No endless spinner. |
+| Root sign-in | Text-only Pepega header and theme choice → small centered panel with “Sign in” and “Continue with Twitch”. | No subtitle, provider explanation, or home link. Start sign-in only from an explicit action. Authenticated users return to a valid internal destination or `/dashboard`. |
+| Callback | Small centered panel → connection state → recovery. | On failure, offer retry and return. No endless spinner. This screen remains on the legacy design in the first migration step. |
 | Dashboard | Page heading → next setup step → relevant current setup summary. | Point to the first incomplete task. Show real role, verification, and notification state; do not fill the screen with invented engagement metrics. |
 | Account | Heading → account type section → Telegram channel list and add action. | Role change uses labeled choices and explicit save. Each channel has a visible verification state and contextual actions. |
 | Notifications | Heading → stream-online feature panel with connection state → configuration state and next step. | “Set up notifications”, “Connect Twitch events”, or a precise recovery action, depending on actual state. |
@@ -474,6 +477,10 @@ Use at least a 44×44 CSS pixel target for standalone controls. Inline text link
 - Normal buttons have a minimum height of 44px, 16px horizontal padding, and an 8px icon gap. Allow multiline labels to increase height.
 - A link navigates; a button changes state or submits. Style does not change that meaning.
 - A pending operation keeps the same accessible purpose. Announce progress once; keep an error and retry action near the failed task.
+
+The Twitch sign-in link is a provider-specific exception to the yellow primary fill. Use `#9146FF` for `--ui-color-twitch` and `#FFFDF7` for `--ui-color-on-twitch` in both themes. Darken the purple by 10% with an OKLCH color mix on hover. Keep the pill shape, 2px outline, solid shadow, and normal focus/press behavior. This text/fill pair has about 4.56:1 contrast. The link navigates to the existing OAuth endpoint and encodes the complete `redirectTo` as one query value.
+
+`/` is the canonical guest entry. `/login` replaces its history entry with `/` and keeps the query and hash. Protected pages send guests to `/` with their complete return destination. An authenticated user at `/` goes to that internal destination or `/dashboard`; destinations that point back to a sign-in entry are replaced with `/dashboard`.
 
 ### Panels, status badges, and lists
 
@@ -599,11 +606,23 @@ For a future poll, the same system could use a neutral form, a yellow main actio
 
 The current frontend uses Nuxt, Vue, CSS Modules, a global stylesheet, Nuxt Fonts/Icon, Reka UI, and motion-v. Keep these as implementation context, not as a visual template. This document does not require a new framework, CSS utility system, chart library, or component package.
 
+### Coexisting designs during migration
+
+- `reset.css` owns shared neutral HTML resets. `theme.css` owns the global color-scheme choice. Both remain after migration.
+- `base.css`, the default layout, and the existing components own legacy appearance. Keep their values until their consumers migrate.
+- `design-system.css` defines `--ui-` tokens only inside the paper layout. New UI components live in `components/ui` and use CSS Modules. They must not depend on legacy appearance variables or components.
+- The paper layout owns the new page background, frame, header, and skip link. A migrated page selects this layout explicitly. Layout-specific CSS may stay loaded after navigation, but its selectors must not change legacy screens.
+- Share new components only for real roles. The sign-in panel stays local; the action link and theme selector belong to the new UI layer. New names do not need a temporary version suffix.
+- The first migrated screen is `/`. The callback and authenticated pages keep the legacy layout and appearance. Migrate each complete screen before removing its old styles.
+- After the last legacy consumer migrates, remove `base.css`, the old layout, and unused legacy components. Keep the reset, theme state, `--ui-` tokens, and new components.
+
+### Remaining implementation steps
+
 1. Define the theme variables and type scale in the shared styling layer. Preserve reset behavior while replacing old appearance values. Ensure every variable resolves in both themes.
 2. Rebuild the shared page frame, navigation, buttons, fields, panel, status badge, dialog, and feedback roles. Use appropriate accessible primitives already available in the project and verify their behavior.
 3. Create a small development specimen with actual components: both themes, all button/field states, a long channel row, a validation error, and a dialog. This is validation work, not a new user-facing feature.
 4. Migrate one complete journey first: Account channel setup and verification, then stream-online notification setup. Preserve data contracts and make missing error states explicit implementation work.
-5. Apply the same foundations to sign-in, the public home, dashboard, and admin. Remove old styles only after checking remaining consumers.
+5. Apply the same foundations to the callback, dashboard, and admin. The root sign-in page is already migrated. Remove old styles only after checking remaining consumers.
 6. Check the acceptance criteria below and record what was verified. Include screenshots of real implemented states in the PR.
 
 Useful starting points are [the shared layout](apps/pepega/app/layouts/default.vue), [page wrapper](apps/pepega/app/components/PageBase.vue), [global styles](apps/pepega/app/assets/styles/base.css), [button](apps/pepega/app/components/SimpleButton.vue), [field](apps/pepega/app/components/TextInput.vue), and [dialog](apps/pepega/app/components/dialogs/ModalDialog.vue). These are migration locations, not appearance references.
@@ -648,6 +667,8 @@ Initial decisions:
 
 | Date | Decision | Reason and migration effect |
 | --- | --- | --- |
+| 2026-10-05 | Start migration with the minimal root sign-in page and scoped `--ui-` tokens. | Approved sign-in mockup; both designs coexist until all legacy consumers migrate. |
+| 2026-10-05 | Use a purple Twitch sign-in link and a shared persisted theme choice. | Provider-specific action; the theme applies to both designs without sharing their appearance tokens. |
 | 2026-10-04 | Adopt the paper, outline, rounded-type, hard-shadow direction. | User-selected reference; replaces old visual decisions across the application. |
 | 2026-10-04 | Use semantic light/dark roles and explicit behavior contracts. | New features must preserve meaning, states, and readability across themes. |
 | 2026-10-04 | Increase small-screen labels and standalone control targets. | Preserve the reference's character without inheriting its densest mobile details. |
