@@ -1,0 +1,60 @@
+[data-design-system="paper"] {
+  --ui-color-page: light-dark(#FFF4DD, #1E1A16);
+  --ui-color-surface: light-dark(#FFFDF7, #2B2520);
+  --ui-color-subtle: light-dark(#F1E3C4, #3C342B);
+  --ui-color-text: light-dark(#26201A, #F5EBD8);
+  --ui-color-muted: light-dark(#5C5347, #C7BAA8);
+  --ui-color-border: var(--ui-color-text);
+  --ui-color-focus: var(--ui-color-text);
+  --ui-color-shadow: light-dark(#26201A, #0C0A08);
+  --ui-color-primary: light-dark(#FFD84D, #D4AC50);
+  --ui-color-primary-hover: light-dark(#FFE070, #E1BC67);
+  --ui-color-accent: light-dark(#FF5C2B, #F58A66);
+  --ui-color-rose: light-dark(#FFB9CC, #D897B3);
+  --ui-color-sky: light-dark(#A5DCFF, #91BDDB);
+  --ui-color-mint: light-dark(#B9E6A6, #A6C993);
+  --ui-color-on-fill: #26201A;
+  --ui-color-success: light-dark(#245530, #A6C993);
+  --ui-color-warning: light-dark(#704B00, #E1BC67);
+  --ui-color-warning-surface: light-dark(#FFF0BD, #D4AC50);
+  --ui-color-danger: light-dark(#A52A27, #FFAAA4);
+  --ui-color-danger-surface: light-dark(#FFE0DA, #E49AA1);
+  --ui-color-on-danger: light-dark(#FFFDF7, #26201A);
+  --ui-color-overlay: light-dark(#26201A99, #0C0A08B8);
+  --ui-color-twitch: #9146FF;
+  --ui-color-twitch-hover: color-mix(in oklch, var(--ui-color-twitch), black 10%);
+  --ui-color-on-twitch: #FFFDF7;
+
+  --ui-font-display: "Baloo 2", "Arial Rounded MT Bold", system-ui, sans-serif;
+  --ui-font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ui-font-meta: ui-monospace, "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+  --ui-font-size-title: 2.5rem;
+  --ui-font-size-body: 1rem;
+  --ui-font-size-small: 0.875rem;
+  --ui-font-size-meta: 0.75rem;
+
+  --ui-radius-control: 10px;
+  --ui-radius-card: 14px;
+  --ui-radius-bubble: 16px;
+  --ui-radius-pill: 9999px;
+  --ui-spacing-xs: 4px;
+  --ui-spacing-sm: 8px;
+  --ui-spacing-md: 12px;
+  --ui-spacing-lg: 16px;
+  --ui-spacing-xl: 24px;
+  --ui-spacing-2xl: 32px;
+  --ui-spacing-3xl: 48px;
+  --ui-spacing-4xl: 64px;
+  --ui-control-min: 44px;
+  --ui-page-max: 880px;
+  --ui-shadow-button: 3px 3px 0 var(--ui-color-shadow);
+  --ui-shadow-panel: 4px 4px 0 var(--ui-color-shadow);
+  --ui-outline: 2px solid var(--ui-color-border);
+  --ui-focus-outline: 3px solid var(--ui-color-focus);
+}
+
+@media (width < 640px) {
+  [data-design-system="paper"] {
+    --ui-font-size-title: 2rem;
+  }
+}

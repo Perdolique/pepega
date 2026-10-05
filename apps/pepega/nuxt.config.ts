@@ -44,6 +44,16 @@ export default defineNuxtConfig({
     '@pinia/colada-nuxt'
   ],
 
+  fonts: {
+    families: [{
+      name: 'Baloo 2',
+      global: true,
+      weights: [700, 800],
+      styles: ['normal'],
+      subsets: ['latin']
+    }]
+  },
+
   experimental: {
     viewTransition: true,
     /**
