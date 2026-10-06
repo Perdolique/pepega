@@ -1,15 +1,18 @@
-import { defineQueryOptions } from '@pinia/colada'
+import { queryOptions } from '@tanstack/vue-query'
 import { telegramQueryKeys } from '~/composables/keys/telegram'
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
 import { $fetch } from 'ofetch'
 
-export const getTelegramChannels = defineQueryOptions({
-  key: telegramQueryKeys.channels(),
-  enabled: import.meta.client,
+export function getTelegramChannels() {
+  return queryOptions({
+    queryKey: telegramQueryKeys.channels(),
+    enabled: import.meta.client,
 
-  query() {
-    return $fetch<TelegramChannelModel[]>('/api/telegram/channel', {
-      method: 'GET'
-    })
-  }
-})
+    queryFn({ signal }) {
+      return $fetch<TelegramChannelModel[]>('/api/telegram/channel', {
+        method: 'GET',
+        signal
+      })
+    }
+  })
+}

@@ -1,12 +1,25 @@
 <template>
   <PageBase title="Stream Online notifications">
-    <LoadingState v-if="isNotificationPending">
+    <QueryErrorState
+      v-if="hasError"
+      message="Could not load notifications. Please try again."
+      :is-retrying="isFetching"
+      :is-blocking="!hasLoadedNotification"
+      :restore-focus="restoreQueryFocus"
+      @retry="refetch()"
+    />
+
+    <LoadingState v-if="isInitialLoading">
       Loading notifications...
     </LoadingState>
 
     <div
-      v-else-if="notification.data"
+      v-else-if="notification"
+      ref="recoveryTarget"
       :class="$style.cards"
+      role="group"
+      aria-label="Stream online notification settings"
+      tabindex="-1"
     >
       <BaseCard :class="$style.card">
         <section :class="$style.formSection">
@@ -37,7 +50,7 @@
         </section>
       </BaseCard>
 
-      <StreamOnlineDestinations :notification-id="notification.data.id" />
+      <StreamOnlineDestinations :notification-id="notification.id" />
 
       <SimpleButton
         variant="secondary"
@@ -48,7 +61,9 @@
       </SimpleButton>
     </div>
 
-    <StreamOnlineEmptyState v-else />
+    <div v-else-if="hasNoNotification" ref="recoveryTarget" tabindex="-1">
+      <StreamOnlineEmptyState />
+    </div>
   </PageBase>
 </template>
 
@@ -64,14 +79,17 @@
   import TelegramChannels from '~/components/pages/notifications/stream-online/TelegramChannels.vue'
   import BaseCard from '~/components/BaseCard.vue'
   import StreamOnlineEmptyState from '~/components/pages/notifications/stream-online/StreamOnlineEmptyState.vue'
-  import { computed, ref } from 'vue'
-  import { useQuery } from '@pinia/colada'
+  import { computed, ref, useTemplateRef } from 'vue'
+  import { useQuery } from '@tanstack/vue-query'
+  import { useQueryFeedback } from '~/composables/use-query-feedback'
+  import QueryErrorState from '~/components/QueryErrorState.vue'
 
   const defaultMessage = 'ЗАЙДИТЕ НА СТРИМ ПОЖАЛУЙСТА Я ПОДРУБИЛСЯ!'
-  const { deleteNotification, isLoading: isDeletingNotification } = useDeleteNotification()
-  const { createNotification, isLoading: isCreatingNotification } = useCreateTelegramNotification()
+  const { deleteNotification, isPending: isDeletingNotification } = useDeleteNotification()
+  const { createNotification, isPending: isCreatingNotification } = useCreateTelegramNotification()
   const selectedChannel = ref<number | null>(null)
   const notificationMessage = ref('')
+  const recoveryTarget = useTemplateRef('recoveryTarget')
   const isMessageFieldDisabled = computed(() => selectedChannel.value === null)
 
   const isSubmitDisabled = computed(
@@ -80,16 +98,25 @@
       isCreatingNotification.value
   )
 
-  const { state: notification, isPending: isNotificationPending } = useQuery(() =>
-    getNotificationByType('stream.online')
-  )
+  const queryOptions = getNotificationByType('stream.online')
+  const { data: notification, error, isPending, isFetching, refetch } = useQuery(queryOptions)
+  const { hasError } = useQueryFeedback({ error, isFetching, queryKey: queryOptions.queryKey })
+  const isInitialLoading = computed(() => isPending.value && !hasError.value)
+  const hasLoadedNotification = computed(() => notification.value !== undefined)
+  const hasNoNotification = computed(() => notification.value === null)
+
+  function restoreQueryFocus() {
+    recoveryTarget.value?.focus()
+  }
 
   function onDeleteNotificationClick() {
     deleteNotification('stream.online')
   }
 
   function onCreateNotificationClick() {
-    if (selectedChannel.value === null || notification.value.data === undefined) {
+    const currentNotification = notification.value
+
+    if (selectedChannel.value === null || currentNotification === undefined || currentNotification === null) {
       console.warn('Cannot create notification: missing required fields')
 
       return
@@ -99,7 +126,7 @@
 
     createNotification({
       message,
-      notificationId: notification.value.data.id,
+      notificationId: currentNotification.id,
       telegramChannelId: selectedChannel.value
     })
   }

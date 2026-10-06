@@ -1,19 +1,21 @@
 import { destinationKeys } from '~/composables/keys/notification/destinations'
 import type { NotificationDestinationModel } from '~~/shared/models/notifications'
-import { defineQueryOptions } from '@pinia/colada'
+import { queryOptions } from '@tanstack/vue-query'
 import { $fetch } from 'ofetch'
 
-export const getByNotificationId = defineQueryOptions((notificationId: number) => ({
-  key: destinationKeys.byNotificationId(notificationId),
-  enabled: import.meta.client,
+export function getByNotificationId(notificationId: number) {
+  return queryOptions({
+    queryKey: destinationKeys.byNotificationId(notificationId),
+    enabled: import.meta.client,
 
-  query() {
-    return $fetch<NotificationDestinationModel[]>('/api/notifications/destinations', {
-      method: 'GET',
-
-      query: {
-        notificationId
-      }
-    })
-  }
-}))
+    queryFn({ signal }) {
+      return $fetch<NotificationDestinationModel[]>('/api/notifications/destinations', {
+        method: 'GET',
+        signal,
+        query: {
+          notificationId
+        }
+      })
+    }
+  })
+}
