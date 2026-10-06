@@ -1,6 +1,21 @@
 <template>
-  <div>
-    <template v-if="isChannelsPending">
+  <div
+    ref="recoveryTarget"
+    :class="$style.component"
+    role="group"
+    aria-label="Telegram channels"
+    tabindex="-1"
+  >
+    <QueryErrorState
+      v-if="hasError"
+      message="Could not load Telegram channels. Please try again."
+      :is-retrying="isFetching"
+      :is-blocking="!hasLoadedChannels"
+      :restore-focus="restoreQueryFocus"
+      @retry="refetch()"
+    />
+
+    <template v-if="isInitialLoading">
       Loading Telegram channels...
     </template>
 
@@ -34,19 +49,28 @@
 
 <script lang="ts" setup>
   import { getTelegramChannels } from '~/composables/queries/telegram/channels'
-  import { computed } from 'vue'
-  import { useQuery } from '@pinia/colada'
+  import { computed, useTemplateRef } from 'vue'
+  import { useQuery } from '@tanstack/vue-query'
+  import { useQueryFeedback } from '~/composables/use-query-feedback'
+  import QueryErrorState from '~/components/QueryErrorState.vue'
 
   const selectedChannel = defineModel<number | null>({
     default: null
   })
+  const recoveryTarget = useTemplateRef('recoveryTarget')
 
-  const { state: channels, isPending: isChannelsPending } = useQuery(getTelegramChannels)
+  const queryOptions = getTelegramChannels()
+  const { data: channels, error, isPending, isFetching, refetch } = useQuery(queryOptions)
+  const { hasError } = useQueryFeedback({ error, isFetching, queryKey: queryOptions.queryKey })
+  const isInitialLoading = computed(() => isPending.value && !hasError.value)
+  const hasLoadedChannels = computed(() => channels.value !== undefined)
 
   const verifiedChannels = computed(() => {
     const result = []
 
-    for (const channel of channels.value.data || []) {
+    const loadedChannels = channels.value ?? []
+
+    for (const channel of loadedChannels) {
       if (channel.isVerified) {
         result.push(channel)
       }
@@ -55,10 +79,19 @@
     return result
   })
 
-  const isEmpty = computed(() => verifiedChannels.value.length === 0)
+  const isEmpty = computed(() => channels.value !== undefined && verifiedChannels.value.length === 0)
+
+  function restoreQueryFocus() {
+    recoveryTarget.value?.focus()
+  }
 </script>
 
 <style module>
+  .component {
+    display: grid;
+    gap: var(--spacing-8);
+  }
+
   .radioItem {
     display: flex;
     align-items: center;

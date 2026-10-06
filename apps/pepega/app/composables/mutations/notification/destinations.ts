@@ -1,6 +1,8 @@
 import { destinationKeys } from '~/composables/keys/notification/destinations'
 import type { NotificationDestinationModel } from '~~/shared/models/notifications'
-import { defineMutation, useMutation, useQueryCache } from '@pinia/colada'
+import { captureQueryUser, isCurrentQueryUser } from '~/utils/query-client'
+import { useUserStore } from '~/stores/user'
+import { useMutation, useQueryClient } from '@tanstack/vue-query'
 import { $fetch } from 'ofetch'
 
 interface CreateTelegramNotificationParams {
@@ -9,43 +11,52 @@ interface CreateTelegramNotificationParams {
   telegramChannelId: number;
 }
 
-/**
- * Composable to create a specific notification for a given event type and destination.
- */
-export const useCreateTelegramNotification = defineMutation(() => {
-  const cache = useQueryCache()
+export function useCreateTelegramNotification() {
+  const queryClient = useQueryClient()
+  const userStore = useUserStore()
 
-  const { mutate, ...mutation } = useMutation({
-    mutation({ telegramChannelId, message, notificationId } : CreateTelegramNotificationParams) {
+  const { mutate: createNotification, ...mutation } = useMutation({
+    mutationFn({ telegramChannelId, message, notificationId }: CreateTelegramNotificationParams) {
       return $fetch<NotificationDestinationModel>('/api/notifications/destinations', {
         method: 'POST',
-
-        body: {
-          notificationId,
-          message,
-          telegramChannelId
-        }
+        body: { notificationId, message, telegramChannelId }
       })
     },
 
-    onSuccess(data, { notificationId }) {
-      const existingDestinations = cache.getQueryData<NotificationDestinationModel[]>(
-        destinationKeys.byNotificationId(notificationId)
-      ) || []
+    onMutate() {
+      return captureQueryUser(queryClient, userStore.userId)
+    },
 
-      cache.setQueryData<NotificationDestinationModel[]>(destinationKeys.byNotificationId(notificationId), [
-        ...existingDestinations,
-        data
-      ])
+    async onSuccess(data, { notificationId }, context) {
+      if (!isCurrentQueryUser(queryClient, context, userStore.userId)) {
+        return
+      }
+
+      const queryKey = destinationKeys.byNotificationId(notificationId)
+
+      await queryClient.cancelQueries({ queryKey, exact: true })
+
+      if (!isCurrentQueryUser(queryClient, context, userStore.userId)) {
+        return
+      }
+
+      queryClient.setQueryData<NotificationDestinationModel[]>(queryKey, (existingDestinations) => {
+        if (existingDestinations === undefined) {
+          return
+        }
+
+        const alreadyExists = existingDestinations.some((destination) => destination.id === data.id)
+
+        if (alreadyExists) {
+          return existingDestinations
+        }
+
+        return [...existingDestinations, data]
+      })
+
+      return queryClient.invalidateQueries({ queryKey, exact: true })
     }
   })
 
-  function createNotification(params : CreateTelegramNotificationParams) {
-    return mutate(params)
-  }
-
-  return {
-    createNotification,
-    ...mutation
-  }
-})
+  return { createNotification, ...mutation }
+}

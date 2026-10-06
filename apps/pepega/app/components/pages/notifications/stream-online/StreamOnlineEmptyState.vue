@@ -12,7 +12,7 @@
   import { useInitNotifications } from '~/composables/mutations/notifications'
   import EmptyState from '~/components/pages/EmptyState.vue'
 
-  const { initNotifications, isLoading: isInitializing } = useInitNotifications()
+  const { initNotifications, isPending: isInitializing } = useInitNotifications()
 
   function onAction() {
     initNotifications('stream.online')

@@ -40,8 +40,7 @@ export default defineNuxtConfig({
   modules: [
     '@nuxt/fonts',
     '@nuxt/icon',
-    '@pinia/nuxt',
-    '@pinia/colada-nuxt'
+    '@pinia/nuxt'
   ],
 
   fonts: {

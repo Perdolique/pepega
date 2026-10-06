@@ -1,11 +1,20 @@
 <template>
-  <BaseCard :class="$style.card">
-    <h3>
+  <BaseCard :class="$style.component">
+    <h3 ref="recoveryTarget" tabindex="-1">
       Telegram channels
     </h3>
 
+    <QueryErrorState
+      v-if="hasError"
+      message="Could not load Telegram channels. Please try again."
+      :is-retrying="isFetching"
+      :is-blocking="!hasLoadedChannels"
+      :restore-focus="restoreQueryFocus"
+      @retry="refetch()"
+    />
+
     <div
-      v-if="isPending"
+      v-if="isInitialLoading"
       :class="$style.loading"
     >
       Loading...
@@ -20,7 +29,7 @@
       :class="$style.channels"
     >
       <ChannelChip
-        v-for="channel in channels.data"
+        v-for="channel in channels"
         :key="channel.id"
         :channel="channel"
         :active-channel-id="activeChannelId"
@@ -60,20 +69,31 @@
   import SimpleButton from '~/components/SimpleButton.vue'
   import InputDialog from '~/components/dialogs/InputDialog.vue'
   import ChannelChip from './telegram/ChannelChip.vue'
-  import { computed, ref } from 'vue'
-  import { useQuery } from '@pinia/colada'
+  import { computed, ref, useTemplateRef } from 'vue'
+  import { useQuery } from '@tanstack/vue-query'
+  import { useQueryFeedback } from '~/composables/use-query-feedback'
+  import QueryErrorState from '~/components/QueryErrorState.vue'
 
   const isOpened = ref(false)
-  const { state: channels, isPending } = useQuery(getTelegramChannels)
-  const { mutate: addChannel, isLoading: isAddingChannel } = useAddTelegramChannel()
+  const recoveryTarget = useTemplateRef('recoveryTarget')
+  const queryOptions = getTelegramChannels()
+  const { data: channels, error, isPending, isFetching, refetch } = useQuery(queryOptions)
+  const { hasError } = useQueryFeedback({ error, isFetching, queryKey: queryOptions.queryKey })
+  const isInitialLoading = computed(() => isPending.value && !hasError.value)
+  const hasLoadedChannels = computed(() => channels.value !== undefined)
+  const { mutate: addChannel, isPending: isAddingChannel } = useAddTelegramChannel()
   const activeChannelId = ref<number | null>(null)
 
   const noChannels = computed(
-    () => channels.value.data === undefined || channels.value.data?.length === 0
+    () => channels.value?.length === 0
   )
 
   function showModal() {
     isOpened.value = true
+  }
+
+  function restoreQueryFocus() {
+    recoveryTarget.value?.focus()
   }
 
   function onChipToggle(channelId: number | null) {
@@ -82,7 +102,7 @@
 </script>
 
 <style module>
-  .card {
+  .component {
     display: grid;
     row-gap: var(--spacing-16);
     justify-content: start;

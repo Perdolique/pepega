@@ -1,19 +1,29 @@
-import { defineQueryOptions } from '@pinia/colada'
+import { queryOptions } from '@tanstack/vue-query'
 import type { NotificationEventType, NotificationModel } from '~~/shared/models/notifications'
 import { notificationKeys } from '~/composables/keys/notifications'
-import { $fetch } from 'ofetch'
+import { $fetch, FetchError } from 'ofetch'
 
-export const getNotificationByType = defineQueryOptions((eventType: NotificationEventType) => ({
-  key: notificationKeys.byEventType(eventType),
-  enabled: import.meta.client,
+export function getNotificationByType(eventType: NotificationEventType) {
+  return queryOptions({
+    queryKey: notificationKeys.byEventType(eventType),
+    enabled: import.meta.client,
 
-  query() {
-    return $fetch<NotificationModel>('/api/notifications', {
-      method: 'GET',
+    async queryFn({ signal }): Promise<NotificationModel | null> {
+      try {
+        return await $fetch<NotificationModel>('/api/notifications', {
+          method: 'GET',
+          signal,
+          query: {
+            type: eventType
+          }
+        })
+      } catch (error) {
+        if (error instanceof FetchError && error.statusCode === 404) {
+          return null
+        }
 
-      query: {
-        type: eventType
+        throw error
       }
-    })
-  }
-}))
+    }
+  })
+}

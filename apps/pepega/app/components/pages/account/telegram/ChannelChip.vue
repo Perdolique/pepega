@@ -104,7 +104,7 @@
   const menuRef = useTemplateRef('menuRef')
   const isTooltipVisible = computed(() => activeChannelId === channel.id)
   const rightAligned = ref(false)
-  const { mutate: deleteChannel, isLoading: isDeletingChannel } = useDeleteTelegramChannel()
+  const { mutate: deleteChannel, isPending: isDeletingChannel } = useDeleteTelegramChannel()
   const isConfirmationDialogVisible = ref(false)
   const isVerificationDialogVisible = ref(false)
 

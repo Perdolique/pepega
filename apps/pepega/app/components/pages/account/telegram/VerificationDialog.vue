@@ -13,7 +13,7 @@
       </div>
 
       <SimpleButton
-        :disabled="isCodeSent"
+        :disabled="isSendCodeDisabled"
         @click="onSendCodeClick"
       >
         Send code
@@ -43,14 +43,17 @@
 </template>
 
 <script lang="ts" setup>
-  import { FetchError } from 'ofetch'
-  import { getTelegramChannels } from '~/composables/queries/telegram/channels'
+  import { createLogger } from '@pepega/utils/logger'
+  import { captureQueryUser, isCurrentQueryUser } from '~/utils/query-client'
+  import { getTelegramVerificationFeedback } from '~/utils/telegram-verification-feedback'
+  import { useUserStore } from '~/stores/user'
+  import { telegramQueryKeys } from '~/composables/keys/telegram'
   import useToaster from '~/composables/use-toaster'
   import ModalDialog from '~/components/dialogs/ModalDialog.vue'
   import SimpleButton from '~/components/SimpleButton.vue'
   import TextInput from '~/components/TextInput.vue'
   import { computed, nextTick, ref, useTemplateRef, watch } from 'vue'
-  import { useQuery } from '@pinia/colada'
+  import { useQueryClient } from '@tanstack/vue-query'
   import { $fetch, useRuntimeConfig } from '#imports'
 
   interface Props {
@@ -64,8 +67,11 @@
   const { addToast } = useToaster()
   const codeInput = useTemplateRef('codeInput')
   const isCodeSent = ref(false)
+  const isSendingCode = ref(false)
   const isVerificationSent = ref(false)
-  const { refetch: refetchChannels } = useQuery(getTelegramChannels)
+  const logger = createLogger('PEPEGA')
+  const queryClient = useQueryClient()
+  const userStore = useUserStore()
   const runtimeConfig = useRuntimeConfig()
 
   const isOpen = defineModel<boolean>({
@@ -79,14 +85,24 @@
   const isVerifyButtonDisabled = computed(
     () => isVerificationDisabled.value || code.value.length === 0
   )
+  const isSendCodeDisabled = computed(() => isCodeSent.value || isSendingCode.value)
 
   async function onSendCodeClick() {
-    isCodeSent.value = true
+    const userContext = captureQueryUser(queryClient, userStore.userId)
+
+    isSendingCode.value = true
 
     try {
       await $fetch(`/api/telegram/channel/${channelId}/send-code`, {
         method: 'POST'
       })
+      const isCurrentSession = isCurrentQueryUser(queryClient, userContext, userStore.userId)
+
+      if (!isCurrentSession) {
+        return
+      }
+
+      isCodeSent.value = true
 
       addToast({
         message: 'Verification code sent successfully! Please check your channel.',
@@ -94,21 +110,28 @@
         duration: 5000
       })
     } catch (error) {
-      let message = 'An error occurred while sending the code.'
+      logger.error('Failed to send Telegram verification code', error)
+      const isCurrentSession = isCurrentQueryUser(queryClient, userContext, userStore.userId)
 
-      if (error instanceof FetchError) {
-        message = error.data?.message ?? 'An error occurred while sending the code.'
+      if (!isCurrentSession) {
+        return
       }
 
+      const feedback = getTelegramVerificationFeedback(error, 'send-code')
+
       addToast({
-        message,
+        message: feedback.message,
         title: 'Failed to send code',
         duration: 5000
       })
+    } finally {
+      isSendingCode.value = false
     }
   }
 
   async function onVerifyClick() {
+    const userContext = captureQueryUser(queryClient, userStore.userId)
+
     isVerificationSent.value = true
 
     try {
@@ -119,6 +142,11 @@
           code: code.value
         }
       })
+      const isCurrentSession = isCurrentQueryUser(queryClient, userContext, userStore.userId)
+
+      if (!isCurrentSession) {
+        return
+      }
 
       addToast({
         message: 'Channel verified successfully! 🎉',
@@ -126,19 +154,27 @@
         duration: 5000
       })
 
-      // TODO: Refetch only relevant channel
-      refetchChannels()
+      const queryKey = telegramQueryKeys.channels()
+
+      void queryClient.invalidateQueries({ queryKey })
 
       isOpen.value = false
     } catch (error) {
-      let message = 'Verification failed. Please check your code and try again.'
+      logger.error('Failed to verify Telegram channel', error)
+      const isCurrentSession = isCurrentQueryUser(queryClient, userContext, userStore.userId)
 
-      if (error instanceof FetchError) {
-        message = error.data?.message ?? 'Verification failed. Please check your code and try again.'
+      if (!isCurrentSession) {
+        return
+      }
+
+      const feedback = getTelegramVerificationFeedback(error, 'verify')
+
+      if (feedback.needsNewCode) {
+        isCodeSent.value = false
       }
 
       addToast({
-        message,
+        message: feedback.message,
         title: 'Verification failed',
         duration: 5000
       })
