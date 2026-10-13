@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "@iconify-json/streamline-emojis": "1.2.4",
-    "@iconify-json/tabler": "1.2.41",
+    "@iconify-json/tabler": "1.2.42",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/icon": "2.5.1",
     "@pepega/database": "workspace:*",
@@ -30,7 +30,7 @@
     "modern-normalize": "3.0.1",
     "motion-v": "2.6.0",
     "nitro-cloudflare-dev": "0.2.2",
-    "nuxt": "4.5.2",
+    "nuxt": "4.6.1",
     "ofetch": "catalog:",
     "pinia": "4.0.3",
     "reka-ui": "2.11.0",
@@ -39,10 +39,10 @@
     "typescript": "catalog:",
     "ufo": "1.6.4",
     "valibot": "catalog:",
-    "vite": "8.3.2",
+    "vite": "8.3.4",
     "vue": "3.5.43",
-    "vue-router": "5.3.1",
-    "vue-tsc": "3.3.12",
+    "vue-router": "5.4.0",
+    "vue-tsc": "3.3.13",
     "wrangler": "catalog:"
   }
 }
