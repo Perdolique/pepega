@@ -1,4 +1,4 @@
-import { createError, type H3Event, type EventHandlerRequest, type H3EventContext } from 'h3'
+import { createError, type RequestEvent, type RequestEventContext } from 'nuxt/server'
 import { parseISO, differenceInMilliseconds } from 'date-fns'
 import { adminCheckInterval } from '~~/constants'
 import { useAppSession } from '~~/server/utils/session'
@@ -15,7 +15,7 @@ function shouldCheckAdmin(lastCheck: string) {
   return diff > adminCheckInterval
 }
 
-async function isUserAdmin(db: H3EventContext['db'], userId: string) {
+async function isUserAdmin(db: RequestEventContext['db'], userId: string) {
   const result = await db.query.users
     .findFirst({
       columns: {
@@ -43,7 +43,7 @@ async function isUserAdmin(db: H3EventContext['db'], userId: string) {
  * ```
  */
 export async function checkAdmin(
-  event: H3Event<EventHandlerRequest>,
+  event: RequestEvent,
   { force = false } : CheckAdminOption = {}
 ) {
   const session = await useAppSession(event)
@@ -72,14 +72,14 @@ export async function checkAdmin(
 }
 
 export async function validateAdmin(
-  event: H3Event<EventHandlerRequest>,
+  event: RequestEvent,
   options: CheckAdminOption = {}
 ) {
   const isAdmin = await checkAdmin(event, options)
 
   if (isAdmin === false) {
     throw createError({
-      statusCode: 403,
+      status: 403,
       message: 'You do not have permission to perform this action'
     })
   }

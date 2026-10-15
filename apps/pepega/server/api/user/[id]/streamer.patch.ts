@@ -1,8 +1,10 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import type { UserModel } from '~~/shared/models/user'
 import { tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, getValidatedRouterParams, readValidatedBody } from 'h3'
+import { createError, defineEventHandler, readValidatedBody } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
@@ -16,28 +18,22 @@ const bodySchema = v.object({
   isStreamer: v.boolean()
 })
 
-function userIdValidator(params: unknown) {
-  return v.parse(paramsSchema, params)
-}
-
-function bodyValidator(body: unknown) {
-  return v.parse(bodySchema, body)
-}
-
-export default defineEventHandler(async (event) : Promise<UserModel> => {
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof bodySchema> }>
+) : Promise<UserModel> => {
   const { userId, db } = event.context
-  const { id: paramsUserId } = await getValidatedRouterParams(event, userIdValidator)
+  const { id: paramsUserId } = parseRouterParams(event, paramsSchema)
 
   if (paramsUserId !== userId) {
     logger.error('For some reason, the userId in the params is not the same as the one in the session')
 
     throw createError({
-      statusCode: 403,
-      statusMessage: 'Forbidden'
+      status: 403,
+      statusText: 'Forbidden'
     })
   }
 
-  const { isStreamer } = await readValidatedBody(event, bodyValidator)
+  const { isStreamer } = await readValidatedBody(event, bodySchema)
 
   const [updatedUser] = await db
     .update(tables.users)
@@ -57,8 +53,8 @@ export default defineEventHandler(async (event) : Promise<UserModel> => {
     logger.error('User not found')
 
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Not Found'
+      status: 404,
+      statusText: 'Not Found'
     })
   }
 

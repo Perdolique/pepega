@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto'
 import { basename } from 'node:path'
-import { kvStorageName } from './constants'
+import { kvStorageName } from './constants.ts'
 import type { NuxtOptions } from 'nuxt/schema'
 
 type ComponentType = 'page' | 'layout' | 'component'
@@ -35,7 +35,7 @@ function getComponentName(componentName: string, componentType: ComponentType) :
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
-  compatibilityDate: '2026-07-18',
+  compatibilityDate: '2026-10-15',
 
   modules: [
     '@nuxt/fonts',
@@ -44,6 +44,7 @@ export default defineNuxtConfig({
   ],
 
   fonts: {
+    processCSSVariables: 'ui',
     families: [{
       name: 'Baloo 2',
       global: true,
@@ -55,11 +56,8 @@ export default defineNuxtConfig({
 
   experimental: {
     viewTransition: true,
-    /**
-     * FIXME: Disable once Nuxt modules stop relying on Nitro auto-imports.
-     *
-     * https://github.com/nuxt/nuxt/issues/34142
-     */
+    strictRouteTypes: true,
+    // Nitro 2's Cloudflare dev plugin still imports helpers from #imports.
     nitroAutoImports: true
   },
 
@@ -69,20 +67,14 @@ export default defineNuxtConfig({
 
   typescript: {
     tsConfig: {
-      compilerOptions: {
-        ...projectTypeScriptCompilerOptions
-      }
-    },
-
-    sharedTsConfig: {
-      compilerOptions: {
-        ...projectTypeScriptCompilerOptions
-      }
+      compilerOptions: projectTypeScriptCompilerOptions
     },
 
     nodeTsConfig: {
       compilerOptions: {
-        ...projectTypeScriptCompilerOptions
+        // Nitro 2's declaration barrels still use extensionless imports.
+        module: 'preserve',
+        moduleResolution: 'bundler'
       }
     }
   },
@@ -109,16 +101,20 @@ export default defineNuxtConfig({
     port: 4000
   },
 
+  hooks: {
+    ready: (nuxt) => {
+      nuxt.hook('server:routes', (_routes, context) => {
+        context.requestTypes = {
+          module: '#shared/types/api-request',
+          body: 'RequestBodyOf',
+          query: 'RequestQueryOf'
+        }
+      })
+    }
+  },
+
   nitro: {
     preset: 'cloudflare_module',
-
-    typescript: {
-      tsConfig: {
-        compilerOptions: {
-          ...projectTypeScriptCompilerOptions
-        }
-      }
-    },
 
     cloudflare: {
       deployConfig: false

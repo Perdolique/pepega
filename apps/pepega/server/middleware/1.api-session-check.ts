@@ -1,13 +1,7 @@
 import { isSamePath } from 'ufo'
 import { publicApiPaths } from '~~/constants'
 import { getAppSession } from '~~/server/utils/session'
-import { createError, defineEventHandler, getRequestURL } from 'h3'
-
-declare module 'h3' {
-  interface H3EventContext {
-    userId: string;
-  }
-}
+import { createError, defineEventHandler, getRequestURL } from 'nuxt/server'
 
 export default defineEventHandler(async (event) => {
   const url = getRequestURL(event)
@@ -27,7 +21,7 @@ export default defineEventHandler(async (event) => {
 
     if (typeof userId !== 'string') {
       throw createError({
-        statusCode: 401
+        status: 401
       })
     }
 

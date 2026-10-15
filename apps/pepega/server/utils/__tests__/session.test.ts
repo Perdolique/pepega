@@ -1,8 +1,9 @@
 import { once } from 'node:events'
 import { createServer, type Server } from 'node:http'
 import { promisify } from 'node:util'
-import { createApp, defineEventHandler, toNodeListener } from 'h3'
+import { createApp, toNodeListener } from '@nuxt/nitro-server/h3'
 import { afterAll, beforeAll, describe, expect, it } from 'vitest'
+import { toTestHandler } from '~~/test-utils/portable-handler'
 import { clearAppSession } from '../session'
 
 describe(clearAppSession, () => {
@@ -12,7 +13,7 @@ describe(clearAppSession, () => {
   beforeAll(async () => {
     const app = createApp()
 
-    app.use(defineEventHandler(async (event) => {
+    app.use(toTestHandler(async (event) => {
       await clearAppSession(event)
     }))
 

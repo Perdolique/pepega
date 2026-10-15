@@ -1,21 +1,18 @@
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { tables } from '~~/server/utils/database'
 import { stringToIntegerSchema } from '~~/server/utils/validation'
-import { createError, defineEventHandler, getValidatedRouterParams } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
   id: stringToIntegerSchema
 })
 
-function idValidator(params: unknown) {
-  return v.parse(paramsSchema, params)
-}
-
 export default defineEventHandler(async (event) => {
   const { userId, db } = event.context
-  const { id: webhookId } = await getValidatedRouterParams(event, idValidator)
+  const { id: webhookId } = parseRouterParams(event, paramsSchema)
 
   const [webhook] = await db
     .select({
@@ -41,7 +38,7 @@ export default defineEventHandler(async (event) => {
     logger.warn(`Webhook ${webhookId} not found`)
 
     throw createError({
-      statusCode: 404
+      status: 404
     })
   }
 

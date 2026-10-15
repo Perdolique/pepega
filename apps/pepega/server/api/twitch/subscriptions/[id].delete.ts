@@ -1,3 +1,4 @@
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { deleteSubscription } from '@pepega/twitch/subscriptions'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
@@ -5,7 +6,7 @@ import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
 import { validateAdmin } from '~~/server/utils/admin'
 import { tables } from '~~/server/utils/database'
 import { getValidatedEncryptionKey, getValidatedTwitchClientId } from '~~/server/utils/validation'
-import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
@@ -15,13 +16,9 @@ const paramsSchema = v.object({
   )
 })
 
-function idValidator(params: unknown) {
-  return v.parse(paramsSchema, params)
-}
-
 export default defineEventHandler(async (event) => {
   const { db } = event.context
-  const { id: subscriptionId } = await getValidatedRouterParams(event, idValidator)
+  const { id: subscriptionId } = parseRouterParams(event, paramsSchema)
 
   await validateAdmin(event)
 
@@ -50,12 +47,14 @@ export default defineEventHandler(async (event) => {
       logger.error('Error deleting subscription from database:', error)
     }
 
-    return sendNoContent(event)
+    event.res.status = 204
+
+    return null
   } catch (error) {
     logger.error('Error deleting subscription on Twitch:', error)
 
     throw createError({
-      statusCode: 400
+      status: 400
     })
   }
 })

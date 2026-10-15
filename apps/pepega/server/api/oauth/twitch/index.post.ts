@@ -1,3 +1,4 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
 import { getOAuthToken, getUserInfo } from '@pepega/twitch/auth'
 import * as v from 'valibot'
 import type { UserModel } from '~~/shared/models/user'
@@ -5,16 +6,14 @@ import { getTwitchRedirectUri } from '~~/server/utils/provider-twitch'
 import { updateAppSession } from '~~/server/utils/session'
 import { createOAuthUser, getSessionUser, getUserByOAuthAccount } from '~~/server/utils/user'
 import { getValidatedTwitchClientId, getValidatedTwitchClientSecret } from '~~/server/utils/validation'
-import { createError, defineEventHandler, readValidatedBody } from 'h3'
+import { createError, defineEventHandler, readValidatedBody } from 'nuxt/server'
 
 const bodySchema = v.object({
   code: v.pipe(v.string(), v.nonEmpty())
 })
-function validateBody(body: unknown) {
-  return v.parse(bodySchema, body)
-}
-
-export default defineEventHandler(async (event) : Promise<UserModel> => {
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof bodySchema> }>
+) : Promise<UserModel> => {
   const currentUser = await getSessionUser(event)
 
   // User already logged in
@@ -23,11 +22,11 @@ export default defineEventHandler(async (event) : Promise<UserModel> => {
 
     throw createError({
       message: 'Not implemented',
-      statusCode: 501
+      status: 501
     })
   }
 
-  const { code } = await readValidatedBody(event, validateBody)
+  const { code } = await readValidatedBody(event, bodySchema)
   const clientId = getValidatedTwitchClientId()
   const clientSecret = getValidatedTwitchClientSecret()
   const redirectUri = getTwitchRedirectUri(event)
@@ -42,7 +41,7 @@ export default defineEventHandler(async (event) : Promise<UserModel> => {
   if (accessToken === null) {
     throw createError({
       message: 'Failed to get Twitch OAuth token',
-      statusCode: 500
+      status: 500
     })
   }
 
@@ -56,7 +55,7 @@ export default defineEventHandler(async (event) : Promise<UserModel> => {
   if (userInfo === undefined) {
     throw createError({
       message: 'Failed to get Twitch user info',
-      statusCode: 500
+      status: 500
     })
   }
 

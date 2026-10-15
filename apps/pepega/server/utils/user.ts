@@ -1,4 +1,4 @@
-import { createError, type H3Event } from 'h3'
+import { createError, type RequestEvent } from 'nuxt/server'
 import { and, eq } from 'drizzle-orm'
 import type { OAuthProvider, OAuthUser } from '~~/shared/models/oauth'
 import { useAppSession } from '~~/server/utils/session'
@@ -11,7 +11,7 @@ const defaultUser : UserModel = {
   isStreamer: false
 }
 
-export async function getSessionUser(event: H3Event) : Promise<UserModel> {
+export async function getSessionUser(event: RequestEvent) : Promise<UserModel> {
   const session = await useAppSession(event)
   const { userId } = session.data
 
@@ -45,7 +45,7 @@ export async function getSessionUser(event: H3Event) : Promise<UserModel> {
 }
 
 export async function getUserByOAuthAccount(
-  event: H3Event,
+  event: RequestEvent,
   provider: OAuthProvider,
   accountId: string
 ) : Promise<UserModel> {
@@ -92,7 +92,7 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
     if (providerData === undefined) {
       throw createError({
         message: `OAuth provider ${provider} not found`,
-        statusCode: 404
+        status: 404
       })
     }
 
@@ -109,7 +109,7 @@ export async function createOAuthUser({ provider, user } : OAuthUser) : Promise<
     if (foundUser?.id === undefined) {
       throw createError({
         message: 'Failed to create user',
-        statusCode: 500
+        status: 500
       })
     }
 
