@@ -1,19 +1,16 @@
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { and, eq, sql } from 'drizzle-orm'
 import * as v from 'valibot'
 import { notificationEventTypeSchema } from '~~/server/utils/validation'
 import { tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 
 const routeParamsSchema = v.object({
   eventType: notificationEventTypeSchema
 })
 
-function validateRouterParams(params: unknown) {
-  return v.parse(routeParamsSchema, params)
-}
-
-export default defineEventHandler(async (event) : Promise<void> => {
-  const { eventType } = await getValidatedRouterParams(event, validateRouterParams)
+export default defineEventHandler(async (event) : Promise<null> => {
+  const { eventType } = parseRouterParams(event, routeParamsSchema)
   const { userId, db } = event.context
 
   const streamer = db
@@ -43,10 +40,12 @@ export default defineEventHandler(async (event) : Promise<void> => {
 
   if (deleted.length === 0) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Notification not found'
+      status: 404,
+      statusText: 'Notification not found'
     })
   }
 
-  sendNoContent(event)
+  event.res.status = 204
+
+  return null
 })

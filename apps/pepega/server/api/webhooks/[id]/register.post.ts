@@ -1,3 +1,4 @@
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { encrypt } from '@pepega/utils/crypto'
@@ -6,7 +7,7 @@ import { getValidatedDebug, getValidatedEncryptionKey, getValidatedTwitchClientI
 import { type WebhookStatus } from '~~/shared/models/webhooks'
 import { getStoredToken, obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
 import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, getValidatedRouterParams } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
@@ -20,10 +21,6 @@ const webhookStatusSchema = v.union([
   v.literal<WebhookStatus>('failed'),
   v.literal<WebhookStatus>('revoked')
 ])
-
-function idValidator(params: unknown) {
-  return v.parse(paramsSchema, params)
-}
 
 function validateWebhookStatus(webhookStatus: string) : void {
   const { output: status, success } = v.safeParse(webhookStatusSchema, webhookStatus)
@@ -44,7 +41,7 @@ interface ResponseData {
 
 export default defineEventHandler(async (event) : Promise<ResponseData> => {
   const { userId } = event.context
-  const { id: webhookId } = await getValidatedRouterParams(event, idValidator)
+  const { id: webhookId } = parseRouterParams(event, paramsSchema)
   const db = createDatabaseWebsocket()
   const webhookBaseUrl = getValidatedWebhookBaseUrl()
   const twitchClientId = getValidatedTwitchClientId()
@@ -75,7 +72,7 @@ export default defineEventHandler(async (event) : Promise<ResponseData> => {
     logger.error(`Webhook with id ${webhookId} not found`)
 
     throw createError({
-      statusCode: 404
+      status: 404
     })
   }
 

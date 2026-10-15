@@ -3,15 +3,8 @@ import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
 import type { SubscriptionModel } from '#shared/models/twitch'
 import { validateAdmin } from '~~/server/utils/admin'
 import { getValidatedEncryptionKey, getValidatedTwitchClientId } from '~~/server/utils/validation'
-import { createError, defineEventHandler } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
-
-// FIXME: (2025-07-26) `nuxt typecheck` command fails without this explicit type definition
-interface Streamer {
-  broadcasterId: string;
-  login: string | null;
-  displayName: string | null;
-}
 
 export default defineEventHandler(async (event) => {
   const { db } = event.context
@@ -27,7 +20,7 @@ export default defineEventHandler(async (event) => {
     logger.error('App access token not found')
 
     throw createError({
-      statusCode: 400
+      status: 400
     })
   }
 
@@ -39,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
     const broadcasterIds = subscriptions.data.map(({ condition }) => condition.broadcaster_user_id)
 
-    const streamers : Streamer[] = await db.query.streamers.findMany({
+    const streamers = await db.query.streamers.findMany({
       columns: {
         broadcasterId: true,
         displayName: true,

@@ -1,20 +1,19 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
 import { eq, sql } from 'drizzle-orm'
 import * as v from 'valibot'
 import { notificationEventTypeSchema } from '~~/server/utils/validation'
 import type { NotificationModel } from '~~/shared/models/notifications'
 import { tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, readValidatedBody } from 'h3'
+import { createError, defineEventHandler, readValidatedBody } from 'nuxt/server'
 
 const routeParamsSchema = v.object({
   eventType: notificationEventTypeSchema
 })
 
-function validateRouterParams(params: unknown) {
-  return v.parse(routeParamsSchema, params)
-}
-
-export default defineEventHandler(async (event) : Promise<NotificationModel> => {
-  const { eventType } = await readValidatedBody(event, validateRouterParams)
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof routeParamsSchema> }>
+) : Promise<NotificationModel> => {
+  const { eventType } = await readValidatedBody(event, routeParamsSchema)
   const { userId, db } = event.context
 
   const streamer = db
@@ -43,8 +42,8 @@ export default defineEventHandler(async (event) : Promise<NotificationModel> => 
 
   if (notification === undefined) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Failed to create notification'
+      status: 400,
+      statusText: 'Failed to create notification'
     })
   }
 

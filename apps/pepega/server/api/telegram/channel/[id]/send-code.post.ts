@@ -1,10 +1,11 @@
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import * as v from 'valibot'
 import { sendMessage } from '@pepega/telegram'
 import { kvStorageName } from '~~/constants'
 import { getValidatedDebug, getValidatedTelegramBotToken, idStringAsNumberSchema } from '~~/server/utils/validation'
 import { getTelegramChannelVerificationCodeKey } from '~~/server/utils/kv'
 import { getRandomCode } from '~~/server/utils/random'
-import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 import { useStorage } from 'nitropack/runtime/internal/storage'
 import logger from '~~/server/utils/logger'
 
@@ -12,13 +13,9 @@ const routerParamsSchema = v.object({
   id: idStringAsNumberSchema
 })
 
-function routerParamsValidator(params: unknown) {
-  return v.parse(routerParamsSchema, params)
-}
-
 export default defineEventHandler(async (event) => {
   const { userId, db } = event.context
-  const { id: channelId } = await getValidatedRouterParams(event, routerParamsValidator)
+  const { id: channelId } = parseRouterParams(event, routerParamsSchema)
   const telegramBotToken = getValidatedTelegramBotToken()
 
   // 1. Check if channel exists and belongs to the user
@@ -36,7 +33,7 @@ export default defineEventHandler(async (event) => {
 
   if (channel === undefined) {
     throw createError({
-      statusCode: 404,
+      status: 404,
       message: 'Channel not found'
     })
   }
@@ -54,7 +51,7 @@ export default defineEventHandler(async (event) => {
     })
 
     throw createError({
-      statusCode: 429,
+      status: 429,
       message: 'Easy, dude... You are sending codes too fast'
     })
   }
@@ -102,10 +99,12 @@ export default defineEventHandler(async (event) => {
     logger.error('Error sending verification code:', result)
 
     throw createError({
-      statusCode: result.code,
+      status: result.code,
       message: result.message
     })
   }
 
-  sendNoContent(event)
+  event.res.status = 204
+
+  return null
 })

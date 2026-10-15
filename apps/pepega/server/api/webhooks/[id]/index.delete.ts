@@ -1,3 +1,4 @@
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { deleteSubscription } from '@pepega/twitch/subscriptions'
 import { eq } from 'drizzle-orm'
 import * as v from 'valibot'
@@ -5,20 +6,16 @@ import { obtainTwitchAppToken } from '~~/server/utils/twitch/auth'
 import { getValidatedEncryptionKey, getValidatedTwitchClientId, stringToIntegerSchema } from '~~/server/utils/validation'
 import { validateAdmin } from '~~/server/utils/admin'
 import { tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, getValidatedRouterParams, sendNoContent } from 'h3'
+import { createError, defineEventHandler } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
 
 const paramsSchema = v.object({
   id: stringToIntegerSchema
 })
 
-function idValidator(params: unknown) {
-  return v.parse(paramsSchema, params)
-}
-
 export default defineEventHandler(async (event) => {
   const { db } = event.context
-  const { id: webhookId } = await getValidatedRouterParams(event, idValidator)
+  const { id: webhookId } = parseRouterParams(event, paramsSchema)
 
   await validateAdmin(event)
 
@@ -34,7 +31,7 @@ export default defineEventHandler(async (event) => {
 
   if (deleted.length === 0) {
     throw createError({
-      statusCode: 404
+      status: 404
     })
   }
 
@@ -62,5 +59,7 @@ export default defineEventHandler(async (event) => {
     logger.warn('Error deleting subscription on Twitch:', error)
   }
 
-  return sendNoContent(event)
+  event.res.status = 204
+
+  return null
 })

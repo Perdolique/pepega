@@ -1,10 +1,12 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
+import { parseRouterParams } from '~~/server/utils/request-validation'
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { kvStorageName } from '~~/constants'
 import { getTelegramChannelVerificationCodeKey } from '~~/server/utils/kv'
 import { idStringAsNumberSchema } from '~~/server/utils/validation'
 import { tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, getValidatedRouterParams, readValidatedBody, sendNoContent } from 'h3'
+import { createError, defineEventHandler, readValidatedBody } from 'nuxt/server'
 import { useStorage } from 'nitropack/runtime/internal/storage'
 import logger from '~~/server/utils/logger'
 
@@ -20,18 +22,12 @@ const bodySchema = v.object({
   )
 })
 
-function routerParamsValidator(params: unknown) {
-  return v.parse(routerParamsSchema, params)
-}
-
-function bodyValidator(body: unknown) {
-  return v.parse(bodySchema, body)
-}
-
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof bodySchema> }>
+) => {
   const { userId, db } = event.context
-  const { id: channelId } = await getValidatedRouterParams(event, routerParamsValidator)
-  const { code } = await readValidatedBody(event, bodyValidator)
+  const { id: channelId } = parseRouterParams(event, routerParamsSchema)
+  const { code } = await readValidatedBody(event, bodySchema)
 
   // 1. Check if channel exists and belongs to the user
 
@@ -48,7 +44,7 @@ export default defineEventHandler(async (event) => {
 
   if (channel === undefined) {
     throw createError({
-      statusCode: 404,
+      status: 404,
       message: 'Channel not found'
     })
   }
@@ -66,7 +62,7 @@ export default defineEventHandler(async (event) => {
     })
 
     throw createError({
-      statusCode: 429,
+      status: 429,
       message: 'Easy, dude... You are too fast'
     })
   } else {
@@ -82,7 +78,7 @@ export default defineEventHandler(async (event) => {
 
   if (storedCode === null) {
     throw createError({
-      statusCode: 400,
+      status: 400,
       message: 'Verification code not found or expired'
     })
   }
@@ -91,7 +87,7 @@ export default defineEventHandler(async (event) => {
 
   if (code !== storedCode) {
     throw createError({
-      statusCode: 400,
+      status: 400,
       message: 'Invalid verification code'
     })
   }
@@ -121,5 +117,7 @@ export default defineEventHandler(async (event) => {
     chatId: channel.chatId
   })
 
-  return sendNoContent(event)
+  event.res.status = 204
+
+  return null
 })

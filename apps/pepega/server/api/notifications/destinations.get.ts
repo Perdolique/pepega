@@ -1,20 +1,19 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import type { NotificationDestinationModel } from '~~/shared/models/notifications'
 import { tables } from '~~/server/utils/database'
 import { stringToIntegerSchema } from '~~/server/utils/validation'
-import { defineEventHandler, getValidatedQuery } from 'h3'
+import { defineEventHandler, getValidatedQuery } from 'nuxt/server'
 
 const routeParamsSchema = v.object({
   notificationId: stringToIntegerSchema
 })
 
-function validateRouterParams(params: unknown) {
-  return v.parse(routeParamsSchema, params)
-}
-
-export default defineEventHandler(async (event) : Promise<NotificationDestinationModel[]> => {
-  const { notificationId } = await getValidatedQuery(event, validateRouterParams)
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ query: v.InferInput<typeof routeParamsSchema> }>
+) : Promise<NotificationDestinationModel[]> => {
+  const { notificationId } = await getValidatedQuery(event, routeParamsSchema)
   const { userId, db } = event.context
 
   const result = await db

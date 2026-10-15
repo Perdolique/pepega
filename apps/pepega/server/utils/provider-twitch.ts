@@ -1,6 +1,6 @@
-import { H3Event, getRequestURL } from 'h3'
+import { type RequestEvent, getRequestURL } from 'nuxt/server'
 
-export function getTwitchRedirectUri(event: H3Event) : string {
+export function getTwitchRedirectUri(event: RequestEvent) : string {
   const url = getRequestURL(event)
   const twitchRedirectUrl = new URL(url.origin)
 

@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm'
 import { tables } from '~~/server/utils/database'
-import { defineEventHandler } from 'h3'
+import { defineEventHandler } from 'nuxt/server'
 
 export default defineEventHandler(async (event) => {
   const { userId, db } = event.context

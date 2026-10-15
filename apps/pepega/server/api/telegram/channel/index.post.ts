@@ -1,10 +1,11 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
 import * as v from 'valibot'
 import { count, eq, sql } from 'drizzle-orm'
 import { configKeys } from '@pepega/database/constants'
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
 import { checkAdmin } from '~~/server/utils/admin'
 import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, readValidatedBody } from 'h3'
+import { createError, defineEventHandler, readValidatedBody } from 'nuxt/server'
 import logger from '~~/server/utils/logger'
 
 const bodySchema = v.object({
@@ -15,21 +16,19 @@ const bodySchema = v.object({
   )
 })
 
-function bodyValidator(body: unknown) {
-  return v.parse(bodySchema, body)
-}
-
 function throwCreateChannelError(logMessage: string, logContext: Record<string, unknown>) : never {
   logger.error(logMessage, logContext)
 
   throw createError({
-    statusCode: 500,
+    status: 500,
     message: 'Failed to create telegram channel'
   })
 }
 
-export default defineEventHandler(async (event) : Promise<TelegramChannelModel> => {
-  const { chatId } = await readValidatedBody(event, bodyValidator)
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof bodySchema> }>
+) : Promise<TelegramChannelModel> => {
+  const { chatId } = await readValidatedBody(event, bodySchema)
   const { db, userId } = event.context
   const isAdmin = await checkAdmin(event)
   const dbWebSocket = createDatabaseWebsocket()
@@ -48,7 +47,7 @@ export default defineEventHandler(async (event) : Promise<TelegramChannelModel> 
 
     if (insertedChannel === undefined) {
       throw createError({
-        statusCode: 500,
+        status: 500,
         message: 'Failed to insert telegram channel'
       })
     }
@@ -96,7 +95,7 @@ export default defineEventHandler(async (event) : Promise<TelegramChannelModel> 
 
     if (countResult.count >= config.value) {
       throw createError({
-        statusCode: 403,
+        status: 403,
         message: 'Max telegram channels reached'
       })
     }
@@ -112,7 +111,7 @@ export default defineEventHandler(async (event) : Promise<TelegramChannelModel> 
 
     if (insertedChannel === undefined) {
       throw createError({
-        statusCode: 500,
+        status: 500,
         message: 'Failed to insert telegram channel'
       })
     }

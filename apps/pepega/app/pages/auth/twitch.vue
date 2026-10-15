@@ -38,7 +38,7 @@
   import { decodeStateData } from '@pepega/twitch/auth'
   import { useUserStore } from '~/stores/user'
   import FidgetSpinner from '~/components/FidgetSpinner.vue'
-  import { onBeforeMount, ref } from 'vue'
+  import { onMounted, ref } from 'vue'
   import { $fetch, definePageMeta, navigateTo, useHead, useRoute } from '#imports'
 
   definePageMeta({
@@ -56,11 +56,17 @@
 
   async function handleConnect() {
     try {
+      const { code } = route.query
+
+      if (typeof code !== 'string' || code.length === 0) {
+        throw new Error('Missing Twitch authorization code')
+      }
+
       const result = await $fetch('/api/oauth/twitch', {
         method: 'POST',
 
         body: {
-          code: route.query.code
+          code
         }
       })
 
@@ -91,7 +97,7 @@
     }
   }
 
-  onBeforeMount(() => {
+  onMounted(() => {
     handleConnect()
   })
 </script>

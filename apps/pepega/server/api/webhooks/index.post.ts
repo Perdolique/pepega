@@ -1,4 +1,5 @@
-import { createError, defineEventHandler, H3Error, readValidatedBody } from 'h3'
+import type { ApiRequestEvent } from '#shared/types/api-request'
+import { createError, defineEventHandler, isNuxtError, readValidatedBody } from 'nuxt/server'
 import * as v from 'valibot'
 import type { EventSubscriptionType } from '@pepega/twitch/models/event-sub'
 import { createDatabaseWebsocket, tables } from '~~/server/utils/database'
@@ -10,12 +11,10 @@ const bodySchema = v.object({
   ])
 })
 
-function bodyValidator(body: unknown) {
-  return v.parse(bodySchema, body)
-}
-
-export default defineEventHandler(async (event) => {
-  const { type } = await readValidatedBody(event, bodyValidator)
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof bodySchema> }>
+) => {
+  const { type } = await readValidatedBody(event, bodySchema)
   const { userId } = event.context
 
   const db = createDatabaseWebsocket()
@@ -33,7 +32,7 @@ export default defineEventHandler(async (event) => {
 
     if (streamer === undefined) {
       throw createError({
-        statusCode: 404,
+        status: 404,
         message: 'Streamer not found'
       })
     }
@@ -56,20 +55,20 @@ export default defineEventHandler(async (event) => {
       logger.error('Failed to insert webhook', { type, userId })
 
       throw createError({
-        statusCode: 500
+        status: 500
       })
     }
 
     return insertedWebhook
   } catch (error) {
-    if (error instanceof H3Error) {
+    if (isNuxtError(error)) {
       throw error
     }
 
     logger.error('Failed to insert webhook', error)
 
     throw createError({
-      statusCode: 500
+      status: 500
     })
   }
 })

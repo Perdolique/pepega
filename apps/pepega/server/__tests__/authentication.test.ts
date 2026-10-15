@@ -1,8 +1,11 @@
 import { once } from 'node:events'
 import { createServer, type Server } from 'node:http'
 import { promisify } from 'node:util'
-import { createApp, createRouter, defineEventHandler, toNodeListener } from 'h3'
+import { createApp, createRouter, defineEventHandler, toNodeListener } from '@nuxt/nitro-server/h3'
 import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest'
+import { toTestHandler } from '~~/test-utils/portable-handler'
+import createNotificationHandler from '../api/notifications/index.post'
+import { updateAppSession } from '../utils/session'
 import logoutHandler from '../api/user/logout.post'
 import apiSessionCheck from '../middleware/1.api-session-check'
 import { checkAdmin } from '../utils/admin'
@@ -30,13 +33,13 @@ describe('authentication', () => {
       })
     }))
 
-    app.use(apiSessionCheck)
+    app.use(toTestHandler(apiSessionCheck))
 
-    router.get('/session-user', defineEventHandler(async (event) => {
+    router.get('/session-user', toTestHandler(async (event) => {
       return await getSessionUser(event)
     }))
 
-    router.get('/admin-check', defineEventHandler(async (event) => {
+    router.get('/admin-check', toTestHandler(async (event) => {
       return await checkAdmin(event, {
         force: true
       })
@@ -46,7 +49,14 @@ describe('authentication', () => {
       return 'authenticated'
     }))
 
-    router.post('/api/user/logout', logoutHandler)
+    router.post('/api/user/logout', toTestHandler(logoutHandler))
+    router.post('/api/notifications', toTestHandler(createNotificationHandler))
+    router.post('/session-login', toTestHandler(async (event) => {
+      await updateAppSession(event, { userId: 'test-user' })
+      event.res.status = 204
+
+      return null
+    }))
 
     app.use(router)
 
@@ -78,6 +88,47 @@ describe('authentication', () => {
 
   it('should reject an API request without an authenticated session', async () => {
     const response = await fetch(new URL('/api/private', url))
+
+    expect(response.status).toBe(401)
+  })
+
+  it('should authenticate a later request with a native session cookie', async () => {
+    const loginUrl = new URL('/session-login', url)
+    const login = await fetch(loginUrl, { method: 'POST' })
+    const cookies = login.headers.getSetCookie()
+    const cookie = cookies.at(-1)?.split(';')[0]
+
+    expect(login.status).toBe(204)
+    expect(cookie).toBeDefined()
+
+    const privateUrl = new URL('/api/private', url)
+    const response = await fetch(privateUrl, { headers: { cookie: cookie ?? '' } })
+
+    expect(response.status).toBe(200)
+    await expect(response.text()).resolves.toBe('authenticated')
+    expect(cookies.at(-1)).toContain('HttpOnly; Secure; SameSite=Strict')
+    expect(cookies.at(-1)).toContain('Max-Age=604800')
+  })
+
+  it('should reject invalid notification input before using the database', async () => {
+    const loginUrl = new URL('/session-login', url)
+    const login = await fetch(loginUrl, { method: 'POST' })
+    const cookie = login.headers.getSetCookie().at(-1)?.split(';')[0]
+    const notificationUrl = new URL('/api/notifications', url)
+    const response = await fetch(notificationUrl, {
+      method: 'POST',
+      headers: { cookie: cookie ?? '', 'content-type': 'application/json' },
+      body: JSON.stringify({ eventType: 'invalid' })
+    })
+
+    expect(response.status).toBe(400)
+  })
+
+  it('should reject a tampered session cookie', async () => {
+    const privateUrl = new URL('/api/private', url)
+    const response = await fetch(privateUrl, {
+      headers: { cookie: 'pepeger=not-a-valid-session' }
+    })
 
     expect(response.status).toBe(401)
   })

@@ -1,20 +1,19 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
 import { and, eq } from 'drizzle-orm'
 import * as v from 'valibot'
 import { notificationEventTypeSchema } from '~~/server/utils/validation'
 import type { NotificationModel } from '~~/shared/models/notifications'
 import { tables } from '~~/server/utils/database'
-import { createError, defineEventHandler, getValidatedQuery } from 'h3'
+import { createError, defineEventHandler, getValidatedQuery } from 'nuxt/server'
 
 const routeParamsSchema = v.object({
   type: notificationEventTypeSchema
 })
 
-function validateRouterParams(params: unknown) {
-  return v.parse(routeParamsSchema, params)
-}
-
-export default defineEventHandler(async (event) : Promise<NotificationModel> => {
-  const { type } = await getValidatedQuery(event, validateRouterParams)
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ query: v.InferInput<typeof routeParamsSchema> }>
+) : Promise<NotificationModel> => {
+  const { type } = await getValidatedQuery(event, routeParamsSchema)
   const { userId, db } = event.context
 
   const [notification] = await db
@@ -37,8 +36,8 @@ export default defineEventHandler(async (event) : Promise<NotificationModel> => 
 
   if (notification === undefined) {
     throw createError({
-      statusCode: 404,
-      statusMessage: 'Notification not found'
+      status: 404,
+      statusText: 'Notification not found'
     })
   }
 

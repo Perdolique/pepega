@@ -1,5 +1,5 @@
 import type { TelegramChannelModel } from '~~/shared/models/telegram-channels'
-import { defineEventHandler } from 'h3'
+import { defineEventHandler } from 'nuxt/server'
 
 export default defineEventHandler(async (event) : Promise<TelegramChannelModel[]> => {
   const { userId, db } = event.context

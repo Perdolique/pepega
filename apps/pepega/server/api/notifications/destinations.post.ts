@@ -1,10 +1,11 @@
+import type { ApiRequestEvent } from '#shared/types/api-request'
 import { and, eq, sql } from 'drizzle-orm'
 import * as v from 'valibot'
 import type { NotificationDestinationModel } from '~~/shared/models/notifications'
 import { limits } from '~~/constants'
 import { tables } from '~~/server/utils/database'
 import { idNumberSchema } from '~~/server/utils/validation'
-import { createError, defineEventHandler, readValidatedBody } from 'h3'
+import { createError, defineEventHandler, readValidatedBody } from 'nuxt/server'
 
 const routeParamsSchema = v.strictObject({
   notificationId: idNumberSchema,
@@ -12,12 +13,10 @@ const routeParamsSchema = v.strictObject({
   telegramChannelId: idNumberSchema
 })
 
-function validateRouterParams(params: unknown) {
-  return v.parse(routeParamsSchema, params)
-}
-
-export default defineEventHandler(async (event) : Promise<NotificationDestinationModel> => {
-  const { notificationId, message, telegramChannelId } = await readValidatedBody(event, validateRouterParams)
+export default defineEventHandler(async (
+  event: ApiRequestEvent<{ body: v.InferInput<typeof routeParamsSchema> }>
+) : Promise<NotificationDestinationModel> => {
+  const { notificationId, message, telegramChannelId } = await readValidatedBody(event, routeParamsSchema)
   const { userId, db } = event.context
 
   // Ensure the user is a streamer and has access to the notification with the given ID
@@ -88,8 +87,8 @@ export default defineEventHandler(async (event) : Promise<NotificationDestinatio
 
   if (destination === undefined) {
     throw createError({
-      statusCode: 400,
-      statusMessage: 'Failed to create notification destination'
+      status: 400,
+      statusText: 'Failed to create notification destination'
     })
   }
 
