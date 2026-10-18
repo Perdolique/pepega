@@ -24,7 +24,7 @@
     "@pepega/twitch": "workspace:*",
     "@pepega/utils": "workspace:*",
     "@pinia/nuxt": "1.0.3",
-    "@tanstack/vue-query": "5.104.2",
+    "@tanstack/vue-query": "5.104.3",
     "@vueuse/core": "15.0.0",
     "date-fns": "4.4.0",
     "drizzle-orm": "catalog:",
