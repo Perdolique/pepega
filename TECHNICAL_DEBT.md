@@ -2,13 +2,13 @@
 
 ## TypeScript 7 and Vue tooling
 
-Keep the TypeScript catalog at 6.0.3. TypeScript 7 uses a native compiler and does not provide the JavaScript compiler API that Vue tooling needs. The installed `vue-tsc` 3.3.13 still loads `typescript/lib/tsc` through Volar.
+Keep the TypeScript catalog at 6.0.3. TypeScript 7 uses a native compiler and does not provide the JavaScript compiler API that Vue tooling needs. The installed `vue-tsc` 3.3.14 still loads `typescript/lib/tsc` through Volar.
 
 Update after Vue's compiler tooling supports TypeScript 7. Run all type checks, including Vue templates. See the [TypeScript 7 announcement](https://devblogs.microsoft.com/typescript/announcing-typescript-7-0/#typescript-and-embedded-languages).
 
 ## Nuxt DevTools 4 opt-in
 
-Nuxt 4.6 bundles DevTools 3. The explicit `@nuxt/devtools` dependency and workspace override select 4.0.0-beta.5 for the application and its modules. Browser authorization remains enabled.
+Nuxt 4.6 bundles DevTools 3. The explicit `@nuxt/devtools` dependency and workspace override select 4.1.0 for the application and its modules. Browser authorization remains enabled.
 
 Remove the override when Nuxt bundles DevTools 4. Verify that the Nuxt group opens in the dev panel after browser authorization.
 

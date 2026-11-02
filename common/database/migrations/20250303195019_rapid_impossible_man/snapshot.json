@@ -1,527 +1,223 @@
 {
-  "id": "a227cf71-60a1-44c5-953b-04d9e809805b",
-  "prevIds": ["e35dd518-d905-408a-9cf5-c098dfb05537"],
-  "version": "8",
+  "type": "diff",
+  "version": "9",
   "dialect": "postgres",
-  "ddl": [
+  "id": "a227cf71-60a1-44c5-953b-04d9e809805b",
+  "prevIds": [
+    "e35dd518-d905-408a-9cf5-c098dfb05537"
+  ],
+  "footprints": [
     {
-      "isRlsEnabled": false,
-      "name": "oauthAccounts",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "oauthAccounts_pkey",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "pks"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "uuid_generate_v7()",
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "columns"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "userId",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "columns"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "providerId",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "accountId",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "createdAt",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "columns"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["providerId", "accountId"],
-      "nullsNotDistinct": false,
-      "name": "oauthAccounts_providerId_accountId_unique",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "uniques"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["userId"],
-      "schemaTo": "public",
-      "tableTo": "users",
-      "columnsTo": ["id"],
-      "onUpdate": "CASCADE",
-      "onDelete": "CASCADE",
-      "name": "oauthAccounts_userId_users_id_fk",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "fks"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["providerId"],
-      "schemaTo": "public",
-      "tableTo": "oauthProviders",
-      "columnsTo": ["id"],
-      "onUpdate": "CASCADE",
-      "onDelete": "CASCADE",
-      "name": "oauthAccounts_providerId_oauthProviders_id_fk",
-      "schema": "public",
-      "table": "oauthAccounts",
-      "entityType": "fks"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "oauthProviders",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "oauthProviders_pkey",
-      "schema": "public",
-      "table": "oauthProviders",
-      "entityType": "pks"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": {
-        "name": "oauthProviders_id_seq",
-        "type": "always",
-        "startWith": "1",
-        "minValue": "1",
-        "maxValue": "2147483647",
-        "increment": "1",
-        "cache": 1,
-        "cycle": false
-      },
-      "name": "id",
-      "schema": "public",
-      "table": "oauthProviders",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(32)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "type",
-      "schema": "public",
-      "table": "oauthProviders",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar(32)",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "name",
-      "schema": "public",
-      "table": "oauthProviders",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "createdAt",
-      "schema": "public",
-      "table": "oauthProviders",
-      "entityType": "columns"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["type"],
-      "nullsNotDistinct": false,
-      "name": "oauthProviders_type_unique",
-      "schema": "public",
-      "table": "oauthProviders",
-      "entityType": "uniques"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "streamers",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "streamers_pkey",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "pks"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": {
-        "name": "streamers_id_seq",
-        "type": "always",
-        "startWith": "1",
-        "minValue": "1",
-        "maxValue": "2147483647",
-        "increment": "1",
-        "cache": 1,
-        "cycle": false
-      },
-      "name": "id",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "broadcasterId",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "nickname",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "columns"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "userId",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "createdAt",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "columns"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["userId", "broadcasterId"],
-      "nullsNotDistinct": false,
-      "name": "streamers_userId_broadcasterId_unique",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "uniques"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["userId"],
-      "schemaTo": "public",
-      "tableTo": "users",
-      "columnsTo": ["id"],
-      "onUpdate": "CASCADE",
-      "onDelete": "SET NULL",
-      "name": "streamers_userId_users_id_fk",
-      "schema": "public",
-      "table": "streamers",
-      "entityType": "fks"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "users",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "users_pkey",
-      "schema": "public",
-      "table": "users",
-      "entityType": "pks"
-    },
-    {
-      "type": "uuid",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "uuid_generate_v7()",
-      "generated": null,
-      "identity": null,
-      "name": "id",
-      "schema": "public",
-      "table": "users",
-      "entityType": "columns"
-    },
-    {
-      "type": "boolean",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "false",
-      "generated": null,
-      "identity": null,
-      "name": "isAdmin",
-      "schema": "public",
-      "table": "users",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "createdAt",
-      "schema": "public",
-      "table": "users",
-      "entityType": "columns"
-    },
-    {
-      "isRlsEnabled": false,
-      "name": "webhooks",
-      "schema": "public",
-      "entityType": "tables"
-    },
-    {
-      "columns": ["id"],
-      "nameExplicit": false,
-      "name": "webhooks_pkey",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "pks"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": {
-        "name": "webhooks_id_seq",
-        "type": "always",
-        "startWith": "1",
-        "minValue": "1",
-        "maxValue": "2147483647",
-        "increment": "1",
-        "cache": 1,
-        "cycle": false
-      },
-      "name": "id",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "type": "integer",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "streamerId",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "type",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "'not_active'",
-      "generated": null,
-      "identity": null,
-      "name": "status",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "secret",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "type": "varchar",
-      "typeSchema": null,
-      "notNull": false,
-      "dimensions": 0,
-      "default": null,
-      "generated": null,
-      "identity": null,
-      "name": "subscriptionId",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "type": "timestamp with time zone",
-      "typeSchema": null,
-      "notNull": true,
-      "dimensions": 0,
-      "default": "now()",
-      "generated": null,
-      "identity": null,
-      "name": "createdAt",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "columns"
-    },
-    {
-      "nameExplicit": false,
-      "columns": ["streamerId", "type"],
-      "nullsNotDistinct": false,
-      "name": "webhooks_streamerId_type_unique",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "uniques"
-    },
-    {
-      "nameExplicit": false,
-      "columns": [
-        {
-          "value": "subscriptionId",
-          "isExpression": false,
-          "asc": true,
-          "nullsFirst": false,
-          "opclass": null
-        }
+      "statementType": "drop_unique",
+      "statementTarget": [
+        "table",
+        "public",
+        "streamers"
       ],
-      "isUnique": false,
-      "where": null,
-      "with": "",
-      "method": "btree",
-      "concurrently": false,
-      "name": "webhooks_subscriptionId_index",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "indexes"
+      "writes": [
+        "s|uq|public.streamers.streamers_userId_twitchBroadcasterId_unique",
+        "n|uq|public.streamers.streamers_userId_twitchBroadcasterId_unique",
+        "e|uq|public.streamers.streamers_userId_twitchBroadcasterId_unique",
+        "n|con|public.streamers.streamers_userId_twitchBroadcasterId_unique",
+        "n|rel|public.streamers_userId_twitchBroadcasterId_unique"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public",
+        "e|col|public.streamers.userId",
+        "e|col|public.streamers.twitchBroadcasterId"
+      ],
+      "sharedWrites": [
+        "e|uniqueness|public.streamers.twitchBroadcasterId.userId"
+      ]
     },
     {
-      "nameExplicit": false,
-      "columns": ["streamerId"],
-      "schemaTo": "public",
-      "tableTo": "streamers",
-      "columnsTo": ["id"],
-      "onUpdate": "CASCADE",
-      "onDelete": "CASCADE",
-      "name": "webhooks_streamerId_streamers_id_fk",
-      "schema": "public",
-      "table": "webhooks",
-      "entityType": "fks"
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "streamers",
+        "broadcasterId"
+      ],
+      "writes": [
+        "s|col|public.streamers.broadcasterId",
+        "n|col|public.streamers.broadcasterId",
+        "e|col|public.streamers.broadcasterId"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "add_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "streamers",
+        "nickname"
+      ],
+      "writes": [
+        "s|col|public.streamers.nickname",
+        "n|col|public.streamers.nickname",
+        "e|col|public.streamers.nickname"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "drop_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "streamers",
+        "twitchBroadcasterId"
+      ],
+      "writes": [
+        "s|col|public.streamers.twitchBroadcasterId",
+        "n|col|public.streamers.twitchBroadcasterId",
+        "e|col|public.streamers.twitchBroadcasterId"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public"
+      ]
+    },
+    {
+      "statementType": "alter_column",
+      "statementTarget": [
+        "column",
+        "public",
+        "streamers",
+        "userId"
+      ],
+      "writes": [
+        "s|colprop|public.streamers.userId.notNull"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public",
+        "n|col|public.streamers.userId"
+      ],
+      "sqlHash": "bf9ff08a5cbc252c"
+    },
+    {
+      "statementType": "add_unique",
+      "statementTarget": [
+        "table",
+        "public",
+        "streamers"
+      ],
+      "writes": [
+        "s|uq|public.streamers.streamers_userId_broadcasterId_unique",
+        "n|uq|public.streamers.streamers_userId_broadcasterId_unique",
+        "e|uq|public.streamers.streamers_userId_broadcasterId_unique",
+        "n|con|public.streamers.streamers_userId_broadcasterId_unique",
+        "n|rel|public.streamers_userId_broadcasterId_unique"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public",
+        "n|col|public.streamers.userId",
+        "n|col|public.streamers.broadcasterId"
+      ]
+    },
+    {
+      "statementType": "recreate_fk",
+      "statementTarget": [
+        "table",
+        "public",
+        "streamers"
+      ],
+      "writes": [
+        "s|fk|public.streamers.streamers_userId_users_id_fk",
+        "n|fk|public.streamers.streamers_userId_users_id_fk",
+        "e|fk|public.streamers.streamers_userId_users_id_fk",
+        "n|con|public.streamers.streamers_userId_users_id_fk"
+      ],
+      "reads": [
+        "n|tbl|public.streamers",
+        "n|sch|public",
+        "n|tbl|public.users",
+        "n|sch|public",
+        "n|col|public.streamers.userId",
+        "n|col|public.users.id",
+        "e|uniqueness|public.users.id"
+      ],
+      "sqlHash": "65fa03bdb927933f"
     }
   ],
-  "renames": []
+  "deltas": [
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "streamers",
+        "name": "broadcasterId",
+        "type": "varchar",
+        "typeSchema": null,
+        "notNull": true,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "streamers",
+        "name": "nickname",
+        "type": "varchar",
+        "typeSchema": null,
+        "notNull": false,
+        "dimensions": 0,
+        "default": null,
+        "generated": null,
+        "identity": null,
+        "entityType": "columns"
+      }
+    },
+    {
+      "op": "create",
+      "row": {
+        "schema": "public",
+        "table": "streamers",
+        "name": "streamers_userId_broadcasterId_unique",
+        "nameExplicit": false,
+        "columns": [
+          "userId",
+          "broadcasterId"
+        ],
+        "nullsNotDistinct": false,
+        "entityType": "uniques"
+      }
+    },
+    {
+      "op": "drop",
+      "key": "columns\u0000[\"public\",\"streamers\",\"twitchBroadcasterId\"]"
+    },
+    {
+      "op": "drop",
+      "key": "uniques\u0000[\"public\",\"streamers\",\"streamers_userId_twitchBroadcasterId_unique\"]"
+    },
+    {
+      "op": "alter",
+      "key": "columns\u0000[\"public\",\"streamers\",\"userId\"]",
+      "set": {
+        "notNull": false
+      }
+    },
+    {
+      "op": "alter",
+      "key": "fks\u0000[\"public\",\"streamers\",\"streamers_userId_users_id_fk\"]",
+      "set": {
+        "onDelete": "SET NULL"
+      }
+    }
+  ]
 }
