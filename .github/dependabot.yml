@@ -8,8 +8,9 @@ updates:
   - package-ecosystem: "npm"
     directory: "/"
     schedule:
-      interval: cron
-      cronjob: "0 18 * * *"
+      interval: weekly
+      day: monday
+      time: "19:00"
       timezone: "Europe/Tallinn"
     ignore:
       # Vue type checking still requires the TypeScript 6 compiler.
@@ -26,8 +27,9 @@ updates:
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
-      interval: cron
-      cronjob: "0 18 * * 1"
+      interval: weekly
+      day: monday
+      time: "19:00"
       timezone: "Europe/Tallinn"
     groups:
       actions-updates:
