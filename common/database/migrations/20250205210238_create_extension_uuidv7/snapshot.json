@@ -1,8 +1,11 @@
 {
-  "id": "d4092b93-85cd-411e-9c6f-c84ee1d366c6",
-  "prevIds": ["00000000-0000-0000-0000-000000000000"],
-  "version": "8",
+  "type": "base",
+  "version": "9",
   "dialect": "postgres",
-  "ddl": [],
-  "renames": []
+  "id": "d4092b93-85cd-411e-9c6f-c84ee1d366c6",
+  "prevIds": [
+    "00000000-0000-0000-0000-000000000000"
+  ],
+  "footprints": [],
+  "ddl": []
 }

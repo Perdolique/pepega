@@ -14,22 +14,56 @@ allowBuilds:
   workerd: false
 
 catalog:
-  drizzle-orm: 1.0.0-rc.4
+  drizzle-orm: 1.0.0-rc.5
   ofetch: 1.5.1
   tsx: 4.23.15
   typescript: 6.0.3
   valibot: 1.5.0
-  wrangler: 4.155.0
+  wrangler: 4.156.2
 
 cleanupUnusedCatalogs: true
 
 minimumReleaseAgeExclude:
   - '@pinia/nuxt@1.0.3'
   - pinia@4.1.0
+  - wrangler@4.156.2
+  - '@nuxt/devtools@4.1.0'
+  - '@tanstack/vue-query@5.105.2'
+  - vitest@5.1.0
+  - workerd@1.20261102.1
+  - miniflare@5.20261102.0-beta
+  - devframe@1.3.2
+  - local-pkg@2.0.0
+  - '@devframes/hub@1.3.2'
+  - '@nuxt/devtools-kit@4.1.0'
+  - '@devframes/plugin-og@1.3.2'
+  - '@nuxt/devtools-assets@4.1.0'
+  - '@devframes/plugin-assets@1.3.2'
+  - '@devframes/plugin-code-server@1.3.2'
+  - '@devframes/plugin-data-inspector@1.3.2'
+  - '@tanstack/query-core@5.105.2'
+  - '@vitest/mocker@5.1.0'
+  - '@cloudflare/workerd-linux-64@1.20261102.1'
+  - '@cloudflare/workerd-darwin-64@1.20261102.1'
+  - '@cloudflare/workerd-windows-64@1.20261102.1'
+  - '@cloudflare/workerd-linux-arm64@1.20261102.1'
+  - '@cloudflare/workerd-darwin-arm64@1.20261102.1'
+  - '@devframes/service-open@1.3.2'
+  - '@devframes/vite@1.3.2'
+  - '@vitest/spy@5.1.0'
+  - '@devframes/agentic@1.3.2'
+  - '@devframes/hub-ui@1.3.2'
+  - '@devframes/json-render-ui@1.3.2'
+  - '@devframes/json-render@1.3.2'
+  - '@devframes/plugin-inspect@1.3.2'
+  - '@devframes/plugin-messages@1.3.2'
+  - '@devframes/plugin-terminals@1.3.2'
+
+minimumReleaseAgeExcludePrune: true
 
 nodeLinker: hoisted
 
 overrides:
-  '@nuxt/devtools': 4.0.0-beta.5
+  '@nuxt/devtools': 4.1.0
 
 saveExact: true
