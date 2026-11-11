@@ -35,12 +35,12 @@
   },
   "packageManager": "pnpm@12.16.1",
   "devDependencies": {
-    "eslint-config-greenpie": "17.17.0",
+    "eslint-config-greenpie": "17.18.0",
     "husky": "9.1.7",
     "markdownlint": "0.42.0",
     "markdownlint-cli": "0.50.0",
-    "oxlint": "1.90.0",
-    "oxlint-tsgolint": "7.0.2005",
+    "oxlint": "1.92.0",
+    "oxlint-tsgolint": "7.0.2006",
     "taze": "21.3.0",
     "typescript": "catalog:",
     "vitest": "5.1.0"
