@@ -19,51 +19,52 @@ catalog:
   tsx: 4.23.15
   typescript: 6.0.3
   valibot: 1.5.0
-  wrangler: 4.158.0
+  wrangler: 4.163.0
 
 cleanupUnusedCatalogs: true
 
 minimumReleaseAgeExclude:
   - '@pinia/nuxt@1.0.3'
   - pinia@4.1.0
-  - wrangler@4.156.2
-  - '@nuxt/devtools@4.1.0'
-  - '@tanstack/vue-query@5.105.2'
+  - wrangler@4.163.0
   - vitest@5.1.0
-  - workerd@1.20261102.1
-  - miniflare@5.20261102.0-beta
-  - devframe@1.3.2
+  - workerd@1.20261116.1
+  - miniflare@5.20261116.0-beta
   - local-pkg@2.0.0
-  - '@devframes/hub@1.3.2'
-  - '@nuxt/devtools-kit@4.1.0'
-  - '@devframes/plugin-og@1.3.2'
-  - '@nuxt/devtools-assets@4.1.0'
-  - '@devframes/plugin-assets@1.3.2'
-  - '@devframes/plugin-code-server@1.3.2'
-  - '@devframes/plugin-data-inspector@1.3.2'
-  - '@tanstack/query-core@5.105.2'
   - '@vitest/mocker@5.1.0'
-  - '@cloudflare/workerd-linux-64@1.20261102.1'
-  - '@cloudflare/workerd-darwin-64@1.20261102.1'
-  - '@cloudflare/workerd-windows-64@1.20261102.1'
-  - '@cloudflare/workerd-linux-arm64@1.20261102.1'
-  - '@cloudflare/workerd-darwin-arm64@1.20261102.1'
-  - '@devframes/service-open@1.3.2'
-  - '@devframes/vite@1.3.2'
+  - '@cloudflare/workerd-linux-64@1.20261116.1'
+  - '@cloudflare/workerd-darwin-64@1.20261116.1'
+  - '@cloudflare/workerd-windows-64@1.20261116.1'
+  - '@cloudflare/workerd-linux-arm64@1.20261116.1'
+  - '@cloudflare/workerd-darwin-arm64@1.20261116.1'
   - '@vitest/spy@5.1.0'
-  - '@devframes/agentic@1.3.2'
-  - '@devframes/hub-ui@1.3.2'
-  - '@devframes/json-render-ui@1.3.2'
-  - '@devframes/json-render@1.3.2'
-  - '@devframes/plugin-inspect@1.3.2'
-  - '@devframes/plugin-messages@1.3.2'
-  - '@devframes/plugin-terminals@1.3.2'
+  - '@oxlint/binding-android-arm-eabi@1.94.0'
+  - '@oxlint/binding-android-arm64@1.94.0'
+  - '@oxlint/binding-darwin-arm64@1.94.0'
+  - '@oxlint/binding-darwin-x64@1.94.0'
+  - '@oxlint/binding-freebsd-x64@1.94.0'
+  - '@oxlint/binding-linux-arm-gnueabihf@1.94.0'
+  - '@oxlint/binding-linux-arm-musleabihf@1.94.0'
+  - '@oxlint/binding-linux-arm64-gnu@1.94.0'
+  - '@oxlint/binding-linux-arm64-musl@1.94.0'
+  - '@oxlint/binding-linux-ppc64-gnu@1.94.0'
+  - '@oxlint/binding-linux-riscv64-gnu@1.94.0'
+  - '@oxlint/binding-linux-riscv64-musl@1.94.0'
+  - '@oxlint/binding-linux-s390x-gnu@1.94.0'
+  - '@oxlint/binding-linux-x64-gnu@1.94.0'
+  - '@oxlint/binding-linux-x64-musl@1.94.0'
+  - '@oxlint/binding-openharmony-arm64@1.94.0'
+  - '@oxlint/binding-win32-arm64-msvc@1.94.0'
+  - '@oxlint/binding-win32-ia32-msvc@1.94.0'
+  - '@oxlint/binding-win32-x64-msvc@1.94.0'
+  - oxlint@1.94.0
+  - eslint-config-greenpie@17.21.0
 
 minimumReleaseAgeExcludePrune: true
 
 nodeLinker: hoisted
 
 overrides:
-  '@nuxt/devtools': 4.1.0
+  '@nuxt/devtools': 4.2.0
 
 saveExact: true
