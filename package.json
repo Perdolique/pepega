@@ -37,12 +37,12 @@
   "devDependencies": {
     "eslint-config-greenpie": "17.21.0",
     "husky": "9.1.7",
-    "markdownlint": "0.42.1",
+    "markdownlint": "0.42.2",
     "markdownlint-cli": "0.50.0",
     "oxlint": "1.94.0",
     "oxlint-tsgolint": "7.0.2007",
     "taze": "21.3.0",
     "typescript": "catalog:",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   }
 }
