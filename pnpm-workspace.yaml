@@ -19,46 +19,49 @@ catalog:
   tsx: 4.23.15
   typescript: 6.0.3
   valibot: 1.5.0
-  wrangler: 4.163.0
+  wrangler: 4.167.0
 
 cleanupUnusedCatalogs: true
 
 minimumReleaseAgeExclude:
   - '@pinia/nuxt@1.0.3'
   - pinia@4.1.0
-  - wrangler@4.163.0
-  - vitest@5.1.0
-  - workerd@1.20261116.1
-  - miniflare@5.20261116.0-beta
   - local-pkg@2.0.0
-  - '@vitest/mocker@5.1.0'
-  - '@cloudflare/workerd-linux-64@1.20261116.1'
-  - '@cloudflare/workerd-darwin-64@1.20261116.1'
-  - '@cloudflare/workerd-windows-64@1.20261116.1'
-  - '@cloudflare/workerd-linux-arm64@1.20261116.1'
-  - '@cloudflare/workerd-darwin-arm64@1.20261116.1'
-  - '@vitest/spy@5.1.0'
-  - '@oxlint/binding-android-arm-eabi@1.94.0'
-  - '@oxlint/binding-android-arm64@1.94.0'
-  - '@oxlint/binding-darwin-arm64@1.94.0'
-  - '@oxlint/binding-darwin-x64@1.94.0'
-  - '@oxlint/binding-freebsd-x64@1.94.0'
-  - '@oxlint/binding-linux-arm-gnueabihf@1.94.0'
-  - '@oxlint/binding-linux-arm-musleabihf@1.94.0'
-  - '@oxlint/binding-linux-arm64-gnu@1.94.0'
-  - '@oxlint/binding-linux-arm64-musl@1.94.0'
-  - '@oxlint/binding-linux-ppc64-gnu@1.94.0'
-  - '@oxlint/binding-linux-riscv64-gnu@1.94.0'
-  - '@oxlint/binding-linux-riscv64-musl@1.94.0'
-  - '@oxlint/binding-linux-s390x-gnu@1.94.0'
-  - '@oxlint/binding-linux-x64-gnu@1.94.0'
-  - '@oxlint/binding-linux-x64-musl@1.94.0'
-  - '@oxlint/binding-openharmony-arm64@1.94.0'
-  - '@oxlint/binding-win32-arm64-msvc@1.94.0'
-  - '@oxlint/binding-win32-ia32-msvc@1.94.0'
-  - '@oxlint/binding-win32-x64-msvc@1.94.0'
-  - oxlint@1.94.0
-  - eslint-config-greenpie@17.21.0
+  - '@cloudflare/workerd-darwin-64@1.20261123.1'
+  - '@cloudflare/workerd-darwin-arm64@1.20261123.1'
+  - '@cloudflare/workerd-linux-64@1.20261123.1'
+  - '@cloudflare/workerd-linux-arm64@1.20261123.1'
+  - '@cloudflare/workerd-windows-64@1.20261123.1'
+  - '@cloudflare/workers-utils@0.57.0'
+  - '@oxlint/binding-android-arm-eabi@1.95.0'
+  - '@oxlint/binding-android-arm64@1.95.0'
+  - '@oxlint/binding-darwin-arm64@1.95.0'
+  - '@oxlint/binding-darwin-x64@1.95.0'
+  - '@oxlint/binding-freebsd-x64@1.95.0'
+  - '@oxlint/binding-linux-arm-gnueabihf@1.95.0'
+  - '@oxlint/binding-linux-arm-musleabihf@1.95.0'
+  - '@oxlint/binding-linux-arm64-gnu@1.95.0'
+  - '@oxlint/binding-linux-arm64-musl@1.95.0'
+  - '@oxlint/binding-linux-ppc64-gnu@1.95.0'
+  - '@oxlint/binding-linux-riscv64-gnu@1.95.0'
+  - '@oxlint/binding-linux-riscv64-musl@1.95.0'
+  - '@oxlint/binding-linux-s390x-gnu@1.95.0'
+  - '@oxlint/binding-linux-x64-gnu@1.95.0'
+  - '@oxlint/binding-linux-x64-musl@1.95.0'
+  - '@oxlint/binding-openharmony-arm64@1.95.0'
+  - '@oxlint/binding-win32-arm64-msvc@1.95.0'
+  - '@oxlint/binding-win32-ia32-msvc@1.95.0'
+  - '@oxlint/binding-win32-x64-msvc@1.95.0'
+  - '@tanstack/query-core@5.108.4'
+  - '@tanstack/vue-query@5.108.4'
+  - '@vueuse/core@15.1.0'
+  - '@vueuse/metadata@15.1.0'
+  - '@vueuse/shared@15.1.0'
+  - eslint-config-greenpie@17.22.0
+  - miniflare@5.20261123.0-beta
+  - oxlint@1.95.0
+  - workerd@1.20261123.1
+  - wrangler@4.167.0
 
 minimumReleaseAgeExcludePrune: true
 
