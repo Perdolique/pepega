@@ -33,16 +33,16 @@
     "test:unit:ci": "vitest run",
     "update:all": "taze -r -l -I"
   },
-  "packageManager": "pnpm@12.21.0",
+  "packageManager": "pnpm@12.23.0",
   "devDependencies": {
-    "eslint-config-greenpie": "17.21.0",
+    "eslint-config-greenpie": "17.22.0",
     "husky": "9.1.7",
-    "markdownlint": "0.42.1",
-    "markdownlint-cli": "0.50.0",
-    "oxlint": "1.94.0",
-    "oxlint-tsgolint": "7.0.2007",
+    "markdownlint": "0.42.2",
+    "markdownlint-cli": "0.50.1",
+    "oxlint": "1.95.0",
+    "oxlint-tsgolint": "7.0.2008",
     "taze": "21.3.0",
     "typescript": "catalog:",
-    "vitest": "5.1.0"
+    "vitest": "5.1.1"
   }
 }

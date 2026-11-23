@@ -61,6 +61,9 @@ function makeContext() {
     passThroughOnException: vi.fn(),
     abort: vi.fn(),
     props: undefined,
+    mapVirtualHost(): string {
+      throw new Error('Unexpected virtual host mapping in webhook test');
+    },
     get exports(): ExecutionContext['exports'] {
       throw new Error('Unexpected worker exports access in webhook test');
     },
